@@ -52,9 +52,10 @@ function akismet_manage_page() {
 }
 
 function akismet_caught() {
-	global $wpdb, $comment, $akismet_caught, $akismet_nonce;
+	global $wpdb, $comment, $akismet_caught, $akismet_nonce, $submenu;
 
 	akismet_recheck_queue();
+	$akismet_page = isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php';
 	if (isset($_POST['submit']) && 'recover' == $_POST['action'] && ! empty($_POST['not_spam'])) {
 		check_admin_referer( $akismet_nonce );
 		if ( function_exists('current_user_can') && !current_user_can('moderate_comments') )
@@ -70,7 +71,7 @@ function akismet_caught() {
 			akismet_submit_nonspam_comment($comment);
 			++$i;
 		endforeach;
-		$to = add_query_arg( 'recovered', $i, $_SERVER['HTTP_REFERER'] );
+		$to = add_query_arg( 'recovered', $i, "{$akismet_page}?page=akismet-admin" );
 		wp_redirect( $to );
 		exit;
 	}
@@ -86,7 +87,7 @@ function akismet_caught() {
 			$wpdb->query( "DELETE FROM $wpdb->comments WHERE comment_id IN ( " . implode( ', ', $comment_ids ) . " )");
 			wp_cache_delete( 'akismet_spam_count', 'widget' );
 		}
-		$to = add_query_arg( 'deleted', 'all', $_SERVER['HTTP_REFERER'] );
+		$to = add_query_arg( 'deleted', 'all', "{$akismet_page}?page=akismet-admin" );
 		wp_redirect( $to );
 		exit;
 	}

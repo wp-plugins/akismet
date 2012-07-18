@@ -766,7 +766,7 @@ function akismet_recheck_queue() {
 
 		}
 	}
-	wp_redirect( $_SERVER['HTTP_REFERER'] );
+	wp_redirect( 'edit-comments.php' );
 	exit;
 }
 
