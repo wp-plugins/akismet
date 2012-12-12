@@ -55,7 +55,7 @@ $akismet_nonce = 'akismet-update-key';
 
 function akismet_plugin_action_links( $links, $file ) {
 	if ( $file == plugin_basename( dirname(__FILE__).'/akismet.php' ) ) {
-		$links[] = '<a href="admin.php?page=akismet-key-config">'.__('Settings').'</a>';
+		$links[] = '<a href="' . admin_url( 'admin.php?page=akismet-key-config' ) . '">'.__( 'Settings' ).'</a>';
 	}
 
 	return $links;
