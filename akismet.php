@@ -110,7 +110,7 @@ function akismet_test_mode() {
 }
 
 // return a comma-separated list of role names for the given user
-function akismet_get_user_roles($user_id ) {
+function akismet_get_user_roles( $user_id ) {
 	$roles = false;
 	
 	if ( !class_exists('WP_User') )
@@ -277,6 +277,9 @@ function akismet_auto_check_update_meta( $id, $comment ) {
 	if ( !function_exists('add_comment_meta') )
 		return false;
 
+	if ( !isset( $akismet_last_comment['comment_author_email'] ) )
+		$akismet_last_comment['comment_author_email'] = '';
+
 	// wp_insert_comment() might be called in other contexts, so make sure this is the same comment
 	// as was checked by akismet_auto_check_comment
 	if ( is_object($comment) && !empty($akismet_last_comment) && is_array($akismet_last_comment) ) {
@@ -319,15 +322,15 @@ function akismet_auto_check_comment( $commentdata ) {
 
 	$comment = $commentdata;
 	$comment['user_ip']    = $_SERVER['REMOTE_ADDR'];
-	$comment['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-	$comment['referrer']   = $_SERVER['HTTP_REFERER'];
+	$comment['user_agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null; 
+	$comment['referrer']   = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 	$comment['blog']       = get_option('home');
 	$comment['blog_lang']  = get_locale();
 	$comment['blog_charset'] = get_option('blog_charset');
 	$comment['permalink']  = get_permalink($comment['comment_post_ID']);
 	
 	if ( !empty( $comment['user_ID'] ) ) {
-		$comment['user_role'] = akismet_get_user_roles($comment['user_ID']);
+		$comment['user_role'] = akismet_get_user_roles( $comment['user_ID'] );
 	}
 
 	$akismet_nonce_option = apply_filters( 'akismet_comment_nonce', get_option( 'akismet_comment_nonce' ) );
@@ -386,7 +389,8 @@ function akismet_auto_check_comment( $commentdata ) {
 			// akismet_result_spam() won't be called so bump the counter here
 			if ( $incr = apply_filters('akismet_spam_count_incr', 1) )
 				update_option( 'akismet_spam_count', get_option('akismet_spam_count') + $incr );
-			wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
+			$redirect_to = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : get_permalink( $post );
+			wp_safe_redirect( $redirect_to );
 			die();
 		}
 	}
