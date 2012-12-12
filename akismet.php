@@ -28,6 +28,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+// Make sure we don't expose any info if called directly
+if ( !function_exists( 'add_action' ) ) {
+	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
+	exit;
+}
+
 define('AKISMET_VERSION', '2.5.6');
 define('AKISMET_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 
@@ -36,12 +42,6 @@ if ( defined('WPCOM_API_KEY') )
 	$wpcom_api_key = constant('WPCOM_API_KEY');
 else
 	$wpcom_api_key = '';
-
-// Make sure we don't expose any info if called directly
-if ( !function_exists( 'add_action' ) ) {
-	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
-	exit;
-}
 
 if ( isset($wp_db_version) && $wp_db_version <= 9872 )
 	include_once dirname( __FILE__ ) . '/legacy.php';
