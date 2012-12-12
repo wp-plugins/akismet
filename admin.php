@@ -723,7 +723,8 @@ function akismet_recheck_queue() {
 
 		delete_comment_meta( $c['comment_ID'], 'akismet_rechecking' );
 	}
-	wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
+	$redirect_to = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : admin_url( 'edit-comments.php' );
+	wp_safe_redirect( $redirect_to );
 	exit;
 }
 
