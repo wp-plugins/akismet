@@ -311,7 +311,7 @@ function akismet_admin_warnings() {
 		function akismet_warning() {
 			global $wpdb;
 				akismet_fix_scheduled_recheck();
-				$waiting = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->commentmeta WHERE meta_key = 'akismet_error'" ) );
+				$waiting = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->commentmeta WHERE meta_key = 'akismet_error'" );
 				$next_check = wp_next_scheduled('akismet_schedule_cron_recheck');
 				if ( $waiting > 0 && $next_check > time() )
 					echo "
