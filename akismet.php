@@ -283,7 +283,7 @@ function akismet_auto_check_update_meta( $id, $comment ) {
 	// wp_insert_comment() might be called in other contexts, so make sure this is the same comment
 	// as was checked by akismet_auto_check_comment
 	if ( is_object($comment) && !empty($akismet_last_comment) && is_array($akismet_last_comment) ) {
-		if ( intval($akismet_last_comment['comment_post_ID']) == intval($comment->comment_post_ID)
+		if ( isset($akismet_last_comment['comment_post_ID']) && intval($akismet_last_comment['comment_post_ID']) == intval($comment->comment_post_ID)
 			&& $akismet_last_comment['comment_author'] == $comment->comment_author
 			&& $akismet_last_comment['comment_author_email'] == $comment->comment_author_email ) {
 				// normal result: true or false
