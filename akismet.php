@@ -373,6 +373,7 @@ function akismet_auto_check_comment( $commentdata ) {
 	$commentdata['comment_as_submitted'] = $comment;
 
 	$response = akismet_http_post($query_string, $akismet_api_host, '/1.1/comment-check', $akismet_api_port);
+	do_action( 'akismet_comment_check_response', $response );
 	akismet_update_alert( $response );
 	$commentdata['akismet_result'] = $response[1];
 	if ( 'true' == $response[1] ) {
