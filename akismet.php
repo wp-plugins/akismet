@@ -503,7 +503,7 @@ function akismet_check_db_comment( $id, $recheck_reason = 'recheck_queue' ) {
     $query_string .= $key . '=' . urlencode( stripslashes($data) ) . '&';
 
     $response = akismet_http_post($query_string, $akismet_api_host, '/1.1/comment-check', $akismet_api_port);
-    return $response[1];
+    return ( is_array( $response ) && isset( $response[1] ) ) ? $response[1] : false;
 }
 
 function akismet_cron_recheck() {
