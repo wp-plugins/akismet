@@ -33,6 +33,12 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 = 2.5.7 =
 * FireFox Stats iframe preview bug
+* Fix mshots preview when using https
+* Add .htaccess to block direct access to files
+* Prevent some PHP notices
+* Fix Check For Spam return location when referrer is empty
+* Fix Settings links for network admins
+* Fix prepare() warnings in WP 3.5
 
 = 2.5.6 =
 * Prevent retry scheduling problems on sites where wp_cron is misbehaving
