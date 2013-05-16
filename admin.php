@@ -516,7 +516,6 @@ function akismet_submit_nonspam_comment ( $comment_id ) {
 	$comment->blog_lang = get_locale();
 	$comment->blog_charset = get_option('blog_charset');
 	$comment->permalink = get_permalink($comment->comment_post_ID);
-	$comment->reporter_ip = $_SERVER['REMOTE_ADDR'];
 	if ( is_object($current_user) ) {
 	    $comment->reporter = $current_user->user_login;
 	}
@@ -568,7 +567,6 @@ function akismet_submit_spam_comment ( $comment_id ) {
 	$comment->blog_lang = get_locale();
 	$comment->blog_charset = get_option('blog_charset');
 	$comment->permalink = get_permalink($comment->comment_post_ID);
-	$comment->reporter_ip = $_SERVER['REMOTE_ADDR'];
 	if ( is_object($current_user) ) {
 	    $comment->reporter = $current_user->user_login;
 	}
