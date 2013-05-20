@@ -10,9 +10,9 @@ function akismet_admin_init() {
     if ( !function_exists('is_multisite') && version_compare( $wp_version, '3.0', '<' ) ) {
         
         function akismet_version_warning() {
-            echo "
-            <div id='akismet-warning' class='updated fade'><p><strong>".sprintf(__('Akismet %s requires WordPress 3.0 or higher.'), AKISMET_VERSION) ."</strong> ".sprintf(__('Please <a href="%s">upgrade WordPress</a> to a current version, or <a href="%s">downgrade to version 2.4 of the Akismet plugin</a>.'), 'http://codex.wordpress.org/Upgrading_WordPress', 'http://wordpress.org/extend/plugins/akismet/download/'). "</p></div>
-            ";
+            echo '
+            <div id="akismet-warning" class="updated fade"><p><strong>'.sprintf(__('Akismet %s requires WordPress 3.0 or higher.'), AKISMET_VERSION) .'</strong> '.sprintf(__('Please <a href="%s">upgrade WordPress</a> to a current version, or <a href="%s">downgrade to version 2.4 of the Akismet plugin</a>.'), 'http://codex.wordpress.org/Upgrading_WordPress', 'http://wordpress.org/extend/plugins/akismet/download/'). '</p></div>
+            ';
         }
         add_action('admin_notices', 'akismet_version_warning'); 
         
@@ -175,7 +175,7 @@ function akismet_conf() {
 	<?php if ( !$api_key ) : ?>
 	<h2 class="ak-header"><?php _e('Akismet'); ?></h2>
 	<?php else: ?>
-	<h2 class="ak-header"><?php printf( __( 'Akismet <a href="%s" class="add-new-h2">Stats</a>' ), esc_url( add_query_arg( array( 'page' => 'akismet-stats-display' ), admin_url( 'index.php' ) ) ) ); ?></h2>
+	<h2 class="ak-header"><?php printf( __( 'Akismet <a href="%s" class="add-new-h2">Stats</a>' ), esc_url( add_query_arg( array( 'page' => 'akismet-stats-display' ), class_exists( 'Jetpack' ) ? admin_url( 'admin.php' ) : admin_url( 'index.php' ) ) ) ); ?></h2>
 	<?php endif; ?>
 	<div class="no-key <?php echo $show_key_form ? 'hidden' : '';?>">
 		<p><?php _e('Akismet eliminates the comment and trackback spam you get on your site. To use Akismet you may need to sign up for an API key. Click the button below to get started.'); ?></p>
@@ -270,7 +270,7 @@ function akismet_conf() {
 										asort($servers);
 										foreach ( $servers as $ip => $status ) : ?>
 										<tr>
-											<td align="center"><?php echo htmlspecialchars( $ip ); ?></td>
+											<td align="center"><?php echo esc_html( $ip ); ?></td>
 											<td class="key-status <?php echo $status ? 'valid' : 'failed'; ?>"><?php echo $status ? __('Accessible') : __('Re-trying'); ?></td>
 										</tr>										
 									<?php endforeach; ?>
@@ -308,7 +308,7 @@ function akismet_stats_display() {
 	if ( !$api_key ) :?>
 	<div id="akismet-warning" class="updated fade"><p><strong><?php _e('Akismet is almost ready.');?></strong> <?php printf( __( 'You must <a href="%1$s">enter your Akismet API key</a> for it to work.' ), esc_url( add_query_arg( array( 'page' => 'akismet-key-config' ), admin_url( 'admin.php' ) ) ) );?></p></div><?php
 	else :?>
-	<iframe src="<?php printf( '%s://akismet.com/web/1.0/user-stats.php?blog=%s&api_key=%s', is_ssl()?'https':'http', $blog, $api_key ); ?>" width="100%" height="2500px" frameborder="0" id="akismet-stats-frame"></iframe><?php
+	<iframe src="<?php echo esc_url( sprintf( '%s://akismet.com/web/1.0/user-stats.php?blog=%s&api_key=%s', is_ssl()?'https':'http', $blog, $api_key ) ); ?>" width="100%" height="2500px" frameborder="0" id="akismet-stats-frame"></iframe><?php
 	endif;?>
 </div><?php
 }
@@ -345,9 +345,9 @@ function akismet_admin_warnings() {
 				);
 			?>
 				<div class='error'>
-					<p><strong>Akismet Error Code: <?php echo $alert['code']; ?></strong></p>
+					<p><strong><?php _e( 'Akismet Error Code');?>: <?php echo $alert['code']; ?></strong></p>
 					<p><?php esc_html_e( $alert['msg'] ); ?></p>
-					<p>More information is available at <a href="https://akismet.com/errors/<?php echo $alert['code']; ?>">https://akismet.com/errors/<?php echo $alert['code']; ?></a></p>
+					<p><?php printf(__( 'More information is available at <a href="%s">%s</a></p>' ), 'https://akismet.com/errors/'.$alert['code'], 'https://akismet.com/errors/'.$alert['code'] );?>
 				</div>
 			<?php
 			}
@@ -394,9 +394,9 @@ function akismet_admin_warnings() {
 				$waiting = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->commentmeta WHERE meta_key = 'akismet_error'" );
 				$next_check = wp_next_scheduled('akismet_schedule_cron_recheck');
 				if ( $waiting > 0 && $next_check > time() )
-					echo "
-			<div id='akismet-warning' class='updated fade'><p><strong>".__('Akismet has detected a problem.')."</strong> ".sprintf(__('Some comments have not yet been checked for spam by Akismet. They have been temporarily held for moderation. Please check your <a href="%s">Akismet configuration</a> and contact your web host if problems persist.'), 'admin.php?page=akismet-key-config')."</p></div>
-			";
+					echo '
+			<div id="akismet-warning" class="updated fade"><p><strong>'.__('Akismet has detected a problem.').'</strong> '.sprintf(__('Some comments have not yet been checked for spam by Akismet. They have been temporarily held for moderation. Please check your <a href="%s">Akismet configuration</a> and contact your web host if problems persist.'), 'admin.php?page=akismet-key-config').'</p></div>
+			';
 		}
 		add_action('admin_notices', 'akismet_warning');
 		return;
@@ -412,8 +412,8 @@ function akismet_comment_row_action( $a, $comment ) {
 		return $a;
 
 	$akismet_result = get_comment_meta( $comment->comment_ID, 'akismet_result', true );
-	$akismet_error = get_comment_meta( $comment->comment_ID, 'akismet_error', true );
-	$user_result = get_comment_meta( $comment->comment_ID, 'akismet_user_result', true);
+	$akismet_error  = get_comment_meta( $comment->comment_ID, 'akismet_error', true );
+	$user_result    = get_comment_meta( $comment->comment_ID, 'akismet_user_result', true);
 	$comment_status = wp_get_comment_status( $comment->comment_ID );
 	$desc = null;
 	if ( $akismet_error ) {
@@ -449,7 +449,7 @@ function akismet_comment_row_action( $a, $comment ) {
 	}
 		
 	if ( $desc )
-		echo '<span class="akismet-status" commentid="'.$comment->comment_ID.'"><a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="' . esc_attr__( 'View comment history' ) . '">'.htmlspecialchars($desc).'</a></span>';
+		echo '<span class="akismet-status" commentid="'.$comment->comment_ID.'"><a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="' . esc_attr__( 'View comment history' ) . '">'.esc_html( $desc ).'</a></span>';
 		
 	if ( apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') ) == 'true' ) {
 		$comment_count = akismet_get_user_comments_approved( $comment->user_id, $comment->comment_author_email, $comment->comment_author, $comment->comment_author_url );
@@ -470,7 +470,7 @@ function akismet_comment_status_meta_box($comment) {
 		foreach ( $history as $row ) {
 			$time = date( 'D d M Y @ h:i:m a', $row['time'] ) . ' GMT';
 			echo '<div style="margin-bottom: 13px;"><span style="color: #999;" alt="' . $time . '" title="' . $time . '">' . sprintf( __('%s ago'), human_time_diff( $row['time'] ) ) . '</span> - ';
-			echo htmlspecialchars( $row['message'] ) . '</div>';
+			echo esc_html( $row['message'] ) . '</div>';
 		}
 		
 		echo '</div>';
@@ -498,7 +498,7 @@ function akismet_comment_column_row( $column, $comment_id ) {
 		echo '<dl class="akismet-history">';
 		foreach ( $history as $row ) {
 			echo '<dt>' . sprintf( __('%s ago'), human_time_diff( $row['time'] ) ) . '</dt>';
-			echo '<dd>' . htmlspecialchars( $row['message'] ) . '</dd>';
+			echo '<dd>' . esc_html( $row['message'] ) . '</dd>';
 		}
 		
 		echo '</dl>';
@@ -510,18 +510,16 @@ function akismet_comment_column_row( $column, $comment_id ) {
 // END FIXME
 
 // call out URLS in comments
-function akismet_text_add_link_callback( $m ) {
-	
-		// bare link?
-        if ( $m[4] == $m[2] )
-                return '<a '.$m[1].' href="'.$m[2].'" '.$m[3].' class="comment-link">'.$m[4].'</a>';
-        else
-                return '<span title="'.$m[2].'" class="comment-link"><a '.$m[1].' href="'.$m[2].'" '.$m[3].' class="comment-link">'.$m[4].'</a></span>';
+function akismet_text_add_link_callback( $m ) {	
+	// bare link?
+	if ( $m[4] == $m[2] )
+		return '<a '.$m[1].' href="'.$m[2].'" '.$m[3].' class="comment-link">'.$m[4].'</a>';
+	else
+	    return '<span title="'.$m[2].'" class="comment-link"><a '.$m[1].' href="'.$m[2].'" '.$m[3].' class="comment-link">'.$m[4].'</a></span>';
 }
 
 function akismet_text_add_link_class( $comment_text ) {
-
-        return preg_replace_callback( '#<a ([^>]*)href="([^"]+)"([^>]*)>(.*?)</a>#i', 'akismet_text_add_link_callback', $comment_text );
+	return preg_replace_callback( '#<a ([^>]*)href="([^"]+)"([^>]*)>(.*?)</a>#i', 'akismet_text_add_link_callback', $comment_text );
 }
 
 add_filter('comment_text', 'akismet_text_add_link_class');
