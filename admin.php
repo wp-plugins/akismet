@@ -277,21 +277,20 @@ function akismet_conf() {
 									<?php endforeach; ?>
 								</tbody>
 							</table>
+							<br/>
+							<input type="submit" name="check" id="submit" class="button" style="margin-left: 13.3em;" value="<?php _e('Check Network Status');?>">
 						</td>
 					</tr>
 					<?php endif; ?>
 					<tr valign="top">
 						<th scope="row"><?php _e('Last Checked');?></th>
 						<td>
-							<p><strong><?php echo get_option('akismet_connectivity_time') ? sprintf( __('%s ago.'), human_time_diff( get_option('akismet_connectivity_time') ) ) : __( 'Not yet' ); ?></strong></p>
+							<p><strong><?php echo get_option('akismet_connectivity_time') ? sprintf( __('%s Ago'), ucwords( human_time_diff( get_option('akismet_connectivity_time') ) ) ) : __( 'Not yet' ); ?></strong></p>
 							<p class="description"><?php printf( __('You can confirm that Akismet.com is up by <a href="%s" target="_blank">clicking here</a>.'), 'http://status.automattic.com/9931/136079/Akismet-API' ); ?></p>
 						</td>
 				</tbody>
 			</table>
 			<?php akismet_nonce_field($akismet_nonce) ?>
-			<p class="submit">
-				<input type="submit" name="check" id="submit" class="button button-primary" value="<?php _e('Check Network Status');?>">
-			</p>
 		</form>
 		<?php endif;?>
 	</div>
