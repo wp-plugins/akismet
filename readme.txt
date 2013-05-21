@@ -31,6 +31,10 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 2.5.8 =
+* Simplify the activation process for new users
+* Remove the reporter_ip parameter
+
 = 2.5.7 =
 * FireFox Stats iframe preview bug
 * Fix mshots preview when using https
