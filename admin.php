@@ -102,8 +102,7 @@ function akismet_conf() {
 
 		if ( $key != $api_key && $key_status == 'valid' ) {
 			update_option('wordpress_api_key', $key);
-			$saved_ok = true;
-			$ms[]     = 'new_key_valid';
+			$ms[] = 'new_key_valid';
 		}
 		elseif ( $key_status == 'invalid' )
 			$ms[] = 'new_key_invalid';
@@ -159,7 +158,7 @@ function akismet_conf() {
 
 	$messages = array(
 		'new_key_empty'   => array( 'class' => 'updated fade', 'text' => __('Your key has been cleared.' ) ),
-		'new_key_valid'   => array( 'class' => 'updated fade', 'text' => __('Your account has successfully been setup. Happy blogging!' ) ),
+		'new_key_valid'   => array( 'class' => 'updated fade', 'text' => __('Your Akismet account has been successfully set up and activated. Happy blogging!' ) ),
 		'new_key_invalid' => array( 'class' => 'error',        'text' => __('The key you entered is invalid. Please double-check it.' ) ),
 		'new_key_failed'  => array( 'class' => 'error',        'text' => __('The key you entered could not be verified because a connection to akismet.com could not be established. Please check your server configuration.' ) ),
 		'no_connection'   => array( 'class' => 'error',        'text' => __('There was a problem connecting to the Akismet server. Please check your server configuration.' ) ),
@@ -204,10 +203,11 @@ function akismet_conf() {
 					<tr>
 						<th><label for="key"><?php _e('Akismet API Key');?></label></th>
 						<td>
-							<input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo get_option('wordpress_api_key'); ?>" class="regular-text code"><span class="key-status <?php echo $key_status;?>"><?php echo ucfirst( $key_status );?></span>
+							<input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo get_option('wordpress_api_key'); ?>" class="regular-text code <?php echo $key_status;?>"><div class="under-input key-status <?php echo $key_status;?>"><?php echo ucfirst( $key_status );?></div>
 							<p class="need-key description"><?php printf( __('You must enter a valid Akismet API key here. If you need an API key, you can <a href="%s">create one here</a>'), '#' );?></p>
 						</td>
 					</tr>
+					<?php if ( $api_key ):?>
 					<tr valign="top">
 						<th scope="row"><?php _e('Settings');?></th>
 						<td>
@@ -216,7 +216,8 @@ function akismet_conf() {
 							<label for="akismet_show_user_comments_approved" title="<?php echo esc_attr( __( 'Show approved comments' ) ); ?>"><input name="akismet_show_user_comments_approved" id="akismet_show_user_comments_approved" value="true" type="checkbox" <?php echo get_option('akismet_show_user_comments_approved') == 'true' ? 'checked="checked"':''; ?>> <span><?php _e('Show the number of comments you\'ve approved beside each comment author.'); ?></span></label>
 							</fieldset>
 						</td>
-			</tr>
+					</tr>
+					<?php endif; ?>
 				</tbody>
 			</table>
 			<?php akismet_nonce_field($akismet_nonce) ?>
@@ -227,7 +228,7 @@ function akismet_conf() {
 		
 		<?php if ( $api_key ) : ?>
 		<h3><?php _e('Server Connectivity'); ?></h3>
-		<form action="" method="post" id="akismet-connectivity" style="width: 600px;">
+		<form action="" method="post" id="akismet-connectivity">
 			<table class="form-table">
 				<tbody>
 					<tr>
