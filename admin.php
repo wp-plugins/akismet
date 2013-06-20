@@ -347,7 +347,9 @@ function akismet_admin_warnings() {
 				<div class='error'>
 					<p><strong><?php _e( 'Akismet Error Code');?>: <?php echo $alert['code']; ?></strong></p>
 					<p><?php esc_html_e( $alert['msg'] ); ?></p>
-					<p><?php printf(__( 'More information is available at <a href="%s">%s</a></p>' ), 'https://akismet.com/errors/'.$alert['code'], 'https://akismet.com/errors/'.$alert['code'] );?>
+					<p><?php //FIXME: need to revert this to using __() in next version
+						printf( translate( 'For more information:' ) . ' <a href="%s">%s</a>' , 'https://akismet.com/errors/'.$alert['code'], 'https://akismet.com/errors/'.$alert['code'] );?>
+					</p>
 				</div>
 			<?php
 			}
