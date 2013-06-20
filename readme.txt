@@ -1,5 +1,5 @@
 === Akismet ===
-Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, automattic
+Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, automattic
 Tags: akismet, comments, spam
 Requires at least: 3.0
 Tested up to: 3.6
