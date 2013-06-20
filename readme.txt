@@ -1,8 +1,8 @@
 === Akismet ===
-Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, automattic
+Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, automattic
 Tags: akismet, comments, spam
 Requires at least: 3.0
-Tested up to: 3.5.1
+Tested up to: 3.6
 Stable tag: 2.5.8
 License: GPLv2 or later
 
@@ -32,11 +32,9 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 == Changelog ==
 
 = 2.5.8 =
-* Update UX of Akismet Configuration page, should now be easier for new users to enter their API key
-* Akismet Configuration page now shows Akismet icon and markup/style same as typical WordPress settings page
-* Fix Akismet Stats page bug showing text Invalid when no API key saved
-* Add graphic banner to plugins page that is shown to new users to help them set up and activate the plugin
-* Tidied some plugin code to meet WordPress coding standards
+* Simplify the activation process for new users
+* Remove the reporter_ip parameter
+* Minor preventative security improvements
 
 = 2.5.7 =
 * FireFox Stats iframe preview bug
