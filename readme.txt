@@ -2,8 +2,8 @@
 Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, automattic
 Tags: akismet, comments, spam
 Requires at least: 3.0
-Tested up to: 3.5
-Stable tag: 2.5.7
+Tested up to: 3.6
+Stable tag: 2.5.8
 License: GPLv2 or later
 
 Akismet checks your comments against the Akismet web service to see if they look like spam or not.
