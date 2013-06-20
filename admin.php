@@ -203,7 +203,7 @@ function akismet_conf() {
 					<tr>
 						<th><label for="key"><?php _e('Akismet API Key');?></label></th>
 						<td>
-							<input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo get_option('wordpress_api_key'); ?>" class="regular-text code <?php echo $key_status;?>"><div class="under-input key-status <?php echo $key_status;?>"><?php echo ucfirst( $key_status );?></div>
+							<input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo esc_html( get_option('wordpress_api_key') ); ?>" class="regular-text code <?php echo $key_status;?>"><div class="under-input key-status <?php echo $key_status;?>"><?php echo ucfirst( $key_status );?></div>
 							<p class="need-key description"><?php printf( __('You must enter a valid Akismet API key here. If you need an API key, you can <a href="%s">create one here</a>'), '#' );?></p>
 						</td>
 					</tr>
