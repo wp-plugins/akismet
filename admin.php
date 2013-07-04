@@ -162,12 +162,12 @@ function akismet_conf() {
 		}
 	}	
 		
-	if ( $key_status == 'valid' )
-		$key_status_text = __( 'valid' );
-	elseif ( $key_status == 'invalid' )
-		$key_status_text = __( 'invalid' );
-	elseif ( $key_status == 'failed' )
-		$key_status_text = __( 'failed' );
+	$key_status_strings = array( 
+	 	'empty'   => __( 'Empty' ), 
+		'valid'   => __( 'Valid' ), 
+		'invalid' => __( 'Invalid' ), 
+		'failed'  => __( 'Failed' ), 
+ 	);
 
 	$messages = array(
 		'new_key_empty'   => array( 'class' => 'updated fade', 'text' => __('Your key has been cleared.' ) ),
@@ -216,7 +216,7 @@ function akismet_conf() {
 					<tr>
 						<th><label for="key"><?php _e('Akismet API Key');?></label></th>
 						<td>
-							<input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo esc_attr( get_option('wordpress_api_key') ); ?>" class="regular-text code <?php echo $key_status;?>"><div class="under-input key-status <?php echo $key_status;?>"><?php echo ucfirst( $key_status_text );?></div>
+							<input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo esc_attr( get_option('wordpress_api_key') ); ?>" class="regular-text code <?php echo $key_status;?>"><div class="under-input key-status <?php echo $key_status;?>"><?php echo isset( $key_status_strings[ $key_status ] ) ? $key_status_strings[ $key_status ] : '';?></div>
 							<p class="need-key description"><?php printf( __('You must enter a valid Akismet API key here. If you need an API key, you can <a href="%s">create one here</a>'), '#' );?></p>
 						</td>
 					</tr>
