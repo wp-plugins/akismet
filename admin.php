@@ -39,10 +39,10 @@ function akismet_load_js_and_css() {
 		'plugins_page_akismet-key-config', 
 		'jetpack_page_akismet-key-config',
 	) ) ) {
-		wp_register_style( 'akismet.css', AKISMET_PLUGIN_URL . 'akismet.css', array(), '2.5.4.4' );
+		wp_register_style( 'akismet.css', AKISMET_PLUGIN_URL . 'akismet.css', array(), '2.5.9' );
 		wp_enqueue_style( 'akismet.css');
 	
-		wp_register_script( 'akismet.js', AKISMET_PLUGIN_URL . 'akismet.js', array('jquery'), '2.5.4.6' );
+		wp_register_script( 'akismet.js', AKISMET_PLUGIN_URL . 'akismet.js', array('jquery'), '2.5.9' );
 		wp_enqueue_script( 'akismet.js' );
 		wp_localize_script( 'akismet.js', 'WPAkismet', array(
 			'comment_author_url_nonce' => wp_create_nonce( 'comment_author_url_nonce' )
