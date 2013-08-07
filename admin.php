@@ -65,7 +65,7 @@ function akismet_plugin_action_links( $links, $file ) {
 add_filter( 'plugin_action_links', 'akismet_plugin_action_links', 10, 2 );
 
 function akismet_conf() {
-	global $akismet_nonce, $current_user;
+	global $akismet_nonce, $wpcom_api_key, $current_user;
 	
 	$new_key_link    = 'https://akismet.com/get/';
 	$config_link     = esc_url( add_query_arg( array( 'page' => 'akismet-key-config', 'show' => 'enter-api-key' ), class_exists( 'Jetpack' ) ? admin_url( 'admin.php' ) : admin_url( 'plugins.php' ) ) );
@@ -85,34 +85,38 @@ function akismet_conf() {
 		$show_key_form = true;
 
 		check_admin_referer( $akismet_nonce );
-		$key      = preg_replace( '/[^a-h0-9]/i', '', $_POST['key'] );
+		
 		$home_url = parse_url( get_bloginfo('url') );
 		
 		if ( empty( $home_url['host'] ) )
 			$ms[] = 'bad_home_url';
-
-		if ( empty( $key ) ) {
-			if ( $api_key ) {
-				delete_option('wordpress_api_key');
-				$saved_ok = true;			
-				$ms[] = 'new_key_empty';
-			}
+			
+		if ( !$wpcom_api_key ) {
+			$key = preg_replace( '/[^a-h0-9]/i', '', $_POST['key'] );
+			
+			if ( empty( $key ) ) {
+				if ( $api_key ) {
+					delete_option('wordpress_api_key');
+					$saved_ok = true;			
+					$ms[] = 'new_key_empty';
+				}
+				else
+					$ms[] = 'key_empty';
+			}  
 			else
-				$ms[] = 'key_empty';
-		}  
-		else
-			$key_status = akismet_verify_key( $key );		
-		
-		if ( $key != $api_key && $key_status == 'valid' ) {
-			$ms[] = 'new_key_valid';
-			update_option('wordpress_api_key', $key);
+				$key_status = akismet_verify_key( $key );		
+			
+			if ( $key != $api_key && $key_status == 'valid' ) {
+				$ms[] = 'new_key_valid';
+				update_option('wordpress_api_key', $key);
+			}
+			elseif ( $key_status == 'invalid' )
+				$ms[] = 'new_key_invalid';
+			elseif ( $key_status == 'failed' )
+				$ms[] = 'new_key_failed';
+	
+			$api_key = $key_status == 'valid' ? $key : false;
 		}
-		elseif ( $key_status == 'invalid' )
-			$ms[] = 'new_key_invalid';
-		elseif ( $key_status == 'failed' )
-			$ms[] = 'new_key_failed';
-
-		$api_key = $key_status == 'valid' ? $key : false;
 
 		if ( isset( $_POST['akismet_discard_month'] ) )
 			update_option( 'akismet_discard_month', 'true' );
@@ -213,6 +217,7 @@ function akismet_conf() {
 		<form action="" method="post" id="akismet-conf">
 			<table class="form-table">
 				<tbody>
+					<?php if ( !$wpcom_api_key ) :?>
 					<tr>
 						<th><label for="key"><?php _e('Akismet API Key');?></label></th>
 						<td>
@@ -220,6 +225,7 @@ function akismet_conf() {
 							<p class="need-key description"><?php printf( __('You must enter a valid Akismet API key here. If you need an API key, you can <a href="%s">create one here</a>'), '#' );?></p>
 						</td>
 					</tr>
+					<?php endif; ?>
 					<?php if ( $api_key ):?>
 					<tr valign="top">
 						<th scope="row"><?php _e('Settings');?></th>
