@@ -595,6 +595,7 @@ function akismet_check_for_spam_button($comment_status) {
 	else
 		$link = 'edit-comments.php?page=akismet-admin&amp;recheckqueue=true&amp;noheader=true';
 	echo "</div><div class='alignleft'><a class='button-secondary checkforspam' href='$link'>" . __('Check for Spam') . "</a>";
+	echo '<img src="'.esc_url(admin_url('images/wpspin_light.gif')).'" class="checkforspam-spinner" />';
 }
 add_action('manage_comments_nav', 'akismet_check_for_spam_button');
 
@@ -778,7 +779,15 @@ function akismet_recheck_queue() {
 	if ( ! ( isset( $_GET['recheckqueue'] ) || ( isset( $_REQUEST['action'] ) && 'akismet_recheck_queue' == $_REQUEST['action'] ) ) )
 		return;
 		
-	$moderation = $wpdb->get_results( "SELECT * FROM $wpdb->comments WHERE comment_approved = '0'", ARRAY_A );
+	$paginate = ''; 
+	if ( isset( $_REQUEST['limit'] ) && isset( $_REQUEST['offset'] ) ) { 
+		$paginate = $wpdb->prepare("LIMIT %d OFFSET %d", array( 
+			$_REQUEST['limit'], 
+			$_REQUEST['offset'], 
+		)); 
+ 	} 
+ 	$moderation = $wpdb->get_results( "SELECT * FROM $wpdb->comments WHERE comment_approved = '0' $paginate", ARRAY_A );
+ 	
 	foreach ( (array) $moderation as $c ) {
 		$c['user_ip']    = $c['comment_author_IP'];
 		$c['user_agent'] = $c['comment_agent'];
@@ -821,12 +830,20 @@ function akismet_recheck_queue() {
 
 		delete_comment_meta( $c['comment_ID'], 'akismet_rechecking' );
 	}
-	$redirect_to = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : admin_url( 'edit-comments.php' );
-	wp_safe_redirect( $redirect_to );
-	exit;
+	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { 
+ 		wp_send_json( array( 
+ 			'processed' => count((array) $moderation), 
+ 		)); 
+ 	} 
+ 	else { 
+ 		$redirect_to = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : admin_url( 'edit-comments.php' ); 
+ 		wp_safe_redirect( $redirect_to ); 
+ 		exit; 
+ 	}
 }
 
 add_action('admin_action_akismet_recheck_queue', 'akismet_recheck_queue');
+add_action('wp_ajax_akismet_recheck_queue', 'akismet_recheck_queue'); 
 
 // Adds an 'x' link next to author URLs, clicking will remove the author URL and show an undo link
 function akismet_remove_comment_author_url() {
