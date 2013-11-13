@@ -197,17 +197,26 @@ function akismet_http_post($request, $host, $path, $port = 80, $ip=null) {
 
 // filter handler used to return a spam result to pre_comment_approved
 function akismet_result_spam( $approved ) {
+	static $just_once = false;
+	if ( $just_once )
+		return $approved;
+		
 	// bump the counter here instead of when the filter is added to reduce the possibility of overcounting
 	if ( $incr = apply_filters('akismet_spam_count_incr', 1) )
 		update_option( 'akismet_spam_count', get_option('akismet_spam_count') + $incr );
+		
 	// this is a one-shot deal
-	remove_filter( 'pre_comment_approved', 'akismet_result_spam' );
+	$just_once = true;
 	return 'spam';
 }
 
 function akismet_result_hold( $approved ) {
+	static $just_once = false;
+	if ( $just_once )
+		return $approved;
+		
 	// once only
-	remove_filter( 'pre_comment_approved', 'akismet_result_hold' );
+	$just_once = true;
 	return '0';
 }
 
@@ -373,6 +382,7 @@ function akismet_auto_check_comment( $commentdata ) {
 	$commentdata['comment_as_submitted'] = $comment;
 
 	$response = akismet_http_post($query_string, $akismet_api_host, '/1.1/comment-check', $akismet_api_port);
+	
 	do_action( 'akismet_comment_check_response', $response );
 	akismet_update_alert( $response );
 	$commentdata['akismet_result'] = $response[1];
