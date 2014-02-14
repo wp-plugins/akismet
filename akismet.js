@@ -115,28 +115,28 @@ jQuery( function ( $ ) {
 	 	akismet_check_for_spam(0, 50); 
 	 	e.preventDefault(); 
  	});
+
+	// Ajax "Check for Spam" 
+	function akismet_check_for_spam( offset, limit ) { 
+		$.post( 
+			ajaxurl, 
+			{
+				'action': 'akismet_recheck_queue',
+				'offset': offset,
+				'limit': limit
+			}, 
+			function ( result ) {
+				if ( result.processed < limit ) {
+					window.location.reload();
+				}
+				else { 
+					akismet_check_for_spam( offset + limit, limit );
+				}
+			}
+		);
+	}
 });
 
-// Ajax "Check for Spam" 
-function akismet_check_for_spam(offset, limit) { 
-	jQuery.post( 
-		ajaxurl, 
-		{ 
-			'action': 'akismet_recheck_queue', 
-			'offset': offset, 
-			'limit': limit 
-		}, 
-		function(result) { 
-			if (result.processed < limit) { 
-				window.location.reload(); 
-			} 
-			else { 
-				akismet_check_for_spam(offset + limit, limit); 
-			} 
-		} 
-	); 
-}
- 	
 // URL encode plugin
 jQuery.extend({URLEncode:function(c){var o='';var x=0;c=c.toString();var r=/(^[a-zA-Z0-9_.]*)/;
   while(x<c.length){var m=r.exec(c.substr(x));
