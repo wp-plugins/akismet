@@ -31,7 +31,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
-= 3.0 =
+= 3.0-beta =
 * Move Akismet to Settings menu
 * Drop Akismet Stats menu
 * Add stats snapshot to Akismet settings
