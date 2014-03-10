@@ -1,8 +1,8 @@
 === Akismet ===
-Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, automattic, cfinke
+Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, cfinke, automattic
 Tags: akismet, comments, spam
 Requires at least: 3.0
-Tested up to: 3.6
+Tested up to: 3.8.1
 Stable tag: 2.5.9
 License: GPLv2 or later
 
@@ -30,6 +30,18 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 1, 2, 3: You're done!
 
 == Changelog ==
+
+= 3.0 =
+* Move Akismet to Settings menu
+* Drop Akismet Stats menu
+* Add stats snapshot to Akismet settings
+* Add Akismet subscription details and status to Akismet settings
+* Add contextual help for each page
+* Improve Akismet setup to use Jetpack to automate plugin setup
+* Fix Update Check for Spam to use ajax to avoid page timing out
+* Fix Akismet settings page to be responsive
+* Drop legacy code
+* Tidy up CSS an Javascript
 
 = 2.5.9 =
 * Update 'Already have a key' link to redirect page rather than depend on javascript
