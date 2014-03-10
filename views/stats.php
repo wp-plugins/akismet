@@ -1,0 +1,4 @@
+<div class="wrap">
+	<h2><?php _e( 'Akismet Stats' );?><?php if ( !isset( $hide_settings_link ) ): ?> <a href="<?php echo esc_attr( Akismet_Admin::get_configuration_page_url() );?>" class="add-new-h2"><?php _e( 'Settings' );?></a><?php endif;?></h2> 
+	<iframe src="<?php echo esc_url( sprintf( '%s://akismet.com/web/1.0/user-stats.php?blog=%s&api_key=%s', is_ssl()?'https':'http', urlencode( get_bloginfo('url') ), Akismet::get_api_key() ) ); ?>" width="100%" height="2500px" frameborder="0" id="akismet-stats-frame"></iframe>
+</div>
