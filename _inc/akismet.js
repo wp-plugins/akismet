@@ -1,15 +1,14 @@
 jQuery( function ( $ ) {
-	$( '.switch-have-key' ).click( function() {
-		var no_key = $( this ).parents().find('div.no-key');		
-		var have_key = $( this ).parents().find('div.have-key');
-		
-		no_key.addClass( 'hidden' );
-		have_key.removeClass( 'hidden' );		
-		
+	$( 'a.activate-option' ).click( function(){
+		var link = $( this );
+		if ( link.hasClass( 'clicked' ) ) {
+			link.removeClass( 'clicked' );
+		}
+		else {
+			link.addClass( 'clicked' );
+		}
+		$( '.toggle-have-key' ).slideToggle( 'slow', function() {});
 		return false;
-	});
-	$( 'p.need-key a' ).click( function(){
-		document.akismet_activate.submit();
 	});
 	$('.akismet-status').each(function () {
 		var thisId = $(this).attr('commentid');
@@ -95,7 +94,7 @@ jQuery( function ( $ ) {
 			var thisId = $(this).attr('id').replace('author_comment_url_', '');
 			$('.widefat td').css('overflow', 'visible');
 			$(this).css('position', 'relative');
-			var thisHref = $.URLEncode($(this).attr('href'));
+			var thisHref = $.URLEncode( $(this).attr('href') );
 			$(this).append('<div class="mShot mshot-container" style="left: '+thisParentWidth+'"><div class="mshot-arrow"></div><img src="'+wpcomProtocol+'s0.wordpress.com/mshots/v1/'+thisHref+'?w=450" width="450" class="mshot-image_'+thisId+'" style="margin: 0;" /></div>');
 			setTimeout(function () {
 				$('.mshot-image_'+thisId).attr('src', wpcomProtocol+'s0.wordpress.com/mshots/v1/'+thisHref+'?w=450&r=2');
@@ -109,45 +108,36 @@ jQuery( function ( $ ) {
 	}).mouseout(function () {
 		$(this).find('.mShot').hide();
 	});
-	$('.checkforspam:not(.button-disabled)').on('click', function(e) { 
-	 	$('.checkforspam:not(.button-disabled)').addClass('button-disabled'); 
-	 	$('.checkforspam-spinner').show(); 
-	 	akismet_check_for_spam(0, 50); 
-	 	e.preventDefault(); 
+	$('.checkforspam:not(.button-disabled)').click( function(e) { 
+ 	    $('.checkforspam:not(.button-disabled)').addClass('button-disabled'); 
+ 		$('.checkforspam-spinner').show(); 
+ 		akismet_check_for_spam(0, 100); 
+ 		e.preventDefault(); 
  	});
-
-	// Ajax "Check for Spam" 
-	function akismet_check_for_spam( offset, limit ) { 
+	
+	function akismet_check_for_spam(offset, limit) { 
 		$.post( 
 			ajaxurl, 
-			{
-				'action': 'akismet_recheck_queue',
-				'offset': offset,
-				'limit': limit
+			{ 
+				'action': 'akismet_recheck_queue', 
+				'offset': offset, 
+				'limit': limit 
 			}, 
-			function ( result ) {
-				if ( result.processed < limit ) {
-					window.location.reload();
-				}
+			function(result) { 
+				if (result.processed < limit) { 
+					window.location.reload(); 
+				} 
 				else { 
-					akismet_check_for_spam( offset + limit, limit );
-				}
-			}
-		);
+					akismet_check_for_spam(offset + limit, limit); 
+				} 
+			} 
+		); 
 	}
 });
-
 // URL encode plugin
 jQuery.extend({URLEncode:function(c){var o='';var x=0;c=c.toString();var r=/(^[a-zA-Z0-9_.]*)/;
   while(x<c.length){var m=r.exec(c.substr(x));
     if(m!=null && m.length>1 && m[1]!=''){o+=m[1];x+=m[1].length;
     }else{if(c[x]==' ')o+='+';else{var d=c.charCodeAt(x);var h=d.toString(16);
     o+='%'+(h.length<2?'0':'')+h.toUpperCase();}x++;}}return o;}
-});
-// Preload mshot images after everything else has loaded
-jQuery(window).load(function() {
-	var wpcomProtocol = ( 'https:' === location.protocol ) ? 'https://' : 'http://';
-	jQuery('a[id^="author_comment_url"]').each(function () {
-		jQuery.get(wpcomProtocol+'s0.wordpress.com/mshots/v1/'+jQuery.URLEncode(jQuery(this).attr('href'))+'?w=450');
-	});
 });
