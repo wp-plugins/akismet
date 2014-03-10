@@ -36,6 +36,13 @@ class Akismet_Admin {
 	}
 	
 	public function init_hooks() {
+		// The standalone stats page was removed in 3.0 for an all-in-one config and stats page.
+		// Redirect any links that might have been bookmarked or in browser history.
+		if ( isset( $_GET['page'] ) && 'akismet-stats-display' == $_GET['page'] ) {
+			wp_safe_redirect( admin_url( 'admin.php?page=akismet-key-config' ), 301 );
+			die;
+		}
+		
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 5 ); # Priority 5, so it's called before Jetpack's admin_menu.
 		add_action( 'admin_notices', array( $this, 'display_notice' ) );
