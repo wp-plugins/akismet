@@ -39,7 +39,7 @@ class Akismet_Admin {
 		// The standalone stats page was removed in 3.0 for an all-in-one config and stats page.
 		// Redirect any links that might have been bookmarked or in browser history.
 		if ( isset( $_GET['page'] ) && 'akismet-stats-display' == $_GET['page'] ) {
-			wp_safe_redirect( admin_url( 'admin.php?page=akismet-key-config' ), 301 );
+			wp_safe_redirect( admin_url( 'admin.php?page=akismet-key-config&view=stats' ), 301 );
 			die;
 		}
 		
