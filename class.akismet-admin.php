@@ -158,7 +158,7 @@ class Akismet_Admin {
 					)
 				);
 			}
-			elseif ( ( isset( $_GET['view'] ) && $_GET['view'] == 'stats' ) || ( isset( $_GET['page'] ) && $_GET['page'] == 'akismet-stats-display' ) ) {
+			elseif ( isset( $_GET['view'] ) && $_GET['view'] == 'stats' ) {
 				//stats page
 				$current_screen->add_help_tab(
 					array(
@@ -763,8 +763,6 @@ class Akismet_Admin {
 		elseif ( isset( $_GET['view'] ) && $_GET['view'] == 'start' )			
 			$this->display_start_page();
 		elseif ( isset( $_GET['view'] ) && $_GET['view'] == 'stats' )			
-			$this->display_stats_page();
-		elseif ( isset( $_GET['page'] ) && $_GET['page'] == 'akismet-stats-display' )			
 			$this->display_stats_page();
 		else
 			$this->display_configuration_page();
