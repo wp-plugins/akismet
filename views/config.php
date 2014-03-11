@@ -89,7 +89,7 @@
 									<?php wp_nonce_field(Akismet_Admin::NONCE) ?>
 									<div id="publishing-action">
 											<input type="hidden" name="action" value="enter-key">
-											<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Save Changes');?>">
+											<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e('Save Changes');?>">
 										
 									</div>
 									<div class="clear"></div>

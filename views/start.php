@@ -30,7 +30,7 @@
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
 		<input type="hidden" name="action" value="enter-key">
 		<?php wp_nonce_field( Akismet_Admin::NONCE ) ?>
-		<input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php _e('Use this key');?>">
+		<input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php esc_attr_e('Use this key');?>">
 	</form>
 </div>
 <?php elseif ( $akismet_user->status == 'no-account' ) : //no akismet account, ask do they want to use jetpack wpcom account to create one, then redirect to plans page?>
@@ -63,16 +63,16 @@
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
 		<input type="hidden" name="action" value="enter-key">
 		<?php wp_nonce_field( Akismet_Admin::NONCE ) ?>
-		<input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php _e('Use this key');?>">
+		<input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php esc_attr_e('Use this key');?>">
 	</form>
 </div>
 <?php elseif ( $akismet_user->status == 'suspended' ) : //has an akismet account but the key is suspended, need to upgrade their account to unsuspend key ?>
 <p><?php _e('Akismet eliminates the comment and trackback spam you get on your site.'); ?></p>
 <div class="activate-highlight centered activate-option">
-	<strong class="small-heading"><?php echo esc_attr_e( 'Connected via Jetpack' ); ?></strong>
+	<strong class="small-heading"><?php _e( 'Connected via Jetpack' ); ?></strong>
 	<h3 class="alert-text" s><?php echo esc_attr( sprintf( __( 'Your subscription for %s is suspended' ), $akismet_user->user_email ) );?></h3>
 	<p><?php _e('No worries! Get in touch and we\'ll help sort this out.'); ?></p>
-	<a href="https://akismet.com/contact" class="button button-primary"><?php echo esc_attr_e( 'Contact Akismet support' ); ?></a>
+	<a href="https://akismet.com/contact" class="button button-primary"><?php _e( 'Contact Akismet support' ); ?></a>
 
 </div><?php	
 		endif;
@@ -94,7 +94,7 @@
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
 		<input type="hidden" name="action" value="enter-key">
 		<?php wp_nonce_field( Akismet_Admin::NONCE ); ?>
-		<input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php _e('Use this key');?>">
+		<input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php esc_attr_e('Use this key');?>">
 	</form>
 </div><?php
 	endif;?>
