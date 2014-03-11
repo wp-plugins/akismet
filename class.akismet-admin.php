@@ -39,7 +39,7 @@ class Akismet_Admin {
 		// The standalone stats page was removed in 3.0 for an all-in-one config and stats page.
 		// Redirect any links that might have been bookmarked or in browser history.
 		if ( isset( $_GET['page'] ) && 'akismet-stats-display' == $_GET['page'] ) {
-			wp_safe_redirect( admin_url( 'admin.php?page=akismet-key-config&view=stats' ), 301 );
+			wp_safe_redirect( Akismet_Admin::get_page_url( 'stats', 'raw' ), 301 );
 			die;
 		}
 		
@@ -529,7 +529,7 @@ class Akismet_Admin {
 	
 	public function plugin_action_links( $links, $file ) {
 		if ( $file == plugin_basename( AKISMET__PLUGIN_URL . '/akismet.php' ) ) {
-			$links[] = '<a href="' . Akismet::get_configuration_page_url() . '">'.__( 'Settings' ).'</a>';
+			$links[] = '<a href="' . Akismet::get_page_url() . '">'.__( 'Settings' ).'</a>';
 		}
 
 		return $links;
@@ -722,16 +722,18 @@ class Akismet_Admin {
 		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->commentmeta} WHERE meta_key = 'akismet_error'" );
 	}
 	
-	public static function get_configuration_page_url() {
-		return esc_url( add_query_arg( array( 'page' => 'akismet-key-config' ), class_exists( 'Jetpack' ) ? admin_url( 'admin.php' ) : admin_url( 'options-general.php' ) ) );
-	}
-	
-	public static function get_stats_page_url() {
-		return esc_url( add_query_arg( array( 'page' => 'akismet-key-config', 'view' => 'stats' ), class_exists( 'Jetpack' ) ? admin_url( 'admin.php' ) : admin_url( 'options-general.php' ) ) );
-	}
-	
-	public static function get_delete_key_url() {
-		return esc_url( add_query_arg( array( 'page' => 'akismet-key-config', 'view' => 'start', 'action' => 'delete-key', '_wpnonce' => wp_create_nonce( self::NONCE ) ), class_exists( 'Jetpack' ) ? admin_url( 'admin.php' ) : admin_url( 'options-general.php' ) ) );
+	public static function get_page_url( $page = 'config', $escape = '' ) {
+		
+		$args = array( 'page' => 'akismet-key-config' );
+		
+		if ( $page == 'stats' )
+			$args = array( 'page' => 'akismet-key-config', 'view' => 'stats' );
+		elseif ( $page == 'delete_key' )
+			$args = array( 'page' => 'akismet-key-config', 'view' => 'start', 'action' => 'delete-key', '_wpnonce' => wp_create_nonce( self::NONCE ) );
+		
+		$url = add_query_arg( $args, class_exists( 'Jetpack' ) ? admin_url( 'admin.php' ) : admin_url( 'options-general.php' ) );
+		
+		return $escape == 'raw' ? esc_url_raw( $url ) : esc_url( $url );
 	}
 	
 	public function display_alert() {
@@ -758,9 +760,7 @@ class Akismet_Admin {
 	}
 
 	public function display_page() {				
-		if ( !Akismet::get_api_key() )
-			$this->display_start_page();
-		elseif ( isset( $_GET['view'] ) && $_GET['view'] == 'start' )			
+		if ( !Akismet::get_api_key() || ( isset( $_GET['view'] ) && $_GET['view'] == 'start' ) )
 			$this->display_start_page();
 		elseif ( isset( $_GET['view'] ) && $_GET['view'] == 'stats' )			
 			$this->display_stats_page();

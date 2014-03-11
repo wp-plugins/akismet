@@ -7,7 +7,7 @@
 		<strong class="small-heading"><?php _e('Connected via Jetpack'); ?></strong>
 		<?php echo esc_attr( $akismet_user->user_email ); ?>
 	</div>
-	<form name="akismet_use_wpcom_key" action="<?php echo Akismet_Admin::get_configuration_page_url();?>" method="post" id="akismet-activate" class="right">
+	<form name="akismet_use_wpcom_key" action="<?php echo Akismet_Admin::get_page_url();?>" method="post" id="akismet-activate" class="right">
 		<input type="hidden" name="key" value="<?php echo esc_attr( $akismet_user->api_key );?>"/>
 		<input type="hidden" name="action" value="enter-key">
 		<?php wp_nonce_field( Akismet_Admin::NONCE ) ?>
@@ -26,7 +26,7 @@
 		<strong><?php _e('Manually enter an API key'); ?></strong>
 		<p><?php _e('If you have another API key you want to use.'); ?></p>
 	</div>
-	<form action="<?php echo Akismet_Admin::get_configuration_page_url();?>" method="post" id="akismet-enter-api-key" class="right">
+	<form action="<?php echo Akismet_Admin::get_page_url();?>" method="post" id="akismet-enter-api-key" class="right">
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
 		<input type="hidden" name="action" value="enter-key">
 		<?php wp_nonce_field( Akismet_Admin::NONCE ) ?>
@@ -41,7 +41,7 @@
 		<?php echo esc_attr( $akismet_user->user_email ); ?>
 	</div>
 	<form name="akismet_activate" id="akismet_activate" action="https://akismet.com/get/" method="post" class="right"> 
-		<input type="hidden" name="passback_url" value="<?php echo esc_attr( Akismet_Admin::get_configuration_page_url() ); ?>"/>
+		<input type="hidden" name="passback_url" value="<?php echo esc_attr( Akismet_Admin::get_page_url() ); ?>"/>
 		<input type="hidden" name="auto-connect" value="<?php echo $akismet_user->ID;?>"/>
 		<input type="hidden" name="redirect" value="plugin-signup"/>
 		<input type="submit" class="button button-primary" value="<?php echo esc_attr( sprintf( __( 'Register Akismet' ) ) ); ?>"/>
@@ -59,7 +59,7 @@
 		<strong><?php _e('Manually enter an API key'); ?></strong>
 		<p><?php _e('If you have another API key you want to use.'); ?></p>
 	</div>
-	<form action="<?php echo Akismet_Admin::get_configuration_page_url();?>" method="post" id="akismet-enter-api-key" class="right">
+	<form action="<?php echo Akismet_Admin::get_page_url();?>" method="post" id="akismet-enter-api-key" class="right">
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
 		<input type="hidden" name="action" value="enter-key">
 		<?php wp_nonce_field( Akismet_Admin::NONCE ) ?>
@@ -90,7 +90,7 @@
 		<strong><?php _e('Manually enter an API key'); ?></strong>
 		<p><?php _e('If you have another API key you want to use.'); ?></p>
 	</div>
-	<form action="<?php echo Akismet_Admin::get_configuration_page_url();?>" method="post" id="akismet-enter-api-key" class="right">
+	<form action="<?php echo Akismet_Admin::get_page_url();?>" method="post" id="akismet-enter-api-key" class="right">
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
 		<input type="hidden" name="action" value="enter-key">
 		<?php wp_nonce_field( Akismet_Admin::NONCE ); ?>

@@ -9,7 +9,7 @@
 			<div class="new-snapshot stats">
 			
 				<span style="float:right;margin:10px 15px -5px 0px">
-					<a href="<?php echo Akismet_Admin::get_stats_page_url();?>" class=""><?php _e( 'Summaries' );?></a>
+					<a href="<?php echo Akismet_Admin::get_page_url( 'stats' );?>" class=""><?php _e( 'Summaries' );?></a>
 				</span>				
 							
 				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( 'http://akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', $blog, $api_key );?>"></iframe>
@@ -52,9 +52,9 @@
 						<div id="referrers" class="postbox ">
 							<div class="handlediv" title="Click to toggle"><br></div>
 							<h3 class="hndle"><span><?php _e( 'Settings' );?></span></h3>
-							<form name="akismet_conf" id="akismet-conf" action="<?php echo Akismet_Admin::get_configuration_page_url();?>" method="POST"> 
+							<form name="akismet_conf" id="akismet-conf" action="<?php echo Akismet_Admin::get_page_url();?>" method="POST"> 
 								<div class="inside">
-									<table cellspacing="0">
+									<table cellspacing="0" class="akismet-settings">
 										<tbody>	
 											<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>	
 											<tr>
@@ -70,10 +70,10 @@
 												<td></td>
 												<td>
 													<p>
-														<label for="akismet_discard_month" title="<?php esc_attr_e( 'Auto-detete old spam' ); ?>"><input name="akismet_discard_month" id="akismet_discard_month" value="true" type="checkbox" <?php echo get_option('akismet_discard_month') == 'true' ? 'checked="checked"':''; ?>> <?php _e('Delete spam on posts more than a month old'); ?></label>
+														<label for="akismet_show_user_comments_approved" title="<?php esc_attr_e( 'Show approved comments' ); ?>"><input name="akismet_show_user_comments_approved" id="akismet_show_user_comments_approved" value="true" type="checkbox" <?php echo get_option('akismet_show_user_comments_approved') == 'true' ? 'checked="checked"':''; ?>> <?php _e('Show the number of approved comments beside each comment author'); ?></label>
 													</p>
 													<p>
-														<label for="akismet_show_user_comments_approved" title="<?php esc_attr_e( 'Show approved comments' ); ?>"><input name="akismet_show_user_comments_approved" id="akismet_show_user_comments_approved" value="true" type="checkbox" <?php echo get_option('akismet_show_user_comments_approved') == 'true' ? 'checked="checked"':''; ?>> <?php _e('Show the number of approved comments beside each comment author'); ?></label>
+														<label for="akismet_discard_month" title="<?php esc_attr_e( 'Auto-detete spam from old posts' ); ?>"><input name="akismet_discard_month" id="akismet_discard_month" value="true" type="checkbox" <?php echo get_option('akismet_discard_month') == 'true' ? 'checked="checked"':''; ?>> <?php _e('Automatically delete spam from posts older than 30 days'); ?></label><span class="note"><strong><?php _e('Note:');?></strong> <?php printf( __( 'Spam in the <a href="%s">spam folder</a> older than 15 days is automatically deleted.' ), admin_url( 'edit-comments.php?type=spam' ) );?></span><div class="clear"></div>
 													</p>
 												</td>
 											</tr>
@@ -83,7 +83,7 @@
 								<div id="major-publishing-actions">
 									<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>	
 									<div id="delete-action">
-										<a class="submitdelete deletion" href="<?php echo Akismet_Admin::get_delete_key_url();?>"><?php _e('Disconnect this account'); ?></a>
+										<a class="submitdelete deletion" href="<?php echo Akismet_Admin::get_page_url( 'delete_key' );?>"><?php _e('Disconnect this account'); ?></a>
 									</div>
 									<?php endif; ?>
 									<?php wp_nonce_field(Akismet_Admin::NONCE) ?>
