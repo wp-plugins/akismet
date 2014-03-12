@@ -39,7 +39,7 @@ class Akismet_Admin {
 		// The standalone stats page was removed in 3.0 for an all-in-one config and stats page.
 		// Redirect any links that might have been bookmarked or in browser history.
 		if ( isset( $_GET['page'] ) && 'akismet-stats-display' == $_GET['page'] ) {
-			wp_safe_redirect( Akismet_Admin::get_page_url( 'stats', 'raw' ), 301 );
+			wp_safe_redirect( esc_url_raw( Akismet_Admin::get_page_url( 'stats' ) ), 301 );
 			die;
 		}
 		
@@ -723,7 +723,7 @@ class Akismet_Admin {
 		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->commentmeta} WHERE meta_key = 'akismet_error'" );
 	}
 	
-	public static function get_page_url( $page = 'config', $escape = '' ) {
+	public static function get_page_url( $page = 'config' ) {
 		
 		$args = array( 'page' => 'akismet-key-config' );
 		
@@ -734,7 +734,7 @@ class Akismet_Admin {
 		
 		$url = add_query_arg( $args, class_exists( 'Jetpack' ) ? admin_url( 'admin.php' ) : admin_url( 'options-general.php' ) );
 		
-		return $escape == 'raw' ? esc_url_raw( $url ) : esc_url( $url );
+		return $url;
 	}
 	
 	public function display_alert() {

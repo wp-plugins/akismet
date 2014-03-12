@@ -58,7 +58,7 @@
 						<div id="referrers" class="postbox ">
 							<div class="handlediv" title="Click to toggle"><br></div>
 							<h3 class="hndle"><span><?php esc_html_e( 'Settings' );?></span></h3>
-							<form name="akismet_conf" id="akismet-conf" action="<?php echo Akismet_Admin::get_page_url();?>" method="POST"> 
+							<form name="akismet_conf" id="akismet-conf" action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="POST"> 
 								<div class="inside">
 									<table cellspacing="0" class="akismet-settings">
 										<tbody>	
