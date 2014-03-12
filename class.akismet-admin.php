@@ -718,12 +718,6 @@ class Akismet_Admin {
 		return $servers;
 	}
 
-	// Returns true if server connectivity was OK at the last check, false if there was a problem that needs to be fixed.
-	public static function is_server_connectivity_ok() {
-		$servers = Akismet_Admin::get_server_connectivity();
-		return !( empty($servers) || !count($servers) || count( array_filter($servers) ) < count($servers) );
-	}
-	
 	public static function get_number_spam_waiting() {
 		global $wpdb;			
 		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->commentmeta} WHERE meta_key = 'akismet_error'" );
