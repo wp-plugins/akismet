@@ -127,9 +127,9 @@ class Akismet_Admin {
 						'id'		=> 'overview',
 						'title'		=> __( 'Overview' ),
 						'content'	=>
-							'<p><strong>' . __( 'Akismet Setup' ) . '</strong></p>' .
-							'<p>' . __( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
-							'<p>' . __( 'On this page, you are able to setup the Akismet plugin.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Setup' ) . '</strong></p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
+							'<p>' . esc_html__( 'On this page, you are able to setup the Akismet plugin.' ) . '</p>',
 					)
 				);
 				
@@ -138,9 +138,9 @@ class Akismet_Admin {
 						'id'		=> 'setup-signup',
 						'title'		=> __( 'New to Akismet' ),
 						'content'	=>
-							'<p><strong>' . __( 'Akismet Setup' ) . '</strong></p>' .
-							'<p>' . __( 'You need to enter an API key to activate the Akismet service on your site.' ) . '</p>' .
-							'<p>' . sprintf( __( 'Signup for an account on <a href="%s" target="%s">Akismet.com</a> to get an API Key.' ), 'https://akismet.com/plugin-signup/', '_blank' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Setup' ) . '</strong></p>' .
+							'<p>' . esc_html__( 'You need to enter an API key to activate the Akismet service on your site.' ) . '</p>' .
+							'<p>' . sprintf( __( 'Signup for an account on %s to get an API Key.' ), '<a href="https://akismet.com/plugin-signup/" target="_blank">Akismet.com</a>' ) . '</p>',
 					)
 				);
 				
@@ -149,11 +149,11 @@ class Akismet_Admin {
 						'id'		=> 'setup-manual',
 						'title'		=> __( 'Enter an API Key' ),
 						'content'	=>
-							'<p><strong>' . __( 'Akismet Setup' ) . '</strong></p>' .
-							'<p>' . __( 'If you already have an API key' ) . '</p>' .
+							'<p><strong>' . esc_html__( 'Akismet Setup' ) . '</strong></p>' .
+							'<p>' . esc_html__( 'If you already have an API key' ) . '</p>' .
 							'<ol>' .
-								'<li>' . __( 'Copy and paste the API key into the text field.' ) . '</li>' .
-								'<li>' . __( 'Click the Use this Key button.' ) . '</li>' .
+								'<li>' . esc_html__( 'Copy and paste the API key into the text field.' ) . '</li>' .
+								'<li>' . esc_html__( 'Click the Use this Key button.' ) . '</li>' .
 							'</ol>',
 					)
 				);
@@ -165,9 +165,9 @@ class Akismet_Admin {
 						'id'		=> 'overview',
 						'title'		=> __( 'Overview' ),
 						'content'	=>
-							'<p><strong>' . __( 'Akismet Stats' ) . '</strong></p>' .
-							'<p>' . __( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
-							'<p>' . __( 'On this page, you are able to view stats on spam filtered on your site.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Stats' ) . '</strong></p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
+							'<p>' . esc_html__( 'On this page, you are able to view stats on spam filtered on your site.' ) . '</p>',
 					)
 				);
 			}
@@ -178,9 +178,9 @@ class Akismet_Admin {
 						'id'		=> 'overview',
 						'title'		=> __( 'Overview' ),
 						'content'	=>
-							'<p><strong>' . __( 'Akismet Configuration' ) . '</strong></p>' .
-							'<p>' . __( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
-							'<p>' . __( 'On this page, you are able to enter/remove an API key, view account information and view spam stats.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Configuration' ) . '</strong></p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
+							'<p>' . esc_html__( 'On this page, you are able to enter/remove an API key, view account information and view spam stats.' ) . '</p>',
 					)
 				);
 				
@@ -189,10 +189,10 @@ class Akismet_Admin {
 						'id'		=> 'settings',
 						'title'		=> __( 'Settings' ),
 						'content'	=>
-							'<p><strong>' . __( 'Akismet Configuration' ) . '</strong></p>' .
-							'<p><strong>' . __( 'API Key' ) . '</strong> - ' . __( 'Enter/remove an API key.' ) . '</p>' .
-							'<p><strong>' . __( 'Delete spam on posts more than a month old' ) . '</strong> - ' . __( 'Automatically delete spam comments on posts that are older than a month old.' ) . '</p>' .
-							'<p><strong>' . __( 'Show the number of approved comments beside each comment author' ) . '</strong> - ' . __( 'Show the number of approved comments beside each comment author in the comments list page.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Configuration' ) . '</strong></p>' .
+							'<p><strong>' . esc_html__( 'API Key' ) . '</strong> - ' . esc_html__( 'Enter/remove an API key.' ) . '</p>' .
+							'<p><strong>' . esc_html__( 'Delete spam on posts more than a month old' ) . '</strong> - ' . esc_html__( 'Automatically delete spam comments on posts that are older than a month old.' ) . '</p>' .
+							'<p><strong>' . esc_html__( 'Show the number of approved comments beside each comment author' ) . '</strong> - ' . esc_html__( 'Show the number of approved comments beside each comment author in the comments list page.' ) . '</p>',
 					)
 				);
 				
@@ -201,9 +201,9 @@ class Akismet_Admin {
 						'id'		=> 'account',
 						'title'		=> __( 'Account' ),
 						'content'	=>
-							'<p><strong>' . __( 'Akismet Configuration' ) . '</strong></p>' .
-							'<p><strong>' . __( 'Subscription Type' ) . '</strong> - ' . __( 'The Akismet subscription plan' ) . '</p>' .
-							'<p><strong>' . __( 'Status' ) . '</strong> - ' . __( 'The subscription status - active, cancelled or suspended' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Configuration' ) . '</strong></p>' .
+							'<p><strong>' . esc_html__( 'Subscription Type' ) . '</strong> - ' . esc_html__( 'The Akismet subscription plan' ) . '</p>' .
+							'<p><strong>' . esc_html__( 'Status' ) . '</strong> - ' . esc_html__( 'The subscription status - active, cancelled or suspended' ) . '</p>',
 					)
 				);
 			}
@@ -211,9 +211,9 @@ class Akismet_Admin {
 
 		// Help Sidebar
 		$current_screen->set_help_sidebar(
-			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-			'<p><a href="https://akismet.com/faq/" target="_blank">'     . __( 'Akismet FAQ' ) . '</a></p>' .
-			'<p><a href="https://akismet.com/support/" target="_blank">' . __( 'Akismet Support' ) . '</a></p>'
+			'<p><strong>' . esc_html__( 'For more information:' ) . '</strong></p>' .
+			'<p><a href="https://akismet.com/faq/" target="_blank">'     . esc_html__( 'Akismet FAQ' ) . '</a></p>' .
+			'<p><a href="https://akismet.com/support/" target="_blank">' . esc_html__( 'Akismet Support' ) . '</a></p>'
 		);
 	}
 	
@@ -267,12 +267,12 @@ class Akismet_Admin {
 		
 		global $submenu;
 		
-		echo '<h3>' . _x( 'Spam', 'comments' ) . '</h3>';		
+		echo '<h3>' . esc_html( _x( 'Spam', 'comments' ) ) . '</h3>';		
 		
 		$link = isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php';
 		
 		echo '<p>'.sprintf( _n( 
-				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comments</a>.', 
+				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comment</a>.', 
 				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comments</a>.', 
 				$count 
 			), 'http://akismet.com/?return=true', clean_url("$link?page=akismet-admin"), number_format_i18n($count) ).'</p>';
@@ -296,18 +296,18 @@ class Akismet_Admin {
 				$count
 			), 'http://akismet.com/?return=true', number_format_i18n( $count ) );
 		} else {
-			$intro = sprintf( __('<a href="%1$s">Akismet</a> blocks spam from getting to your blog. '), 'http://akismet.com/?return=true' );
+			$intro = sprintf( __('<a href="%s">Akismet</a> blocks spam from getting to your blog. '), 'http://akismet.com/?return=true' );
 		}
 	
 		$link = function_exists( 'esc_url' ) ? esc_url( $link ) : clean_url( $link );
 		if ( $queue_count = Akismet_Admin::get_spam_count() ) {
 			$queue_text = sprintf( _n(
-				'There\'s <a href="%2$s">%1$s comment</a> in your spam queue right now.',
+				'There&#8217;s <a href="%2$s">%1$s comment</a> in your spam queue right now.',
 				'There are <a href="%2$s">%1$s comments</a> in your spam queue right now.',
 				$queue_count
 			), number_format_i18n( $queue_count ), $link );
 		} else {
-			$queue_text = sprintf( __( "There's nothing in your <a href='%1\$s'>spam queue</a> at the moment." ), $link );
+			$queue_text = sprintf( __( "There&#8217;s nothing in your <a href='%s'>spam queue</a> at the moment." ), $link );
 		}
 	
 		$text = $intro . '<br />' . $queue_text;
@@ -323,7 +323,7 @@ class Akismet_Admin {
 		else
 			$link = 'edit-comments.php?page=akismet-admin&recheckqueue=true&noheader=true';
 			
-		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . $link . '">' . __('Check for Spam') . '</a>';
+		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . $link . '">' . esc_html__('Check for Spam') . '</a>';
 		echo '<img src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" class="checkforspam-spinner" />';
 	}
 	
@@ -367,7 +367,7 @@ class Akismet_Admin {
 			}
 		}
 		
-		Akismet::update_comment_history( $comment->comment_ID, sprintf( __('%s changed the comment status to %s'), $reporter, $new_status ), 'status-' . $new_status );
+		Akismet::update_comment_history( $comment->comment_ID, sprintf( __('%1$s changed the comment status to %2$s'), $reporter, $new_status ), 'status-' . $new_status );
 	}
 	
 	public function recheck_queue() {
@@ -494,7 +494,7 @@ class Akismet_Admin {
 					$k == 'edit'
 					|| ( $k == 'unspam' && $GLOBALS['wp_version'] >= 3.4 )
 				) {
-					$b['history'] = '<a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="'. esc_attr__( 'View comment history' ) . '"> '. __('History') . '</a>';
+					$b['history'] = '<a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="'. esc_attr__( 'View comment history' ) . '"> '. esc_html__('History') . '</a>';
 				}
 			}
 			
@@ -507,7 +507,7 @@ class Akismet_Admin {
 		if ( apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') ) == 'true' ) {
 			$comment_count = Akismet::get_user_comments_approved( $comment->user_id, $comment->comment_author_email, $comment->comment_author, $comment->comment_author_url );
 			$comment_count = intval( $comment_count );
-			echo '<span class="akismet-user-comment-count" commentid="'.$comment->comment_ID.'" style="display:none;"><br><span class="akismet-user-comment-counts">'.sprintf( _n( '%s approved', '%s approved', $comment_count ), number_format_i18n( $comment_count ) ) . '</span></span>';
+			echo '<span class="akismet-user-comment-count" commentid="'.$comment->comment_ID.'" style="display:none;"><br><span class="akismet-user-comment-counts">'. sprintf( esc_html( _n( '%s approved', '%s approved', $comment_count ) ), number_format_i18n( $comment_count ) ) . '</span></span>';
 		}
 		
 		return $a;
@@ -520,7 +520,7 @@ class Akismet_Admin {
 			echo '<div class="akismet-history" style="margin: 13px;">';
 			foreach ( $history as $row ) {
 				$time = date( 'D d M Y @ h:i:m a', $row['time'] ) . ' GMT';
-				echo '<div style="margin-bottom: 13px;"><span style="color: #999;" alt="' . $time . '" title="' . $time . '">' . sprintf( __('%s ago'), human_time_diff( $row['time'] ) ) . '</span> - ';
+				echo '<div style="margin-bottom: 13px;"><span style="color: #999;" alt="' . $time . '" title="' . $time . '">' . sprintf( esc_html__('%s ago'), human_time_diff( $row['time'] ) ) . '</span> - ';
 				echo esc_html( $row['message'] ) . '</div>';
 			}			
 			echo '</div>';	
@@ -529,7 +529,7 @@ class Akismet_Admin {
 	
 	public function plugin_action_links( $links, $file ) {
 		if ( $file == plugin_basename( AKISMET__PLUGIN_URL . '/akismet.php' ) ) {
-			$links[] = '<a href="' . Akismet::get_page_url() . '">'.__( 'Settings' ).'</a>';
+			$links[] = '<a href="' . Akismet::get_page_url() . '">'.esc_html__( 'Settings' ).'</a>';
 		}
 
 		return $links;
@@ -811,7 +811,7 @@ class Akismet_Admin {
 			}
 		}	
 		
-		echo '<h2 class="ak-header">'.__('Akismet').'</h2>';
+		echo '<h2 class="ak-header">'.esc_html__('Akismet').'</h2>';
 		
 		$this->display_status();
 				

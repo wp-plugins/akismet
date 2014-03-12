@@ -1,6 +1,6 @@
 <div class="wrap">
 	
-	<h2><?php _e( 'Akismet' );?></h2>
+	<h2><?php esc_html_e( 'Akismet' );?></h2>
 	
 	<div class="have-key">	
 			
@@ -9,25 +9,31 @@
 			<div class="new-snapshot stats">
 			
 				<span style="float:right;margin:10px 15px -5px 0px">
-					<a href="<?php echo Akismet_Admin::get_page_url( 'stats' );?>" class=""><?php _e( 'Summaries' );?></a>
+					<a href="<?php echo Akismet_Admin::get_page_url( 'stats' );?>" class=""><?php esc_html_e( 'Summaries' );?></a>
 				</span>				
 							
 				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( 'http://akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', $blog, $api_key );?>"></iframe>
 				<ul>
 					<li>
-						<h3><?php _e( 'Past six months' );?></h3>
+						<h3><?php esc_html_e( 'Past six months' );?></h3>
 						<span><?php echo number_format( $stat_totals['6-months']->spam );?></span>
-						<?php _e( 'Spam blocked' );?>
+						<?php esc_html_e( 'Spam blocked' );?>
 					</li>					
 					<li>
-						<h3><?php _e( 'All time' );?></h3>
+						<h3><?php esc_html_e( 'All time' );?></h3>
 						<span><?php echo number_format( $stat_totals['all']->spam );?></span>
-						<?php _e( 'Spam blocked' );?>
+						<?php esc_html_e( 'Spam blocked' );?>
 					</li>
 					<li>
-						<h3><?php _e( 'Accuracy' );?></h3>
+						<h3><?php esc_html_e( 'Accuracy' );?></h3>
 						<span><?php echo $stat_totals['all']->accuracy; ?>%</span>
-						<?php printf( _n( '%s missed spam, %s false positive', '%s missed spam, %s false positives', $stat_totals['all']->false_positives ), number_format( $stat_totals['all']->missed_spam ), number_format( $stat_totals['all']->false_positives ) );?>
+						<?php printf(
+							esc_html(
+								_n( '%s missed spam, %s false positive', '%s missed spam, %s false positives', $stat_totals['all']->false_positives )
+							),
+							number_format( $stat_totals['all']->missed_spam ),
+							number_format( $stat_totals['all']->false_positives )
+						); ?>
 					</li>
 				</ul>
 				<div class="clearfix"></div>
@@ -51,14 +57,14 @@
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 						<div id="referrers" class="postbox ">
 							<div class="handlediv" title="Click to toggle"><br></div>
-							<h3 class="hndle"><span><?php _e( 'Settings' );?></span></h3>
+							<h3 class="hndle"><span><?php esc_html_e( 'Settings' );?></span></h3>
 							<form name="akismet_conf" id="akismet-conf" action="<?php echo Akismet_Admin::get_page_url();?>" method="POST"> 
 								<div class="inside">
 									<table cellspacing="0" class="akismet-settings">
 										<tbody>	
 											<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>	
 											<tr>
-												<th scope="row" align="left" width="10%"><?php _e('API Key');?></th>
+												<th scope="row" align="left" width="10%"><?php esc_html_e('API Key');?></th>
 												<td width="5%"/>
 												<td align="left">
 													<span><input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo esc_attr( get_option('wordpress_api_key') ); ?>" class="regular-text code <?php echo $akismet_user->status;?>"></span>
@@ -70,10 +76,10 @@
 												<td></td>
 												<td>
 													<p>
-														<label for="akismet_show_user_comments_approved" title="<?php esc_attr_e( 'Show approved comments' ); ?>"><input name="akismet_show_user_comments_approved" id="akismet_show_user_comments_approved" value="true" type="checkbox" <?php echo get_option('akismet_show_user_comments_approved') == 'true' ? 'checked="checked"':''; ?>> <?php _e('Show the number of approved comments beside each comment author'); ?></label>
+														<label for="akismet_show_user_comments_approved" title="<?php esc_attr_e( 'Show approved comments' ); ?>"><input name="akismet_show_user_comments_approved" id="akismet_show_user_comments_approved" value="true" type="checkbox" <?php echo get_option('akismet_show_user_comments_approved') == 'true' ? 'checked="checked"':''; ?>> <?php esc_html_e('Show the number of approved comments beside each comment author'); ?></label>
 													</p>
 													<p>
-														<label for="akismet_discard_month" title="<?php esc_attr_e( 'Auto-detete spam from old posts' ); ?>"><input name="akismet_discard_month" id="akismet_discard_month" value="true" type="checkbox" <?php echo get_option('akismet_discard_month') == 'true' ? 'checked="checked"':''; ?>> <?php _e('Automatically delete spam from posts older than 30 days'); ?></label><span class="note"><strong><?php _e('Note:');?></strong> <?php printf( __( 'Spam in the <a href="%s">spam folder</a> older than 15 days is automatically deleted.' ), admin_url( 'edit-comments.php?type=spam' ) );?></span><div class="clear"></div>
+														<label for="akismet_discard_month" title="<?php esc_attr_e( 'Auto-detete spam from old posts' ); ?>"><input name="akismet_discard_month" id="akismet_discard_month" value="true" type="checkbox" <?php echo get_option('akismet_discard_month') == 'true' ? 'checked="checked"':''; ?>> <?php esc_html_e('Automatically delete spam from posts older than 30 days'); ?></label><span class="note"><strong><?php esc_html_e('Note:');?></strong> <?php printf( __( 'Spam in the <a href="%s">spam folder</a> older than 15 days is automatically deleted.' ), admin_url( 'edit-comments.php?type=spam' ) );?></span><div class="clear"></div>
 													</p>
 												</td>
 											</tr>
@@ -83,7 +89,7 @@
 								<div id="major-publishing-actions">
 									<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>	
 									<div id="delete-action">
-										<a class="submitdelete deletion" href="<?php echo Akismet_Admin::get_page_url( 'delete_key' );?>"><?php _e('Disconnect this account'); ?></a>
+										<a class="submitdelete deletion" href="<?php echo Akismet_Admin::get_page_url( 'delete_key' );?>"><?php esc_html_e('Disconnect this account'); ?></a>
 									</div>
 									<?php endif; ?>
 									<?php wp_nonce_field(Akismet_Admin::NONCE) ?>
@@ -102,19 +108,19 @@
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 						<div id="referrers" class="postbox ">
 							<div class="handlediv" title="Click to toggle"><br></div>
-							<h3 class="hndle"><span><?php _e( 'Account' );?></span></h3>
+							<h3 class="hndle"><span><?php esc_html_e( 'Account' );?></span></h3>
 							<div class="inside">
 								<table cellspacing="0">
 									<tbody>		
 										<tr>
-											<th scope="row" align="left"><?php _e( 'Subscription Type' );?></th>
+											<th scope="row" align="left"><?php esc_html_e( 'Subscription Type' );?></th>
 											<td width="5%"/>
 											<td align="left">
 												<span><?php echo $akismet_user->account_name; ?></span>
 											</td>
 										</tr>	
 										<tr>
-											<th scope="row" align="left"><?php _e( 'Status' );?></th>
+											<th scope="row" align="left"><?php esc_html_e( 'Status' );?></th>
 											<td width="5%"/>
 											<td align="left">
 												<span><?php echo ucwords( $akismet_user->status ); ?></span>
@@ -122,7 +128,7 @@
 										</tr>
 										<?php if ( $akismet_user->next_billing_date ) : ?>
 										<tr>
-											<th scope="row" align="left"><?php _e( 'Next Billing Date' );?></th>
+											<th scope="row" align="left"><?php esc_html_e( 'Next Billing Date' );?></th>
 											<td width="5%"/>
 											<td align="left">
 												<span><?php echo date( 'F j, Y', $akismet_user->next_billing_date ); ?></span>
