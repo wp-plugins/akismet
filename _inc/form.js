@@ -1,22 +1,17 @@
-jQuery( document ).ready( function() {
-	var timing = new Date();
-	var ak_js = document.getElementById( 'ak_js' );
-
-	// if the form field already exists just use that
-	if ( ak_js ) {
-		ak_js.value = timing.getTime();
-		return;
+jQuery( function ( $ ) {
+	var ak_js = $( '#ak_js' );
+	
+	// If the form field already exists just use that
+	if ( ak_js.length == 0 ) {
+		ak_js = $( '<input type="hidden" id="ak_js" name="ak_js" />' );
+	}
+	else {
+		ak_js.remove();
 	}
 
-	var input = '<input type="hidden" id="ak_js" name="ak_js" value="' 
-		+ timing.getTime() + '"/>';
+	ak_js.val( ( new Date() ).getTime() );
 
-	var div = document.createElement( 'div' );
-	div.innerHTML = input
-
-	// single page, front side comment form
-	jQuery( '#commentform' ).append( div );
-
+	// single page, front-end comment form
 	// inline comment reply, wp-admin
-	jQuery( '#replyrow td' ).append( input );
+	$( '#commentform, #replyrow td:first' ).append( ak_js );
 } );
