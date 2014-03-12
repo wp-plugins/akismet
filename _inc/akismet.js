@@ -99,23 +99,23 @@ jQuery( function ( $ ) {
  		
  		return false;
  	});
- 	$('a[id^="author_comment_url"]').mouseover(function () {
+	$('a[id^="author_comment_url"], tr.pingback td.column-author a:first-of-type').mouseover(function () {
 		var wpcomProtocol = ( 'https:' === location.protocol ) ? 'https://' : 'http://';
 		// Need to determine size of author column
 		var thisParentWidth = $(this).parent().width();
 		// It changes based on if there is a gravatar present
 		thisParentWidth = ($(this).parent().find('.grav-hijack').length) ? thisParentWidth - 42 + 'px' : thisParentWidth + 'px';
 		if ($(this).find('.mShot').length == 0 && !$(this).hasClass('akismet_undo_link_removal')) {
-			var thisId = $(this).attr('id').replace('author_comment_url_', '');
+			var self = $( this );
 			$('.widefat td').css('overflow', 'visible');
 			$(this).css('position', 'relative');
 			var thisHref = $.URLEncode( $(this).attr('href') );
-			$(this).append('<div class="mShot mshot-container" style="left: '+thisParentWidth+'"><div class="mshot-arrow"></div><img src="'+wpcomProtocol+'s0.wordpress.com/mshots/v1/'+thisHref+'?w=450" width="450" class="mshot-image_'+thisId+'" style="margin: 0;" /></div>');
+			$(this).append('<div class="mShot mshot-container" style="left: '+thisParentWidth+'"><div class="mshot-arrow"></div><img src="//s0.wordpress.com/mshots/v1/'+thisHref+'?w=450" width="450" class="mshot-image" style="margin: 0;" /></div>');
 			setTimeout(function () {
-				$('.mshot-image_'+thisId).attr('src', wpcomProtocol+'s0.wordpress.com/mshots/v1/'+thisHref+'?w=450&r=2');
+				self.find( '.mshot-image' ).attr('src', '//s0.wordpress.com/mshots/v1/'+thisHref+'?w=450&r=2');
 			}, 6000);
 			setTimeout(function () {
-				$('.mshot-image_'+thisId).attr('src', wpcomProtocol+'s0.wordpress.com/mshots/v1/'+thisHref+'?w=450&r=3');
+				self.find( '.mshot-image' ).attr('src', '//s0.wordpress.com/mshots/v1/'+thisHref+'?w=450&r=3');
 			}, 12000);
 		} else {
 			$(this).find('.mShot').css('left', thisParentWidth).show();
