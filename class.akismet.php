@@ -153,7 +153,7 @@ class Akismet {
 				if ( $incr = apply_filters('akismet_spam_count_incr', 1) )
 					update_option( 'akismet_spam_count', get_option('akismet_spam_count') + $incr );
 				$redirect_to = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : get_permalink( $post );
-				wp_safe_redirect( $redirect_to );
+				wp_safe_redirect( esc_url_raw( $redirect_to ) );
 				die();
 			}
 		}
