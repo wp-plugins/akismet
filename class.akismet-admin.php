@@ -105,7 +105,14 @@ class Akismet_Admin {
 			wp_register_script( 'akismet.js', AKISMET__PLUGIN_URL . '_inc/akismet.js', array('jquery','postbox'), AKISMET_VERSION );
 			wp_enqueue_script( 'akismet.js' );
 			wp_localize_script( 'akismet.js', 'WPAkismet', array(
-				'comment_author_url_nonce' => wp_create_nonce( 'comment_author_url_nonce' )
+				'comment_author_url_nonce' => wp_create_nonce( 'comment_author_url_nonce' ),
+				'strings' => array(
+					'Remove this URL' => __( 'Remove this URL' ),
+					'Removing...' => __( 'Removing...' ),
+					'URL removed' => __( 'URL removed' ),
+					'(undo)' => __( '(undo)' ),
+					'Re-adding...' => __( 'Re-adding...' ),
+				)
 			) );
 		}
 	}

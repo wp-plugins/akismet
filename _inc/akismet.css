@@ -9,6 +9,10 @@
     text-decoration: none;
     color: #999;
 }
+#the-comment-list .author a span.akismet-span-link {
+	text-decoration: inherit;
+	color: inherit;
+}
 #the-comment-list .remove_url {
     margin-left: 3px;
     color: #999;

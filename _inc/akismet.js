@@ -25,7 +25,10 @@ jQuery( function ( $ ) {
  		$(this).attr("id", "author_comment_url_"+ thisCommentId[1]);
  		
  		if (thisTitle) {
- 			$(this).after(' <a href="#" class="remove_url" commentid="'+ thisCommentId[1] +'" title="Remove this URL">x</a>');
+ 			$(this).after(
+				$( '<a href="#" class="remove_url" commentid="'+ thisCommentId[1] +'">x</a>' )
+					.attr( 'title', WPAkismet.strings['Remove this URL'] )
+			);
  		}
  	});
  	$('.remove_url').live('click', function () {
@@ -43,13 +46,24 @@ jQuery( function ( $ ) {
 		        // Removes "x" link
 	 			$("a[commentid='"+ thisId +"']").hide();
 	 			// Show temp status
-		        $("#author_comment_url_"+ thisId).html('<span>Removing...</span>');
+		        $("#author_comment_url_"+ thisId).html( $( '<span/>' ).text( WPAkismet.strings['Removing...'] ) );
 		    },
 		    success: function (response) {
 		        if (response) {
 	 				// Show status/undo link
-	 				$("#author_comment_url_"+ thisId).attr('cid', thisId).addClass('akismet_undo_link_removal').html('<span>URL removed (</span>undo<span>)</span>');
-	 			}
+	 				$("#author_comment_url_"+ thisId)
+						.attr('cid', thisId)
+						.addClass('akismet_undo_link_removal')
+						.html(
+							$( '<span/>' ).text( WPAkismet.strings['URL removed'] )
+						)
+						.append( ' ' )
+						.append(
+							$( '<span/>' )
+								.text( WPAkismet.strings['(undo)'] )
+								.addClass( 'akismet-span-link' )
+						);
+				}
 		    }
 		});
 
@@ -70,7 +84,7 @@ jQuery( function ( $ ) {
 		    data: data,
 		    beforeSend: function () {
 	 			// Show temp status
-		        $("#author_comment_url_"+ thisId).html('<span>Re-adding…</span>');
+		        $("#author_comment_url_"+ thisId).html( $( '<span/>' ).text( WPAkismet.strings['Re-adding...'] ) );
 		    },
 		    success: function (response) {
 		        if (response) {
