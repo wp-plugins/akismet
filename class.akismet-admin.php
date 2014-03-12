@@ -128,7 +128,7 @@ class Akismet_Admin {
 						'title'		=> __( 'Overview' ),
 						'content'	=>
 							'<p><strong>' . esc_html__( 'Akismet Setup' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' ) . '</p>' .
 							'<p>' . esc_html__( 'On this page, you are able to setup the Akismet plugin.' ) . '</p>',
 					)
 				);
@@ -166,7 +166,7 @@ class Akismet_Admin {
 						'title'		=> __( 'Overview' ),
 						'content'	=>
 							'<p><strong>' . esc_html__( 'Akismet Stats' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' ) . '</p>' .
 							'<p>' . esc_html__( 'On this page, you are able to view stats on spam filtered on your site.' ) . '</p>',
 					)
 				);
@@ -179,7 +179,7 @@ class Akismet_Admin {
 						'title'		=> __( 'Overview' ),
 						'content'	=>
 							'<p><strong>' . esc_html__( 'Akismet Configuration' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'Akismet filters out your comment and track-back spam for you, so you can focus on more important things.' ) . '</p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' ) . '</p>' .
 							'<p>' . esc_html__( 'On this page, you are able to enter/remove an API key, view account information and view spam stats.' ) . '</p>',
 					)
 				);
