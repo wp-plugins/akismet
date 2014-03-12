@@ -740,7 +740,7 @@ class Akismet_Admin {
 		Akismet::view( 'notice', array( 
 			'type' => 'alert',
 			'code' => (int) get_option( 'akismet_alert_code' ),
-			'msg'  => get_option( 'akismet_aledrt_msg' ) 
+			'msg'  => get_option( 'akismet_alert_msg' ) 
 		) );
 	}	
 	
