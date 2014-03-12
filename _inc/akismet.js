@@ -26,7 +26,8 @@ jQuery( function ( $ ) {
  		
  		if (thisTitle) {
  			$(this).after(
-				$( '<a href="#" class="remove_url" commentid="'+ thisCommentId[1] +'">x</a>' )
+				$( '<a href="#" class="remove_url">x</a>' )
+					.attr( 'commentid', thisCommentId[1] )
 					.attr( 'title', WPAkismet.strings['Remove this URL'] )
 			);
  		}
