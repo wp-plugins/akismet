@@ -536,7 +536,7 @@ class Akismet_Admin {
 	
 	public function plugin_action_links( $links, $file ) {
 		if ( $file == plugin_basename( AKISMET__PLUGIN_URL . '/akismet.php' ) ) {
-			$links[] = '<a href="' . Akismet::get_page_url() . '">'.esc_html__( 'Settings' ).'</a>';
+			$links[] = '<a href="' . esc_url( Akismet::get_page_url() ) . '">'.esc_html__( 'Settings' ).'</a>';
 		}
 
 		return $links;

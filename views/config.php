@@ -9,7 +9,7 @@
 			<div class="new-snapshot stats">
 			
 				<span style="float:right;margin:10px 15px -5px 0px">
-					<a href="<?php echo Akismet_Admin::get_page_url( 'stats' );?>" class=""><?php esc_html_e( 'Summaries' );?></a>
+					<a href="<?php echo esc_url( Akismet_Admin::get_page_url( 'stats' ) ); ?>" class=""><?php esc_html_e( 'Summaries' );?></a>
 				</span>				
 							
 				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( 'http://akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', $blog, $api_key );?>"></iframe>
@@ -89,7 +89,7 @@
 								<div id="major-publishing-actions">
 									<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>	
 									<div id="delete-action">
-										<a class="submitdelete deletion" href="<?php echo Akismet_Admin::get_page_url( 'delete_key' );?>"><?php esc_html_e('Disconnect this account'); ?></a>
+										<a class="submitdelete deletion" href="<?php echo esc_url( Akismet_Admin::get_page_url( 'delete_key' ) ); ?>"><?php esc_html_e('Disconnect this account'); ?></a>
 									</div>
 									<?php endif; ?>
 									<?php wp_nonce_field(Akismet_Admin::NONCE) ?>
