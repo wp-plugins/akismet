@@ -122,7 +122,7 @@ class Akismet {
 		$post = get_post( $comment['comment_post_ID'] );
 		$comment[ 'comment_post_modified_gmt' ] = $post->post_modified_gmt;
 	
-		$response = $this->http_post( http_build_query( $comment ), 'comment-check' );
+		$response = self::http_post( http_build_query( $comment ), 'comment-check' );
 		
 		do_action( 'akismet_comment_check_response', $response );
 		
@@ -236,7 +236,7 @@ class Akismet {
 		}
 	}
 	
-	function delete_old_comments() {
+	public static function delete_old_comments() {
 		global $wpdb;
 		
 		while( $comment_ids = $wpdb->get_col( $wpdb->prepare( "SELECT comment_id FROM {$wpdb->comments} WHERE DATE_SUB(NOW(), INTERVAL 15 DAY) > comment_date_gmt AND comment_approved = 'spam' LIMIT %d", defined( 'AKISMET_DELETE_LIMIT' ) ? AKISMET_DELETE_LIMIT : 10000 ) ) ) {
@@ -259,7 +259,7 @@ class Akismet {
 			$wpdb->query("OPTIMIZE TABLE {$wpdb->comments}");
 	}
 
-	public function delete_old_comments_meta() { 
+	public static function delete_old_comments_meta() { 
 		global $wpdb; 
 	
 		$interval = apply_filters( 'akismet_delete_commentmeta_interval', 15 );
@@ -334,7 +334,7 @@ class Akismet {
 		$r = add_comment_meta( $comment_id, 'akismet_history', $event, false );
 	}
 	
-	public function check_db_comment( $id, $recheck_reason = 'recheck_queue' ) {
+	public static function check_db_comment( $id, $recheck_reason = 'recheck_queue' ) {
 	    global $wpdb;
 	
 	    $c = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->comments} WHERE comment_ID = %d", $id ), ARRAY_A );
@@ -353,7 +353,7 @@ class Akismet {
 		if ( self::is_test_mode() )
 			$c['is_test'] = 'true';
 	
-	    $response = $this->http_post( http_build_query( $c ), 'comment-check' );
+	    $response = self::http_post( http_build_query( $c ), 'comment-check' );
 	    
 	    return ( is_array( $response ) && isset( $response[1] ) ) ? $response[1] : false;
 	}

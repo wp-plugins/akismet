@@ -55,3 +55,6 @@ if ( is_admin() ) {
 	add_action( 'init', array( AKISMET_ADMIN_CLASS, 'init' ) );
 }
 
+//add wrapper class around deprecated akismet functions that are referenced elsewhere
+require_once( AKISMET__PLUGIN_DIR . 'wrapper.php' );
+

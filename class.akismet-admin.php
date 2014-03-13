@@ -286,15 +286,15 @@ class Akismet_Admin {
 	}
 	
 	// WP 2.5+
-	public function rightnow_stats() {
+	public static function rightnow_stats() {
 		global $submenu, $wp_db_version;
 	
 		if ( 8645 < $wp_db_version  ) // 2.7
-			$link = 'edit-comments.php?comment_status=spam';
+			$link = add_query_arg( array( 'comment_status' => 'spam' ), admin_url( 'edit-comments.php' ) );
 		elseif ( isset( $submenu['edit-comments.php'] ) )
-			$link = 'edit-comments.php?page=akismet-admin';
+			$link = add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( 'edit-comments.php' ) );
 		else
-			$link = 'edit.php?page=akismet-admin';
+			$link = add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( 'edit.php' ) );
 	
 		if ( $count = get_option('akismet_spam_count') ) {
 			$intro = sprintf( _n(
@@ -760,7 +760,7 @@ class Akismet_Admin {
 		Akismet::view( 'notice', array( 'type' => 'plugin' ) ); 
 	}
 
-	public function display_page() {				
+	public function display_page() {
 		if ( !Akismet::get_api_key() || ( isset( $_GET['view'] ) && $_GET['view'] == 'start' ) )
 			$this->display_start_page();
 		elseif ( isset( $_GET['view'] ) && $_GET['view'] == 'stats' )			
