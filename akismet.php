@@ -6,7 +6,7 @@
 Plugin Name: Akismet
 Plugin URI: http://akismet.com/?return=true
 Description: Used by millions, Akismet is quite possibly the best way in the world to <strong>protect your blog from comment and trackback spam</strong>. It keeps your site protected from spam even while you sleep. To get started: 1) Click the "Activate" link to the left of this description, 2) <a href="http://akismet.com/get/?return=true">Sign up for an Akismet API key</a>, and 3) Go to your Akismet configuration page, and save your API key.
-Version: 2.5.9
+Version: 2.5.10
 Author: Automattic
 Author URI: http://automattic.com/wordpress-plugins/
 License: GPLv2 or later
@@ -34,8 +34,9 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define('AKISMET_VERSION', '2.5.9');
+define('AKISMET_VERSION', '2.5.10');
 define('AKISMET_PLUGIN_URL', plugin_dir_url( __FILE__ ));
+define('AKISMET_DELETE_LIMIT', 10000);
 
 /** If you hardcode a WP.com API key here, all key config screens will be hidden */
 if ( defined('WPCOM_API_KEY') )
@@ -197,17 +198,26 @@ function akismet_http_post($request, $host, $path, $port = 80, $ip=null) {
 
 // filter handler used to return a spam result to pre_comment_approved
 function akismet_result_spam( $approved ) {
+	static $just_once = false;
+	if ( $just_once )
+		return $approved;
+		
 	// bump the counter here instead of when the filter is added to reduce the possibility of overcounting
 	if ( $incr = apply_filters('akismet_spam_count_incr', 1) )
 		update_option( 'akismet_spam_count', get_option('akismet_spam_count') + $incr );
+		
 	// this is a one-shot deal
-	remove_filter( 'pre_comment_approved', 'akismet_result_spam' );
+	$just_once = true;
 	return 'spam';
 }
 
 function akismet_result_hold( $approved ) {
+	static $just_once = false;
+	if ( $just_once )
+		return $approved;
+		
 	// once only
-	remove_filter( 'pre_comment_approved', 'akismet_result_hold' );
+	$just_once = true;
 	return '0';
 }
 
@@ -321,7 +331,7 @@ function akismet_auto_check_comment( $commentdata ) {
 	global $akismet_api_host, $akismet_api_port, $akismet_last_comment;
 
 	$comment = $commentdata;
-	$comment['user_ip']    = $_SERVER['REMOTE_ADDR'];
+	$comment['user_ip']    = akismet_get_ip_address();
 	$comment['user_agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null; 
 	$comment['referrer']   = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 	$comment['blog']       = get_option('home');
@@ -422,58 +432,70 @@ function akismet_auto_check_comment( $commentdata ) {
 
 add_action('preprocess_comment', 'akismet_auto_check_comment', 1);
 
+function akismet_get_ip_address() {
+	foreach( array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ) as $key ) {
+		if ( array_key_exists( $key, $_SERVER ) === true ) {
+			foreach ( explode( ',', $_SERVER[$key] ) as $ip ) {
+				$ip = trim($ip); 
+	
+				if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false ) {
+					return $ip;
+				}
+			}
+		}
+	}
+	return null;
+}
+
 function akismet_delete_old() {
 	global $wpdb;
-	$now_gmt = current_time('mysql', 1);
-	$comment_ids = $wpdb->get_col("SELECT comment_id FROM $wpdb->comments WHERE DATE_SUB('$now_gmt', INTERVAL 15 DAY) > comment_date_gmt AND comment_approved = 'spam'");
-	if ( empty( $comment_ids ) )
-		return;
+	
+	while( $comment_ids = $wpdb->get_col( $wpdb->prepare( "SELECT comment_id FROM {$wpdb->comments} WHERE DATE_SUB(NOW(), INTERVAL 15 DAY) > comment_date_gmt AND comment_approved = 'spam' LIMIT %d", defined( 'AKISMET_DELETE_LIMIT' ) ? AKISMET_DELETE_LIMIT : 10000 ) ) ) {
+		if ( empty( $comment_ids ) )
+			return;
 		
-	$comma_comment_ids = implode( ', ', array_map('intval', $comment_ids) );
+		$wpdb->queries = array();
 
-	do_action( 'delete_comment', $comment_ids );
-	$wpdb->query("DELETE FROM $wpdb->comments WHERE comment_id IN ( $comma_comment_ids )");
-	$wpdb->query("DELETE FROM $wpdb->commentmeta WHERE comment_id IN ( $comma_comment_ids )");
-	clean_comment_cache( $comment_ids );
-	$n = mt_rand(1, 5000);
-	if ( apply_filters('akismet_optimize_table', ($n == 11)) ) // lucky number
-		$wpdb->query("OPTIMIZE TABLE $wpdb->comments");
+		do_action( 'delete_comment', $comment_ids );
+		
+		$comma_comment_ids = implode( ', ', array_map('intval', $comment_ids) );
+	
+		$wpdb->query("DELETE FROM {$wpdb->comments} WHERE comment_id IN ( $comma_comment_ids )");
+		$wpdb->query("DELETE FROM {$wpdb->commentmeta} WHERE comment_id IN ( $comma_comment_ids )");
+		
+		clean_comment_cache( $comment_ids );
+	}
 
+	if ( apply_filters( 'akismet_optimize_table', ( mt_rand(1, 5000) == 11) ) ) // lucky number
+		$wpdb->query("OPTIMIZE TABLE {$wpdb->comments}");
 }
 
 function akismet_delete_old_metadata() { 
 	global $wpdb; 
 
-	$now_gmt = current_time( 'mysql', 1 ); 
 	$interval = apply_filters( 'akismet_delete_commentmeta_interval', 15 );
 
 	# enfore a minimum of 1 day
 	$interval = absint( $interval );
-	if ( $interval < 1 ) {
-		return;
-	}
+	if ( $interval < 1 )
+		$interval = 1;
 
 	// akismet_as_submitted meta values are large, so expire them 
 	// after $interval days regardless of the comment status 
-	while ( TRUE ) {
-		$comment_ids = $wpdb->get_col( "SELECT $wpdb->comments.comment_id FROM $wpdb->commentmeta INNER JOIN $wpdb->comments USING(comment_id) WHERE meta_key = 'akismet_as_submitted' AND DATE_SUB('$now_gmt', INTERVAL {$interval} DAY) > comment_date_gmt LIMIT 10000" ); 
-
-		if ( empty( $comment_ids ) ) {
-			return; 
-		}
-
+	while ( $comment_ids = $wpdb->get_col( $wpdb->prepare( "SELECT m.comment_id FROM {$wpdb->commentmeta} as m INNER JOIN {$wpdb->comments} as c USING(comment_id) WHERE m.meta_key = 'akismet_as_submitted' AND DATE_SUB(NOW(), INTERVAL %d DAY) > c.comment_date_gmt LIMIT 10000", $interval ) ) ) {	
+		if ( empty( $comment_ids ) )
+			return;
+		
+		$wpdb->queries = array();
+		
 		foreach ( $comment_ids as $comment_id ) {
 			delete_comment_meta( $comment_id, 'akismet_as_submitted' );
 		}
 	}
-
-	/*
-	$n = mt_rand( 1, 5000 ); 
-	if ( apply_filters( 'akismet_optimize_table', ( $n == 11 ), 'commentmeta' ) ) { // lucky number 
-		$wpdb->query( "OPTIMIZE TABLE $wpdb->commentmeta" ); 
-	}
-	*/
-} 
+	
+	if ( apply_filters( 'akismet_optimize_table', ( mt_rand(1, 5000) == 11) ) ) // lucky number
+		$wpdb->query("OPTIMIZE TABLE {$wpdb->comments}");
+}
 
 add_action('akismet_scheduled_delete', 'akismet_delete_old');
 add_action('akismet_scheduled_delete', 'akismet_delete_old_metadata'); 
