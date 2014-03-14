@@ -259,15 +259,13 @@ class Akismet_Admin {
 		
 		global $submenu;
 		
-		echo '<h3>' . esc_html( _x( 'Spam', 'comments' ) ) . '</h3>';		
-		
-		$link = isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php';
+		echo '<h3>' . esc_html( _x( 'Spam', 'comments' ) ) . '</h3>';	
 		
 		echo '<p>'.sprintf( _n( 
 				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comment</a>.', 
 				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comments</a>.', 
 				$count 
-			), 'http://akismet.com/?return=true', clean_url("$link?page=akismet-admin"), number_format_i18n($count) ).'</p>';
+			), 'http://akismet.com/?return=true', esc_url( add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php' ) ) ), number_format_i18n($count) ).'</p>';
 	}
 	
 	// WP 2.5+
@@ -311,11 +309,11 @@ class Akismet_Admin {
 			return;
 			
 		if ( function_exists('plugins_url') )
-			$link = 'admin.php?action=akismet_recheck_queue';
+			$link = add_query_arg( array( 'action' => 'akismet_recheck_queue' ), admin_url( 'admin.php' ) );
 		else
-			$link = 'edit-comments.php?page=akismet-admin&recheckqueue=true&noheader=true';
+			$link = add_query_arg( array( 'page' => 'akismet-admin', 'recheckqueue' => 'true', 'noheader' => 'true' ), admin_url( 'edit-comments.php' ) );
 			
-		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . $link . '">' . esc_html__('Check for Spam') . '</a>';
+		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . esc_url( $link ) . '">' . esc_html__('Check for Spam') . '</a>';
 		echo '<img src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" class="checkforspam-spinner" />';
 	}
 	
