@@ -39,9 +39,6 @@ define( 'AKISMET__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AKISMET__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AKISMET_DELETE_LIMIT', 100000 );
 
-if ( !defined( 'AKISMET_ADMIN_CLASS' ) )
-	define( 'AKISMET_ADMIN_CLASS', 'Akismet_Admin' );
-
 register_activation_hook( __FILE__, array( 'Akismet', 'plugin_activation' ) );
 register_deactivation_hook( __FILE__, array( 'Akismet', 'plugin_deactivation' ) );
 
@@ -52,7 +49,7 @@ add_action( 'init', array( 'Akismet', 'init' ) );
 
 if ( is_admin() ) {
 	require_once( AKISMET__PLUGIN_DIR . 'class.akismet-admin.php' );	
-	add_action( 'init', array( AKISMET_ADMIN_CLASS, 'init' ) );
+	add_action( 'init', array( 'Akismet_Admin', 'init' ) );
 }
 
 //add wrapper class around deprecated akismet functions that are referenced elsewhere
