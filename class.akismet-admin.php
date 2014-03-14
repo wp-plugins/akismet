@@ -6,7 +6,7 @@ class Akismet_Admin {
 
 	const NONCE = 'akismet-update-key';
 	
-	var $initiated = false;
+	public static $initiated = false;
 
 	public static function init() {
 		if ( ! self::$initiated ) {
