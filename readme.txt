@@ -36,6 +36,8 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 * Optimize javascript and add localization support 
 * Fix bug in link to spam comments from right now dashboard widget
 * Fix bug with deleting old comments to avoid timeouts dealing with large volumes of comments
+* Include X-Pingback-Forwarded-For header in outbound WordPress pingback verifications
+* Add pre-check for pingbacks, to stop spam before an outbound verification request is made
 
 = 2.5.9 =
 * Update 'Already have a key' link to redirect page rather than depend on javascript
