@@ -1,12 +1,10 @@
 <?php
 
 class Akismet_Admin {
-
-	var $notices = array();
-
 	const NONCE = 'akismet-update-key';
 	
-	public static $initiated = false;
+	private static $initiated = false;
+	private static $notices = array();
 
 	public static function init() {
 		if ( ! self::$initiated ) {
