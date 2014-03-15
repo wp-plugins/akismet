@@ -1,52 +1,38 @@
 <?php 
 
 class Akismet {
-
-	var $last_comment = '';
-	var $api_key      = false;
+	const API_HOST = 'rest.akismet.com';
+	const API_PORT = 80;
 	
-	const API_HOST    = 'rest.akismet.com';
-	const API_PORT    = 80;
+	private static $last_comment = '';
+	private static $initiated = false;
 	
-	/**
-	 * Holds the singleton instance of this class
-	 * @var Akismet
-	 */
-	static $instance  = false;
-
-	/**
-	 * Singleton
-	 * @static
-	 */
 	public static function init() {
-		if ( ! self::$instance ) {
-			self::$instance = new Akismet;
+		if ( ! self::$initiated ) {
+			self::init_hooks();
 		}
-
-		return self::$instance;
 	}
 		
 	/**
-	 * Constructor.  Initializes WordPress hooks
+	 * Initializes WordPress hooks
 	 */
-	private function Akismet() {
-				
-		$this->api_key = self::get_api_key();
-			
-		add_action( 'wp_insert_comment', array( $this, 'auto_check_update_meta' ), 10, 2 );
-		add_action( 'preprocess_comment', array( $this, 'auto_check_comment' ), 1 );
-		add_action( 'akismet_scheduled_delete', array( $this, 'delete_old_comments' ) );
-		add_action( 'akismet_scheduled_delete', array( $this, 'delete_old_comments_meta' ) );
-		add_action( 'akismet_schedule_cron_recheck', array( $this, 'cron_recheck' ) );
+	private static function init_hooks() {
+		self::$initiated = true;
+
+		add_action( 'wp_insert_comment', array( 'Akismet', 'auto_check_update_meta' ), 10, 2 );
+		add_action( 'preprocess_comment', array( 'Akismet', 'auto_check_comment' ), 1 );
+		add_action( 'akismet_scheduled_delete', array( 'Akismet', 'delete_old_comments' ) );
+		add_action( 'akismet_scheduled_delete', array( 'Akismet', 'delete_old_comments_meta' ) );
+		add_action( 'akismet_schedule_cron_recheck', array( 'Akismet', 'cron_recheck' ) );
 		
 		$akismet_comment_nonce_option = apply_filters( 'akismet_comment_nonce', get_option( 'akismet_comment_nonce' ) );
 		
 		if ( $akismet_comment_nonce_option == 'true' || $akismet_comment_nonce_option == '' )
-			add_action( 'comment_form',  array( $this, 'add_comment_nonce' ), 1 ); 
+			add_action( 'comment_form',  array( 'Akismet',  'add_comment_nonce' ), 1 ); 
 			
-		add_action( 'admin_footer-edit-comments.php', array( $this, 'load_form_js' ) );
-		add_action( 'comment_form', array( $this, 'load_form_js' ) );
-		add_action( 'comment_form', array( $this, 'inject_ak_js' ) );
+		add_action( 'admin_footer-edit-comments.php', array( 'Akismet', 'load_form_js' ) );
+		add_action( 'comment_form', array( 'Akismet', 'load_form_js' ) );
+		add_action( 'comment_form', array( 'Akismet', 'inject_ak_js' ) );
 			
 		if ( '3.0.5' == $GLOBALS['wp_version'] ) { 
 			remove_filter( 'comment_text', 'wp_kses_data' ); 
@@ -74,7 +60,7 @@ class Akismet {
 		return $response[1];
 	}
 	
-	public function auto_check_comment( $commentdata ) {
+	public static function auto_check_comment( $commentdata ) {
 		
 		$comment = $commentdata;
 		
@@ -136,7 +122,7 @@ class Akismet {
 		
 		if ( 'true' == $response[1] ) {
 			// akismet_spam_count will be incremented later by comment_is_spam()
-			add_filter('pre_comment_approved', array( $this, 'comment_is_spam' ) );
+			add_filter('pre_comment_approved', array( 'Akismet',  'comment_is_spam' ) );
 			
 			$discard = ( isset( $commentdata['akismet_pro_tip'] ) && $commentdata['akismet_pro_tip'] === 'discard' && get_option( 'akismet_strictness' ) === '1' );
 			
@@ -161,7 +147,7 @@ class Akismet {
 		// if the response is neither true nor false, hold the comment for moderation and schedule a recheck
 		if ( 'true' != $response[1] && 'false' != $response[1] ) {
 			if ( !current_user_can('moderate_comments') ) {
-				add_filter('pre_comment_approved', array( $this, 'comment_needs_moderation' ) );
+				add_filter('pre_comment_approved', array( 'Akismet',  'comment_needs_moderation' ) );
 			}
 			if ( function_exists('wp_next_scheduled') && function_exists('wp_schedule_single_event') ) {
 				if ( !wp_next_scheduled( 'akismet_schedule_cron_recheck' ) ) {
@@ -177,41 +163,41 @@ class Akismet {
 		} 
 		elseif ( (mt_rand(1, 10) == 3) ) {
 			// WP 2.0: run this one time in ten
-			$this->delete_old_comments();
+			self::delete_old_comments();
 		}
 		
-		$this->last_comment = $commentdata;
-		$this->fix_scheduled_recheck();
+		self::$last_comment = $commentdata;
+		self::fix_scheduled_recheck();
 		
-		return $this->last_comment;
+		return self::$last_comment;
 	}
 	
 	// this fires on wp_insert_comment.  we can't update comment_meta when auto_check_comment() runs
 	// because we don't know the comment ID at that point.
-	public function auto_check_update_meta( $id, $comment ) {
+	public static function auto_check_update_meta( $id, $comment ) {
 		
 		// failsafe for old WP versions
 		if ( !function_exists('add_comment_meta') )
 			return false;
 	
-		if ( !isset( $this->last_comment['comment_author_email'] ) )
-			$this->last_comment['comment_author_email'] = '';
+		if ( !isset( self::$last_comment['comment_author_email'] ) )
+			self::$last_comment['comment_author_email'] = '';
 	
 		// wp_insert_comment() might be called in other contexts, so make sure this is the same comment
 		// as was checked by auto_check_comment
-		if ( is_object( $comment ) && !empty( $this->last_comment ) && is_array( $this->last_comment ) ) {
-			if ( isset( $this->last_comment['comment_post_ID'] ) 
-				&& intval( $this->last_comment['comment_post_ID'] ) == intval( $comment->comment_post_ID )
-				&& $this->last_comment['comment_author'] == $comment->comment_author
-				&& $this->last_comment['comment_author_email'] == $comment->comment_author_email ) {
+		if ( is_object( $comment ) && !empty( self::$last_comment ) && is_array( self::$last_comment ) ) {
+			if ( isset( self::$last_comment['comment_post_ID'] ) 
+				&& intval( self::$last_comment['comment_post_ID'] ) == intval( $comment->comment_post_ID )
+				&& self::$last_comment['comment_author'] == $comment->comment_author
+				&& self::$last_comment['comment_author_email'] == $comment->comment_author_email ) {
 					// normal result: true or false
-					if ( $this->last_comment['akismet_result'] == 'true' ) {
+					if ( self::$last_comment['akismet_result'] == 'true' ) {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'true' );
 						self::update_comment_history( $comment->comment_ID, __('Akismet caught this comment as spam'), 'check-spam' );
 						if ( $comment->comment_approved != 'spam' )
 							self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s'), $comment->comment_approved), 'status-changed'.$comment->comment_approved );
 					} 
-					elseif ( $this->last_comment['akismet_result'] == 'false' ) {
+					elseif ( self::$last_comment['akismet_result'] == 'false' ) {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'false' );
 						self::update_comment_history( $comment->comment_ID, __('Akismet cleared this comment'), 'check-ham' );
 						if ( $comment->comment_approved == 'spam' ) {
@@ -223,15 +209,15 @@ class Akismet {
 					} // abnormal result: error
 					else {
 						update_comment_meta( $comment->comment_ID, 'akismet_error', time() );
-						self::update_comment_history( $comment->comment_ID, sprintf( __('Akismet was unable to check this comment (response: %s), will automatically retry again later.'), substr($this->last_comment['akismet_result'], 0, 50)), 'check-error' );
+						self::update_comment_history( $comment->comment_ID, sprintf( __('Akismet was unable to check this comment (response: %s), will automatically retry again later.'), substr(self::$last_comment['akismet_result'], 0, 50)), 'check-error' );
 					}
 					
 					// record the complete original data as submitted for checking
-					if ( isset( $this->last_comment['comment_as_submitted'] ) )
-						update_comment_meta( $comment->comment_ID, 'akismet_as_submitted', $this->last_comment['comment_as_submitted'] );
+					if ( isset( self::$last_comment['comment_as_submitted'] ) )
+						update_comment_meta( $comment->comment_ID, 'akismet_as_submitted', self::$last_comment['comment_as_submitted'] );
 						
-					if ( isset( $this->last_comment['akismet_pro_tip'] ) )
-						update_comment_meta( $comment->comment_ID, 'akismet_pro_tip', $this->last_comment['akismet_pro_tip'] );
+					if ( isset( self::$last_comment['akismet_pro_tip'] ) )
+						update_comment_meta( $comment->comment_ID, 'akismet_pro_tip', self::$last_comment['akismet_pro_tip'] );
 			}
 		}
 	}
@@ -358,7 +344,7 @@ class Akismet {
 	    return ( is_array( $response ) && isset( $response[1] ) ) ? $response[1] : false;
 	}
 	
-	public function cron_recheck() {
+	public static function cron_recheck() {
 		global $wpdb;
 		
 		$api_key = self::get_api_key();
@@ -383,7 +369,7 @@ class Akismet {
 			}
 			
 			add_comment_meta( $comment_id, 'akismet_rechecking', true );
-			$status = $this->check_db_comment( $comment_id, 'retry' );
+			$status = self::check_db_comment( $comment_id, 'retry' );
 	
 			$msg = '';
 			if ( $status == 'true' ) {
@@ -442,7 +428,7 @@ class Akismet {
 		}
 	}
 	
-	public function add_comment_nonce( $post_id ) {
+	public static function add_comment_nonce( $post_id ) {
 		echo '<p style="display: none;">';
 		wp_nonce_field( 'akismet_comment_nonce_' . $post_id, 'akismet_comment_nonce', FALSE );
 		echo '</p>';
@@ -467,11 +453,11 @@ class Akismet {
 		return null;
 	}
 	
-	public static function get_user_agent() {
+	private static function get_user_agent() {
 		return isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : null;
 	}
 	
-	public static function get_referer() {
+	private static function get_referer() {
 		return isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : null;
 	}
 	
@@ -622,12 +608,7 @@ class Akismet {
 		echo '</p>';
 	}
 
-	/**
-	 * Destructor.
-	 */
-	function __destruct() {}
-	
-	public static function bail_on_activation( $message, $deactivate = true ) {
+	private static function bail_on_activation( $message, $deactivate = true ) {
 ?>
 <!doctype html>
 <html>
@@ -703,4 +684,3 @@ p {
 			error_log( print_r( compact( 'akismet_debug' ), 1 ) ); //send message to debug.log when in debug mode
 	}
 }
-?>
