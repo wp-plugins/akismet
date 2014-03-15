@@ -1,24 +1,24 @@
 <div class="wrap">
-	
+
 	<h2><?php esc_html_e( 'Akismet' );?></h2>
-	
-	<div class="have-key">	
-			
-		<?php if ( $stat_totals && isset( $stat_totals['all'] ) && (int) $stat_totals['all']->spam > 0 ) : ?>		
-				
+
+	<div class="have-key">
+
+		<?php if ( $stat_totals && isset( $stat_totals['all'] ) && (int) $stat_totals['all']->spam > 0 ) : ?>
+
 			<div class="new-snapshot stats">
-			
+
 				<span style="float:right;margin:10px 15px -5px 0px">
 					<a href="<?php echo esc_url( Akismet_Admin::get_page_url( 'stats' ) ); ?>" class=""><?php esc_html_e( 'Summaries' );?></a>
-				</span>				
-							
+				</span>
+
 				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( 'http://akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', $blog, $api_key );?>"></iframe>
 				<ul>
 					<li>
 						<h3><?php esc_html_e( 'Past six months' );?></h3>
 						<span><?php echo number_format( $stat_totals['6-months']->spam );?></span>
 						<?php esc_html_e( 'Spam blocked' );?>
-					</li>					
+					</li>
 					<li>
 						<h3><?php esc_html_e( 'All time' );?></h3>
 						<span><?php echo number_format( $stat_totals['all']->spam );?></span>
@@ -39,9 +39,9 @@
 				<div class="clearfix"></div>
 			</div>
 		<?php endif;?>
-		
+
 		<?php if ( $akismet_user ):?>
-			
+
 			<div id="wpcom-stats-meta-box-container" class="metabox-holder"><?php
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 				wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
@@ -58,11 +58,11 @@
 						<div id="referrers" class="postbox ">
 							<div class="handlediv" title="Click to toggle"><br></div>
 							<h3 class="hndle"><span><?php esc_html_e( 'Settings' );?></span></h3>
-							<form name="akismet_conf" id="akismet-conf" action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="POST"> 
+							<form name="akismet_conf" id="akismet-conf" action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="POST">
 								<div class="inside">
 									<table cellspacing="0" class="akismet-settings">
-										<tbody>	
-											<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>	
+										<tbody>
+											<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>
 											<tr>
 												<th scope="row" align="left" width="10%"><?php esc_html_e('API Key');?></th>
 												<td width="5%"/>
@@ -70,7 +70,7 @@
 													<span><input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo esc_attr( get_option('wordpress_api_key') ); ?>" class="regular-text code <?php echo $akismet_user->status;?>"></span>
 												</td>
 											</tr>
-											<?php endif; ?>	
+											<?php endif; ?>
 											<tr>
 												<th width="10%"></th>
 												<td></td>
@@ -87,7 +87,7 @@
 									</table>
 								</div>
 								<div id="major-publishing-actions">
-									<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>	
+									<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>
 									<div id="delete-action">
 										<a class="submitdelete deletion" href="<?php echo esc_url( Akismet_Admin::get_page_url( 'delete_key' ) ); ?>"><?php esc_html_e('Disconnect this account'); ?></a>
 									</div>
@@ -96,7 +96,7 @@
 									<div id="publishing-action">
 											<input type="hidden" name="action" value="enter-key">
 											<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e('Save Changes');?>">
-										
+
 									</div>
 									<div class="clear"></div>
 								</div>
@@ -111,14 +111,14 @@
 							<h3 class="hndle"><span><?php esc_html_e( 'Account' );?></span></h3>
 							<div class="inside">
 								<table cellspacing="0">
-									<tbody>		
+									<tbody>
 										<tr>
 											<th scope="row" align="left"><?php esc_html_e( 'Subscription Type' );?></th>
 											<td width="5%"/>
 											<td align="left">
 												<span><?php echo $akismet_user->account_name; ?></span>
 											</td>
-										</tr>	
+										</tr>
 										<tr>
 											<th scope="row" align="left"><?php esc_html_e( 'Status' );?></th>
 											<td width="5%"/>
@@ -146,9 +146,9 @@
 							</div>
 						</div>
 					</div>
-				</div>			
+				</div>
 			</div>
-							
+
 		<?php endif;?>
 
 	</div>

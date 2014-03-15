@@ -23,7 +23,7 @@ class Akismet_Widget extends WP_Widget {
 .a-stats {
 	width: auto;
 }
-.a-stats a { 
+.a-stats a {
 	background: #7CA821;
 	background-image:-moz-linear-gradient(0% 100% 90deg,#5F8E14,#7CA821);
 	background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#7CA821),to(#5F8E14));
@@ -41,7 +41,7 @@ class Akismet_Widget extends WP_Widget {
 	-webkit-border-radius:3px;
 	width: 100%;
 }
-.a-stats a:hover { 
+.a-stats a:hover {
 	text-decoration: none;
 	background-image:-moz-linear-gradient(0% 100% 90deg,#6F9C1B,#659417);
 	background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#659417),to(#6F9C1B));
@@ -69,11 +69,11 @@ class Akismet_Widget extends WP_Widget {
 ?>
 
 		<p>
-		<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php esc_html_e( 'Title:' ); ?></label> 
+		<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php esc_html_e( 'Title:' ); ?></label>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 
-<?php 
+<?php
 	}
 
 	function update( $new_instance, $old_instance ) {

@@ -1,19 +1,19 @@
 <?php if ( $type == 'plugin' ) :?>
-<div class="updated" style="padding: 0; margin: 0; border: none; background: none;">  
-	<style type="text/css">  
+<div class="updated" style="padding: 0; margin: 0; border: none; background: none;">
+	<style type="text/css">
 .akismet_activate{min-width:825px;border:1px solid #4F800D;padding:5px;margin:15px 0;background:#83AF24;background-image:-webkit-gradient(linear,0% 0,80% 100%,from(#83AF24),to(#4F800D));background-image:-moz-linear-gradient(80% 100% 120deg,#4F800D,#83AF24);-moz-border-radius:3px;border-radius:3px;-webkit-border-radius:3px;position:relative;overflow:hidden}.akismet_activate .aa_a{position:absolute;top:-5px;right:10px;font-size:140px;color:#769F33;font-family:Georgia, "Times New Roman", Times, serif;z-index:1}.akismet_activate .aa_button{font-weight:bold;border:1px solid #029DD6;border-top:1px solid #06B9FD;font-size:15px;text-align:center;padding:9px 0 8px 0;color:#FFF;background:#029DD6;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#029DD6),to(#0079B1));background-image:-moz-linear-gradient(0% 100% 90deg,#0079B1,#029DD6);-moz-border-radius:2px;border-radius:2px;-webkit-border-radius:2px}.akismet_activate .aa_button:hover{text-decoration:none !important;border:1px solid #029DD6;border-bottom:1px solid #00A8EF;font-size:15px;text-align:center;padding:9px 0 8px 0;color:#F0F8FB;background:#0079B1;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#0079B1),to(#0092BF));background-image:-moz-linear-gradient(0% 100% 90deg,#0092BF,#0079B1);-moz-border-radius:2px;border-radius:2px;-webkit-border-radius:2px}.akismet_activate .aa_button_border{border:1px solid #006699;-moz-border-radius:2px;border-radius:2px;-webkit-border-radius:2px;background:#029DD6;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#029DD6),to(#0079B1));background-image:-moz-linear-gradient(0% 100% 90deg,#0079B1,#029DD6)}.akismet_activate .aa_button_container{cursor:pointer;display:inline-block;background:#DEF1B8;padding:5px;-moz-border-radius:2px;border-radius:2px;-webkit-border-radius:2px;width:266px}.akismet_activate .aa_description{position:absolute;top:22px;left:285px;margin-left:25px;color:#E5F2B1;font-size:15px;z-index:1000}.akismet_activate .aa_description strong{color:#FFF;font-weight:normal}
-	</style>                       
+	</style>
 	<form name="akismet_activate" action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="POST">
-		<div class="akismet_activate">  
-			<div class="aa_a">A</div>     
-			<div class="aa_button_container" onclick="document.akismet_activate.submit();">  
-				<div class="aa_button_border">          
-					<div class="aa_button"><?php esc_html_e('Activate your Akismet account');?></div>  
-				</div>  
-			</div>  
-			<div class="aa_description"><?php _e('<strong>Almost done</strong> - activate your account and say goodbye to comment spam');?></div>  
-		</div>  
-	</form>  
+		<div class="akismet_activate">
+			<div class="aa_a">A</div>
+			<div class="aa_button_container" onclick="document.akismet_activate.submit();">
+				<div class="aa_button_border">
+					<div class="aa_button"><?php esc_html_e('Activate your Akismet account');?></div>
+				</div>
+			</div>
+			<div class="aa_description"><?php _e('<strong>Almost done</strong> - activate your account and say goodbye to comment spam');?></div>
+		</div>
+	</form>
 </div>
 <?php elseif ( $type == 'spam-check' ) :?>
 <div id="akismet-warning" class="updated fade"><p><strong><?php esc_html_e('Akismet has detected a problem.');?></strong> <?php printf( __('Some comments have not yet been checked for spam by Akismet. They have been temporarily held for moderation. Please check your <a href="%s">Akismet configuration</a> and contact your web host if problems persist.'), esc_url( Akismet::get_page_url() ) );?></p></div>
@@ -24,10 +24,10 @@
 	<p><strong><?php printf( esc_html__( 'Akismet Error Code: %s', $code ) ); ?></strong></p>
 	<p><?php echo esc_html( $msg ); ?></p>
 	<p><?php
-	
+
 	/* translators: the placeholder is a clickable URL that leads to more information regarding an error code. */
 	printf( esc_html__( 'For more information: %s' ), '<a href="https://akismet.com/errors/' . $code . '">https://akismet.com/errors/' . $code . '</a>' );
-	
+
 	?>
 	</p>
 </div>
@@ -37,22 +37,22 @@
 	<p class="description"><?php printf( __('Your web host or server administrator has disabled PHP&#8217;s <code>fsockopen</code> or <code>gethostbynamel</code> functions.  <strong>Akismet cannot work correctly until this is fixed.</strong>  Please contact your web host or firewall administrator and give them <a href="%s" target="_blank">this information about Akismet&#8217;s system requirements</a>.'), 'https://blog.akismet.com/akismet-hosting-faq/'); ?></p>
 </div>
 <?php elseif ( $type == 'servers-be-down' ) :?>
-<div class="wrap alert critical">			
+<div class="wrap alert critical">
 	<h3 class="key-status failed"><?php esc_html_e("We can&#8217;t connect to your site."); ?></h3>
 	<p class="description"><?php printf( __('Your firewall may be blocking us. Please contact your host and refer to <a href="%s" target="_blank">our guide about firewalls</a>.'), 'https://blog.akismet.com/akismet-hosting-faq/'); ?></p>
 </div>
 <?php elseif ( $type == 'overdue' ) :?>
-<div class="wrap alert critical">			
+<div class="wrap alert critical">
 	<h3 class="key-status"><?php esc_html_e("Please update your payment details."); ?></h3>
 	<p class="description"><?php printf( __('We cannot process your transaction. Please contact your bank for assistance, and <a href="%s" target="_blank">update your payment details</a>.'), 'https://akismet.com/account/'); ?></p>
-</div>		
+</div>
 <?php elseif ( $type == 'cancelled' ) :?>
-<div class="wrap alert critical">			
+<div class="wrap alert critical">
 	<h3 class="key-status"><?php esc_html_e("Your subscription is cancelled."); ?></h3>
 	<p class="description"><?php printf( __('Please visit the <a href="%s" target="_blank">Akismet account page</a> to reactivate your subscription.'), 'https://akismet.com/account/'); ?></p>
 </div>
 <?php elseif ( $type == 'suspended' ) :?>
-<div class="wrap alert critical">			
+<div class="wrap alert critical">
 	<h3 class="key-status failed"><?php esc_html_e("Your subscription is suspended."); ?></h3>
 	<p class="description"><?php printf( __('Please contact <a href="%s" target="_blank">Akismet support</a> for assistance.'), 'https://akismet.com/contact/'); ?></p>
 </div>

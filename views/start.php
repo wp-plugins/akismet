@@ -1,4 +1,4 @@
-<div class="no-key config-wrap"><?php 
+<div class="no-key config-wrap"><?php
 	if ( $akismet_user ) :
 		if ( $akismet_user->status == 'active' ) : // ask do they want to use akismet account found using jetpack wpcom connection ?>
 <p><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site. To setup Akismet, select one of the options below.'); ?></p>
@@ -40,7 +40,7 @@
 		<strong class="small-heading"><?php esc_html_e('Connected via Jetpack'); ?></strong>
 		<?php echo esc_attr( $akismet_user->user_email ); ?>
 	</div>
-	<form name="akismet_activate" id="akismet_activate" action="https://akismet.com/get/" method="post" class="right"> 
+	<form name="akismet_activate" id="akismet_activate" action="https://akismet.com/get/" method="post" class="right">
 		<input type="hidden" name="passback_url" value="<?php echo esc_attr( Akismet_Admin::get_page_url() ); ?>"/>
 		<input type="hidden" name="auto-connect" value="<?php echo $akismet_user->ID;?>"/>
 		<input type="hidden" name="redirect" value="plugin-signup"/>
@@ -74,7 +74,7 @@
 	<p><?php esc_html_e('No worries! Get in touch and we&#8217;ll help sort this out.'); ?></p>
 	<a href="https://akismet.com/contact" class="button button-primary"><?php esc_html_e( 'Contact Akismet support' ); ?></a>
 
-</div><?php	
+</div><?php
 		endif;
 	else :?>
 <p><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site. To setup Akismet, select one of the options below.'); ?></p>

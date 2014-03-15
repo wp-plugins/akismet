@@ -48,7 +48,7 @@ require_once( AKISMET__PLUGIN_DIR . 'class.akismet-widget.php' );
 add_action( 'init', array( 'Akismet', 'init' ) );
 
 if ( is_admin() ) {
-	require_once( AKISMET__PLUGIN_DIR . 'class.akismet-admin.php' );	
+	require_once( AKISMET__PLUGIN_DIR . 'class.akismet-admin.php' );
 	add_action( 'init', array( 'Akismet_Admin', 'init' ) );
 }
 
