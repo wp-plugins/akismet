@@ -3,7 +3,7 @@ Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eo
 Tags: akismet, comments, spam
 Requires at least: 3.0
 Tested up to: 3.8.1
-Stable tag: 2.5.10
+Stable tag: 2.6.0
 License: GPLv2 or later
 
 Akismet checks your comments against the Akismet web service to see if they look like spam or not.
@@ -31,7 +31,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
-= 2.5.10 =
+= 2.6.0 =
 * Add ajax paging to the check for spam button to handle large volumes of comments
 * Optimize javascript and add localization support 
 * Fix bug in link to spam comments from right now dashboard widget
