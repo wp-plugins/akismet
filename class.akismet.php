@@ -680,7 +680,7 @@ p {
 	}
 
 	public static function log( $akismet_debug ) {
-		if ( defined( 'WP_DEBUG_LOG' ) )
+		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG )
 			error_log( print_r( compact( 'akismet_debug' ), 1 ) ); //send message to debug.log when in debug mode
 	}
 }
