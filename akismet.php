@@ -619,12 +619,12 @@ function akismet_pingback_forwarded_for( $r, $url ) {
 	}
 
 	// Add X-Pingback-Forwarded-For header, but only for requests to a specific URL (the apparent pingback source)
-	if ( is_array( $r ) && is_array( $r['headers'] ) && in_array( $url, $urls ) ) {
+	if ( is_array( $r ) && is_array( $r['headers'] ) && !isset( $r['headers']['X-Pingback-Forwarded-For'] ) && in_array( $url, $urls ) ) {
 		// Note: this assumes REMOTE_ADDR is correct, and it may not be if a reverse proxy or CDN is in use
-		$r['headers']['X-Pingback-Forwarded-For'] = $_SERVER['REMOTE_ADDR'];
+		$r['headers']['X-Pingback-Forwarded-For'] = esc_attr( $_SERVER['REMOTE_ADDR'] );
 
-		// Also identify the request as a pingback verification in the UA string
-		$r['user-agent'] .= '; pingback verification';
+		// Also identify the request as a pingback verification in the UA string so it appears in logs
+		$r['user-agent'] .= '; pingback verification for ' . esc_attr( $_SERVER['REMOTE_ADDR'] );
 	}
 
 	return $r;
