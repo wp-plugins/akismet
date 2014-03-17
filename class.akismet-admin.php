@@ -729,7 +729,7 @@ class Akismet_Admin {
 	public static function display_spam_check_warning() {
 		Akismet::fix_scheduled_recheck();
 
-		if ( selg::get_number_spam_waiting() > 0 && wp_next_scheduled('akismet_schedule_cron_recheck') > time() )
+		if ( self::get_number_spam_waiting() > 0 && wp_next_scheduled('akismet_schedule_cron_recheck') > time() )
 			Akismet::view( 'notice', array( 'type' => 'spam-check' ) );
 	}
 
