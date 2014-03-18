@@ -654,12 +654,13 @@ function akismet_pre_check_pingback( $method ) {
 
 		$comment = array(
 			'comment_author_url' => $args[0],
-			'comment_post_ID' => $args[1],
+			'comment_post_ID' => $post_id,
 			'comment_author' => '',
 			'comment_author_email' => '',
 			'comment_content' => '',
 			'comment_type' => 'pingback',
 			'akismet_pre_check' => '1',
+			'comment_pingback_target' => $args[1],
 		);
 
 		$comment = akismet_auto_check_comment( $comment );
