@@ -3,7 +3,7 @@ Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eo
 Tags: akismet, comments, spam
 Requires at least: 3.0
 Tested up to: 3.8.1
-Stable tag: 2.5.9
+Stable tag: 2.6.0
 License: GPLv2 or later
 
 Akismet checks your comments against the Akismet web service to see if they look like spam or not.
@@ -42,6 +42,14 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 * Fix Akismet settings page to be responsive
 * Drop legacy code
 * Tidy up CSS an Javascript
+
+= 2.6.0 =
+* Add ajax paging to the check for spam button to handle large volumes of comments
+* Optimize javascript and add localization support 
+* Fix bug in link to spam comments from right now dashboard widget
+* Fix bug with deleting old comments to avoid timeouts dealing with large volumes of comments
+* Include X-Pingback-Forwarded-For header in outbound WordPress pingback verifications
+* Add pre-check for pingbacks, to stop spam before an outbound verification request is made
 
 = 2.5.9 =
 * Update 'Already have a key' link to redirect page rather than depend on javascript
