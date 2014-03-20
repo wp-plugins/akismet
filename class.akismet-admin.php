@@ -45,7 +45,8 @@ class Akismet_Admin {
 	}
 
 	public static function admin_init() {
-		add_meta_box( 'akismet-status', __('Comment History'), array( 'Akismet_Admin', 'comment_status_meta_box' ), 'comment', 'normal' );
+		load_plugin_textdomain( 'akismet' );
+		add_meta_box( 'akismet-status', __('Comment History', 'akismet'), array( 'Akismet_Admin', 'comment_status_meta_box' ), 'comment', 'normal' );
 	}
 
 	public static function admin_menu() {
@@ -62,9 +63,9 @@ class Akismet_Admin {
 
 	public static function load_menu() {
 		if ( class_exists( 'Jetpack' ) )
-			$hook = add_submenu_page( 'jetpack', __( 'Akismet' ), __( 'Akismet' ), 'manage_options', 'akismet-key-config', array( 'Akismet_Admin', 'display_page' ) );
+			$hook = add_submenu_page( 'jetpack', __( 'Akismet' , 'akismet'), __( 'Akismet' , 'akismet'), 'manage_options', 'akismet-key-config', array( 'Akismet_Admin', 'display_page' ) );
 		else
-			$hook = add_options_page( __('Akismet'), __('Akismet'), 'manage_options', 'akismet-key-config', array( 'Akismet_Admin', 'display_page' ) );
+			$hook = add_options_page( __('Akismet', 'akismet'), __('Akismet', 'akismet'), 'manage_options', 'akismet-key-config', array( 'Akismet_Admin', 'display_page' ) );
 
 		if ( version_compare( $GLOBALS['wp_version'], '3.3', '>=' ) ) {
 			add_action( "load-$hook", array( 'Akismet_Admin', 'admin_help' ) );
@@ -90,11 +91,11 @@ class Akismet_Admin {
 			wp_localize_script( 'akismet.js', 'WPAkismet', array(
 				'comment_author_url_nonce' => wp_create_nonce( 'comment_author_url_nonce' ),
 				'strings' => array(
-					'Remove this URL' => __( 'Remove this URL' ),
-					'Removing...' => __( 'Removing...' ),
-					'URL removed' => __( 'URL removed' ),
-					'(undo)' => __( '(undo)' ),
-					'Re-adding...' => __( 'Re-adding...' ),
+					'Remove this URL' => __( 'Remove this URL' , 'akismet'),
+					'Removing...' => __( 'Removing...' , 'akismet'),
+					'URL removed' => __( 'URL removed' , 'akismet'),
+					'(undo)' => __( '(undo)' , 'akismet'),
+					'Re-adding...' => __( 'Re-adding...' , 'akismet'),
 				)
 			) );
 		}
@@ -115,35 +116,35 @@ class Akismet_Admin {
 				$current_screen->add_help_tab(
 					array(
 						'id'		=> 'overview',
-						'title'		=> __( 'Overview' ),
+						'title'		=> __( 'Overview' , 'akismet'),
 						'content'	=>
-							'<p><strong>' . esc_html__( 'Akismet Setup' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' ) . '</p>' .
-							'<p>' . esc_html__( 'On this page, you are able to setup the Akismet plugin.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Setup' , 'akismet') . '</strong></p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' , 'akismet') . '</p>' .
+							'<p>' . esc_html__( 'On this page, you are able to setup the Akismet plugin.' , 'akismet') . '</p>',
 					)
 				);
 
 				$current_screen->add_help_tab(
 					array(
 						'id'		=> 'setup-signup',
-						'title'		=> __( 'New to Akismet' ),
+						'title'		=> __( 'New to Akismet' , 'akismet'),
 						'content'	=>
-							'<p><strong>' . esc_html__( 'Akismet Setup' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'You need to enter an API key to activate the Akismet service on your site.' ) . '</p>' .
-							'<p>' . sprintf( __( 'Signup for an account on %s to get an API Key.' ), '<a href="https://akismet.com/plugin-signup/" target="_blank">Akismet.com</a>' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Setup' , 'akismet') . '</strong></p>' .
+							'<p>' . esc_html__( 'You need to enter an API key to activate the Akismet service on your site.' , 'akismet') . '</p>' .
+							'<p>' . sprintf( __( 'Signup for an account on %s to get an API Key.' , 'akismet'), '<a href="https://akismet.com/plugin-signup/" target="_blank">Akismet.com</a>' ) . '</p>',
 					)
 				);
 
 				$current_screen->add_help_tab(
 					array(
 						'id'		=> 'setup-manual',
-						'title'		=> __( 'Enter an API Key' ),
+						'title'		=> __( 'Enter an API Key' , 'akismet'),
 						'content'	=>
-							'<p><strong>' . esc_html__( 'Akismet Setup' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'If you already have an API key' ) . '</p>' .
+							'<p><strong>' . esc_html__( 'Akismet Setup' , 'akismet') . '</strong></p>' .
+							'<p>' . esc_html__( 'If you already have an API key' , 'akismet') . '</p>' .
 							'<ol>' .
-								'<li>' . esc_html__( 'Copy and paste the API key into the text field.' ) . '</li>' .
-								'<li>' . esc_html__( 'Click the Use this Key button.' ) . '</li>' .
+								'<li>' . esc_html__( 'Copy and paste the API key into the text field.' , 'akismet') . '</li>' .
+								'<li>' . esc_html__( 'Click the Use this Key button.' , 'akismet') . '</li>' .
 							'</ol>',
 					)
 				);
@@ -153,11 +154,11 @@ class Akismet_Admin {
 				$current_screen->add_help_tab(
 					array(
 						'id'		=> 'overview',
-						'title'		=> __( 'Overview' ),
+						'title'		=> __( 'Overview' , 'akismet'),
 						'content'	=>
-							'<p><strong>' . esc_html__( 'Akismet Stats' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' ) . '</p>' .
-							'<p>' . esc_html__( 'On this page, you are able to view stats on spam filtered on your site.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Stats' , 'akismet') . '</strong></p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' , 'akismet') . '</p>' .
+							'<p>' . esc_html__( 'On this page, you are able to view stats on spam filtered on your site.' , 'akismet') . '</p>',
 					)
 				);
 			}
@@ -166,34 +167,34 @@ class Akismet_Admin {
 				$current_screen->add_help_tab(
 					array(
 						'id'		=> 'overview',
-						'title'		=> __( 'Overview' ),
+						'title'		=> __( 'Overview' , 'akismet'),
 						'content'	=>
-							'<p><strong>' . esc_html__( 'Akismet Configuration' ) . '</strong></p>' .
-							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' ) . '</p>' .
-							'<p>' . esc_html__( 'On this page, you are able to enter/remove an API key, view account information and view spam stats.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Configuration' , 'akismet') . '</strong></p>' .
+							'<p>' . esc_html__( 'Akismet filters out your comment and trackback spam for you, so you can focus on more important things.' , 'akismet') . '</p>' .
+							'<p>' . esc_html__( 'On this page, you are able to enter/remove an API key, view account information and view spam stats.' , 'akismet') . '</p>',
 					)
 				);
 
 				$current_screen->add_help_tab(
 					array(
 						'id'		=> 'settings',
-						'title'		=> __( 'Settings' ),
+						'title'		=> __( 'Settings' , 'akismet'),
 						'content'	=>
-							'<p><strong>' . esc_html__( 'Akismet Configuration' ) . '</strong></p>' .
-							'<p><strong>' . esc_html__( 'API Key' ) . '</strong> - ' . esc_html__( 'Enter/remove an API key.' ) . '</p>' .
-							'<p><strong>' . esc_html__( 'Delete spam on posts more than a month old' ) . '</strong> - ' . esc_html__( 'Automatically delete spam comments on posts that are older than a month old.' ) . '</p>' .
-							'<p><strong>' . esc_html__( 'Show the number of approved comments beside each comment author' ) . '</strong> - ' . esc_html__( 'Show the number of approved comments beside each comment author in the comments list page.' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Configuration' , 'akismet') . '</strong></p>' .
+							'<p><strong>' . esc_html__( 'API Key' , 'akismet') . '</strong> - ' . esc_html__( 'Enter/remove an API key.' , 'akismet') . '</p>' .
+							'<p><strong>' . esc_html__( 'Delete spam on posts more than a month old' , 'akismet') . '</strong> - ' . esc_html__( 'Automatically delete spam comments on posts that are older than a month old.' , 'akismet') . '</p>' .
+							'<p><strong>' . esc_html__( 'Show the number of approved comments beside each comment author' , 'akismet') . '</strong> - ' . esc_html__( 'Show the number of approved comments beside each comment author in the comments list page.' , 'akismet') . '</p>',
 					)
 				);
 
 				$current_screen->add_help_tab(
 					array(
 						'id'		=> 'account',
-						'title'		=> __( 'Account' ),
+						'title'		=> __( 'Account' , 'akismet'),
 						'content'	=>
-							'<p><strong>' . esc_html__( 'Akismet Configuration' ) . '</strong></p>' .
-							'<p><strong>' . esc_html__( 'Subscription Type' ) . '</strong> - ' . esc_html__( 'The Akismet subscription plan' ) . '</p>' .
-							'<p><strong>' . esc_html__( 'Status' ) . '</strong> - ' . esc_html__( 'The subscription status - active, cancelled or suspended' ) . '</p>',
+							'<p><strong>' . esc_html__( 'Akismet Configuration' , 'akismet') . '</strong></p>' .
+							'<p><strong>' . esc_html__( 'Subscription Type' , 'akismet') . '</strong> - ' . esc_html__( 'The Akismet subscription plan' , 'akismet') . '</p>' .
+							'<p><strong>' . esc_html__( 'Status' , 'akismet') . '</strong> - ' . esc_html__( 'The subscription status - active, cancelled or suspended' , 'akismet') . '</p>',
 					)
 				);
 			}
@@ -201,15 +202,15 @@ class Akismet_Admin {
 
 		// Help Sidebar
 		$current_screen->set_help_sidebar(
-			'<p><strong>' . esc_html__( 'For more information:' ) . '</strong></p>' .
-			'<p><a href="https://akismet.com/faq/" target="_blank">'     . esc_html__( 'Akismet FAQ' ) . '</a></p>' .
-			'<p><a href="https://akismet.com/support/" target="_blank">' . esc_html__( 'Akismet Support' ) . '</a></p>'
+			'<p><strong>' . esc_html__( 'For more information:' , 'akismet') . '</strong></p>' .
+			'<p><a href="https://akismet.com/faq/" target="_blank">'     . esc_html__( 'Akismet FAQ' , 'akismet') . '</a></p>' .
+			'<p><a href="https://akismet.com/support/" target="_blank">' . esc_html__( 'Akismet Support' , 'akismet') . '</a></p>'
 		);
 	}
 
 	public static function enter_api_key() {
 		if ( function_exists('current_user_can') && !current_user_can('manage_options') )
-			die(__('Cheatin&#8217; uh?'));
+			die(__('Cheatin&#8217; uh?', 'akismet'));
 
 		if ( !wp_verify_nonce( $_POST['_wpnonce'], self::NONCE ) )
 			return false;
@@ -257,13 +258,13 @@ class Akismet_Admin {
 
 		global $submenu;
 
-		echo '<h3>' . esc_html( _x( 'Spam', 'comments' ) ) . '</h3>';
+		echo '<h3>' . esc_html( _x( 'Spam', 'comments' , 'akismet') ) . '</h3>';
 
 		echo '<p>'.sprintf( _n(
 				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comment</a>.',
 				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comments</a>.',
 				$count
-			), 'http://akismet.com/?return=true', esc_url( add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php' ) ) ), number_format_i18n($count) ).'</p>';
+			, 'akismet'), 'http://akismet.com/?return=true', esc_url( add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php' ) ) ), number_format_i18n($count) ).'</p>';
 	}
 
 	// WP 2.5+
@@ -282,9 +283,9 @@ class Akismet_Admin {
 				'<a href="%1$s">Akismet</a> has protected your site from %2$s spam comment already. ',
 				'<a href="%1$s">Akismet</a> has protected your site from %2$s spam comments already. ',
 				$count
-			), 'http://akismet.com/?return=true', number_format_i18n( $count ) );
+			, 'akismet'), 'http://akismet.com/?return=true', number_format_i18n( $count ) );
 		} else {
-			$intro = sprintf( __('<a href="%s">Akismet</a> blocks spam from getting to your blog. '), 'http://akismet.com/?return=true' );
+			$intro = sprintf( __('<a href="%s">Akismet</a> blocks spam from getting to your blog. ', 'akismet'), 'http://akismet.com/?return=true' );
 		}
 
 		$link = function_exists( 'esc_url' ) ? esc_url( $link ) : clean_url( $link );
@@ -293,9 +294,9 @@ class Akismet_Admin {
 				'There&#8217;s <a href="%2$s">%1$s comment</a> in your spam queue right now.',
 				'There are <a href="%2$s">%1$s comments</a> in your spam queue right now.',
 				$queue_count
-			), number_format_i18n( $queue_count ), $link );
+			, 'akismet'), number_format_i18n( $queue_count ), $link );
 		} else {
-			$queue_text = sprintf( __( "There&#8217;s nothing in your <a href='%s'>spam queue</a> at the moment." ), $link );
+			$queue_text = sprintf( __( "There&#8217;s nothing in your <a href='%s'>spam queue</a> at the moment." , 'akismet'), $link );
 		}
 
 		$text = $intro . '<br />' . $queue_text;
@@ -311,7 +312,7 @@ class Akismet_Admin {
 		else
 			$link = add_query_arg( array( 'page' => 'akismet-admin', 'recheckqueue' => 'true', 'noheader' => 'true' ), admin_url( 'edit-comments.php' ) );
 
-		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . esc_url( $link ) . '">' . esc_html__('Check for Spam') . '</a>';
+		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . esc_url( $link ) . '">' . esc_html__('Check for Spam', 'akismet') . '</a>';
 		echo '<img src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" class="checkforspam-spinner" />';
 	}
 
@@ -355,7 +356,7 @@ class Akismet_Admin {
 			}
 		}
 
-		Akismet::update_comment_history( $comment->comment_ID, sprintf( __('%1$s changed the comment status to %2$s'), $reporter, $new_status ), 'status-' . $new_status );
+		Akismet::update_comment_history( $comment->comment_ID, sprintf( __('%1$s changed the comment status to %2$s', 'akismet'), $reporter, $new_status ), 'status-' . $new_status );
 	}
 
 	public static function recheck_queue() {
@@ -395,16 +396,16 @@ class Akismet_Admin {
 				wp_set_comment_status( $c['comment_ID'], 'spam' );
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'true' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_error' );
-				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and caught this comment as spam'), 'check-spam' );
+				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and caught this comment as spam', 'akismet'), 'check-spam' );
 
 			} elseif ( 'false' == $response[1] ) {
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'false' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_error' );
-				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and cleared this comment'), 'check-ham' );
+				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and cleared this comment', 'akismet'), 'check-ham' );
 			// abnormal result: error
 			} else {
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'error' );
-				Akismet::update_comment_history( $c['comment_ID'], sprintf( __('Akismet was unable to re-check this comment (response: %s)'), substr($response[1], 0, 50)), 'check-error' );
+				Akismet::update_comment_history( $c['comment_ID'], sprintf( __('Akismet was unable to re-check this comment (response: %s)', 'akismet'), substr($response[1], 0, 50)), 'check-error' );
 			}
 
 			delete_comment_meta( $c['comment_ID'], 'akismet_rechecking' );
@@ -458,19 +459,19 @@ class Akismet_Admin {
 		$comment_status = wp_get_comment_status( $comment->comment_ID );
 		$desc = null;
 		if ( $akismet_error ) {
-			$desc = __( 'Awaiting spam check' );
+			$desc = __( 'Awaiting spam check' , 'akismet');
 		} elseif ( !$user_result || $user_result == $akismet_result ) {
 			// Show the original Akismet result if the user hasn't overridden it, or if their decision was the same
 			if ( $akismet_result == 'true' && $comment_status != 'spam' && $comment_status != 'trash' )
-				$desc = __( 'Flagged as spam by Akismet' );
+				$desc = __( 'Flagged as spam by Akismet' , 'akismet');
 			elseif ( $akismet_result == 'false' && $comment_status == 'spam' )
-				$desc = __( 'Cleared by Akismet' );
+				$desc = __( 'Cleared by Akismet' , 'akismet');
 		} else {
 			$who = get_comment_meta( $comment->comment_ID, 'akismet_user', true );
 			if ( $user_result == 'true' )
-				$desc = sprintf( __('Flagged as spam by %s'), $who );
+				$desc = sprintf( __('Flagged as spam by %s', 'akismet'), $who );
 			else
-				$desc = sprintf( __('Un-spammed by %s'), $who );
+				$desc = sprintf( __('Un-spammed by %s', 'akismet'), $who );
 		}
 
 		// add a History item to the hover links, just after Edit
@@ -482,7 +483,7 @@ class Akismet_Admin {
 					$k == 'edit'
 					|| ( $k == 'unspam' && $GLOBALS['wp_version'] >= 3.4 )
 				) {
-					$b['history'] = '<a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="'. esc_attr__( 'View comment history' ) . '"> '. esc_html__('History') . '</a>';
+					$b['history'] = '<a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="'. esc_attr__( 'View comment history' , 'akismet') . '"> '. esc_html__('History', 'akismet') . '</a>';
 				}
 			}
 
@@ -490,12 +491,12 @@ class Akismet_Admin {
 		}
 
 		if ( $desc )
-			echo '<span class="akismet-status" commentid="'.$comment->comment_ID.'"><a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="' . esc_attr__( 'View comment history' ) . '">'.esc_html( $desc ).'</a></span>';
+			echo '<span class="akismet-status" commentid="'.$comment->comment_ID.'"><a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="' . esc_attr__( 'View comment history' , 'akismet') . '">'.esc_html( $desc ).'</a></span>';
 
 		if ( apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') ) == 'true' ) {
 			$comment_count = Akismet::get_user_comments_approved( $comment->user_id, $comment->comment_author_email, $comment->comment_author, $comment->comment_author_url );
 			$comment_count = intval( $comment_count );
-			echo '<span class="akismet-user-comment-count" commentid="'.$comment->comment_ID.'" style="display:none;"><br><span class="akismet-user-comment-counts">'. sprintf( esc_html( _n( '%s approved', '%s approved', $comment_count ) ), number_format_i18n( $comment_count ) ) . '</span></span>';
+			echo '<span class="akismet-user-comment-count" commentid="'.$comment->comment_ID.'" style="display:none;"><br><span class="akismet-user-comment-counts">'. sprintf( esc_html( _n( '%s approved', '%s approved', $comment_count , 'akismet') ), number_format_i18n( $comment_count ) ) . '</span></span>';
 		}
 
 		return $a;
@@ -508,7 +509,7 @@ class Akismet_Admin {
 			echo '<div class="akismet-history" style="margin: 13px;">';
 			foreach ( $history as $row ) {
 				$time = date( 'D d M Y @ h:i:m a', $row['time'] ) . ' GMT';
-				echo '<div style="margin-bottom: 13px;"><span style="color: #999;" alt="' . $time . '" title="' . $time . '">' . sprintf( esc_html__('%s ago'), human_time_diff( $row['time'] ) ) . '</span> - ';
+				echo '<div style="margin-bottom: 13px;"><span style="color: #999;" alt="' . $time . '" title="' . $time . '">' . sprintf( esc_html__('%s ago', 'akismet'), human_time_diff( $row['time'] ) ) . '</span> - ';
 				echo esc_html( $row['message'] ) . '</div>';
 			}
 			echo '</div>';
@@ -517,7 +518,7 @@ class Akismet_Admin {
 
 	public static function plugin_action_links( $links, $file ) {
 		if ( $file == plugin_basename( AKISMET__PLUGIN_URL . '/akismet.php' ) ) {
-			$links[] = '<a href="' . esc_url( self::get_page_url() ) . '">'.esc_html__( 'Settings' ).'</a>';
+			$links[] = '<a href="' . esc_url( self::get_page_url() ) . '">'.esc_html__( 'Settings' , 'akismet').'</a>';
 		}
 
 		return $links;
@@ -577,7 +578,7 @@ class Akismet_Admin {
 
 		$response = Akismet::http_post( http_build_query( $comment ), 'submit-spam' );
 		if ( $comment->reporter ) {
-			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as spam'), $comment->reporter ), 'report-spam' );
+			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as spam', 'akismet'), $comment->reporter ), 'report-spam' );
 			update_comment_meta( $comment_id, 'akismet_user_result', 'true' );
 			update_comment_meta( $comment_id, 'akismet_user', $comment->reporter );
 		}
@@ -623,7 +624,7 @@ class Akismet_Admin {
 
 		$response = Akismet::http_post( http_build_query( $comment ), 'submit-ham' );
 		if ( $comment->reporter ) {
-			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as not spam'), $comment->reporter ), 'report-ham' );
+			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as not spam', 'akismet'), $comment->reporter ), 'report-ham' );
 			update_comment_meta( $comment_id, 'akismet_user_result', 'false' );
 			update_comment_meta( $comment_id, 'akismet_user', $comment->reporter );
 		}
@@ -793,7 +794,7 @@ class Akismet_Admin {
 			}
 		}
 
-		echo '<h2 class="ak-header">'.esc_html__('Akismet').'</h2>';
+		echo '<h2 class="ak-header">'.esc_html__('Akismet', 'akismet').'</h2>';
 
 		self::display_status();
 
@@ -832,14 +833,14 @@ class Akismet_Admin {
 					$total_in_minutes = round( $stat_totals['all']->time_saved / 60 );
 					$total_in_hours   = round( $total_in_minutes / 60 );
 					$total_in_days    = round( $total_in_hours / 8 );
-					$cleaning_up      = __( 'Cleaning up spam takes time.' );
+					$cleaning_up      = __( 'Cleaning up spam takes time.' , 'akismet');
 
 					if ( $total_in_days > 1 )
-						$time_saved = $cleaning_up . ' ' . sprintf( __( 'Since you joined us, Akismet has saved you %s days!' ), number_format_i18n( $total_in_days ) );
+						$time_saved = $cleaning_up . ' ' . sprintf( __( 'Since you joined us, Akismet has saved you %s days!' , 'akismet'), number_format_i18n( $total_in_days ) );
 					elseif ( $total_in_hours > 1 )
-						$time_saved = $cleaning_up . ' ' . sprintf( __( 'Since you joined us, Akismet has saved you %d hours!' ), $total_in_hours );
+						$time_saved = $cleaning_up . ' ' . sprintf( __( 'Since you joined us, Akismet has saved you %d hours!' , 'akismet'), $total_in_hours );
 					elseif ( $total_in_minutes >= 30 )
-						$time_saved = $cleaning_up . ' ' . sprintf( __( 'Since you joined us, Akismet has saved you %d minutes!' ), $total_in_minutes );
+						$time_saved = $cleaning_up . ' ' . sprintf( __( 'Since you joined us, Akismet has saved you %d minutes!' , 'akismet'), $total_in_minutes );
 				}
 
 				Akismet::view( 'notice', array( 'type' => 'active-notice', 'time_saved' => $time_saved ) );

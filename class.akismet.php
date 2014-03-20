@@ -190,26 +190,29 @@ class Akismet {
 				&& intval( self::$last_comment['comment_post_ID'] ) == intval( $comment->comment_post_ID )
 				&& self::$last_comment['comment_author'] == $comment->comment_author
 				&& self::$last_comment['comment_author_email'] == $comment->comment_author_email ) {
+					
+					load_theme_textdomain( 'akismet' );
+					
 					// normal result: true or false
 					if ( self::$last_comment['akismet_result'] == 'true' ) {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'true' );
-						self::update_comment_history( $comment->comment_ID, __('Akismet caught this comment as spam'), 'check-spam' );
+						self::update_comment_history( $comment->comment_ID, __('Akismet caught this comment as spam', 'akismet'), 'check-spam' );
 						if ( $comment->comment_approved != 'spam' )
-							self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s'), $comment->comment_approved), 'status-changed'.$comment->comment_approved );
+							self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s', 'akismet'), $comment->comment_approved), 'status-changed'.$comment->comment_approved );
 					}
 					elseif ( self::$last_comment['akismet_result'] == 'false' ) {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'false' );
-						self::update_comment_history( $comment->comment_ID, __('Akismet cleared this comment'), 'check-ham' );
+						self::update_comment_history( $comment->comment_ID, __('Akismet cleared this comment', 'akismet'), 'check-ham' );
 						if ( $comment->comment_approved == 'spam' ) {
 							if ( wp_blacklist_check($comment->comment_author, $comment->comment_author_email, $comment->comment_author_url, $comment->comment_content, $comment->comment_author_IP, $comment->comment_agent) )
-								self::update_comment_history( $comment->comment_ID, __('Comment was caught by wp_blacklist_check'), 'wp-blacklisted' );
+								self::update_comment_history( $comment->comment_ID, __('Comment was caught by wp_blacklist_check', 'akismet'), 'wp-blacklisted' );
 							else
-								self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s'), $comment->comment_approved), 'status-changed-'.$comment->comment_approved );
+								self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s', 'akismet'), $comment->comment_approved), 'status-changed-'.$comment->comment_approved );
 						}
 					} // abnormal result: error
 					else {
 						update_comment_meta( $comment->comment_ID, 'akismet_error', time() );
-						self::update_comment_history( $comment->comment_ID, sprintf( __('Akismet was unable to check this comment (response: %s), will automatically retry again later.'), substr(self::$last_comment['akismet_result'], 0, 50)), 'check-error' );
+						self::update_comment_history( $comment->comment_ID, sprintf( __('Akismet was unable to check this comment (response: %s), will automatically retry again later.', 'akismet'), substr(self::$last_comment['akismet_result'], 0, 50)), 'check-error' );
 					}
 
 					// record the complete original data as submitted for checking
@@ -359,6 +362,8 @@ class Akismet {
 		delete_option('akismet_available_servers');
 
 		$comment_errors = $wpdb->get_col( "SELECT comment_id FROM {$wpdb->commentmeta} WHERE meta_key = 'akismet_error'	LIMIT 100" );
+		
+		load_theme_textdomain( 'akismet' );
 
 		foreach ( (array) $comment_errors as $comment_id ) {
 			// if the comment no longer exists, or is too old, remove the meta entry from the queue to avoid getting stuck
@@ -373,9 +378,9 @@ class Akismet {
 
 			$msg = '';
 			if ( $status == 'true' ) {
-				$msg = __( 'Akismet caught this comment as spam during an automatic retry.' );
+				$msg = __( 'Akismet caught this comment as spam during an automatic retry.' , 'akismet');
 			} elseif ( $status == 'false' ) {
-				$msg = __( 'Akismet cleared this comment during an automatic retry.' );
+				$msg = __( 'Akismet cleared this comment during an automatic retry.' , 'akismet');
 			}
 
 			// If we got back a legit response then update the comment history
@@ -653,6 +658,8 @@ p {
 		foreach ( $args AS $key => $val ) {
 			$$key = $val;
 		}
+		
+		load_theme_textdomain( 'akismet' );
 
 		$file = AKISMET__PLUGIN_DIR . 'views/'. $name . '.php';
 
@@ -665,7 +672,9 @@ p {
 	 */
 	public static function plugin_activation() {
 		if ( version_compare( $GLOBALS['wp_version'], AKISMET__MINIMUM_WP_VERSION, '<' ) ) {
-			$message = '<strong>'.sprintf(esc_html__( 'Akismet %s requires WordPress %s or higher.' ), AKISMET_VERSION, AKISMET__MINIMUM_WP_VERSION ).'</strong> '.sprintf(__('Please <a href="%1$s">upgrade WordPress</a> to a current version, or <a href="%2$s">downgrade to version 2.4 of the Akismet plugin</a>.'), 'http://codex.wordpress.org/Upgrading_WordPress', 'http://wordpress.org/extend/plugins/akismet/download/');
+			load_theme_textdomain( 'akismet' );
+			
+			$message = '<strong>'.sprintf(esc_html__( 'Akismet %s requires WordPress %s or higher.' , 'akismet'), AKISMET_VERSION, AKISMET__MINIMUM_WP_VERSION ).'</strong> '.sprintf(__('Please <a href="%1$s">upgrade WordPress</a> to a current version, or <a href="%2$s">downgrade to version 2.4 of the Akismet plugin</a>.', 'akismet'), 'http://codex.wordpress.org/Upgrading_WordPress', 'http://wordpress.org/extend/plugins/akismet/download/');
 
 			Akismet::bail_on_activation( $message );
 		}

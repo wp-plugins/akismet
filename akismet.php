@@ -10,6 +10,7 @@ Version: 3.0-beta
 Author: Automattic
 Author URI: http://automattic.com/wordpress-plugins/
 License: GPLv2 or later
+Text Domain: akismet
 */
 
 /*
