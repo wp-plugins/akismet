@@ -191,7 +191,7 @@ class Akismet {
 				&& self::$last_comment['comment_author'] == $comment->comment_author
 				&& self::$last_comment['comment_author_email'] == $comment->comment_author_email ) {
 					
-					load_theme_textdomain( 'akismet' );
+					load_plugin_textdomain( 'akismet' );
 					
 					// normal result: true or false
 					if ( self::$last_comment['akismet_result'] == 'true' ) {
@@ -363,7 +363,7 @@ class Akismet {
 
 		$comment_errors = $wpdb->get_col( "SELECT comment_id FROM {$wpdb->commentmeta} WHERE meta_key = 'akismet_error'	LIMIT 100" );
 		
-		load_theme_textdomain( 'akismet' );
+		load_plugin_textdomain( 'akismet' );
 
 		foreach ( (array) $comment_errors as $comment_id ) {
 			// if the comment no longer exists, or is too old, remove the meta entry from the queue to avoid getting stuck
@@ -659,7 +659,7 @@ p {
 			$$key = $val;
 		}
 		
-		load_theme_textdomain( 'akismet' );
+		load_plugin_textdomain( 'akismet' );
 
 		$file = AKISMET__PLUGIN_DIR . 'views/'. $name . '.php';
 
@@ -672,7 +672,7 @@ p {
 	 */
 	public static function plugin_activation() {
 		if ( version_compare( $GLOBALS['wp_version'], AKISMET__MINIMUM_WP_VERSION, '<' ) ) {
-			load_theme_textdomain( 'akismet' );
+			load_plugin_textdomain( 'akismet' );
 			
 			$message = '<strong>'.sprintf(esc_html__( 'Akismet %s requires WordPress %s or higher.' , 'akismet'), AKISMET_VERSION, AKISMET__MINIMUM_WP_VERSION ).'</strong> '.sprintf(__('Please <a href="%1$s">upgrade WordPress</a> to a current version, or <a href="%2$s">downgrade to version 2.4 of the Akismet plugin</a>.', 'akismet'), 'http://codex.wordpress.org/Upgrading_WordPress', 'http://wordpress.org/extend/plugins/akismet/download/');
 

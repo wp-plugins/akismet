@@ -5,7 +5,7 @@
 class Akismet_Widget extends WP_Widget {
 
 	function __construct() {
-		load_theme_textdomain( 'akismet' );
+		load_plugin_textdomain( 'akismet' );
 		
 		parent::__construct(
 			'akismet_widget',
