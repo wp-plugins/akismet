@@ -21,7 +21,7 @@
 <div id="akismet-warning" class="updated fade"><p><strong><?php printf( esc_html__('Akismet %s requires WordPress 3.0 or higher.', 'akismet'), AKISMET_VERSION);?></strong> <?php printf(__('Please <a href="%1$s">upgrade WordPress</a> to a current version, or <a href="%2$s">downgrade to version 2.4 of the Akismet plugin</a>.', 'akismet'), 'https://codex.wordpress.org/Upgrading_WordPress', 'https://wordpress.org/extend/plugins/akismet/download/');?></p></div>
 <?php elseif ( $type == 'alert' ) :?>
 <div class='error'>
-	<p><strong><?php printf( esc_html__( 'Akismet Error Code: %s', $code , 'akismet') ); ?></strong></p>
+	<p><strong><?php printf( esc_html__( 'Akismet Error Code: %s', 'akismet' ), $code ); ?></strong></p>
 	<p><?php echo esc_html( $msg ); ?></p>
 	<p><?php
 

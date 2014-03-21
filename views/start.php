@@ -70,7 +70,7 @@
 <p><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site.', 'akismet'); ?></p>
 <div class="activate-highlight centered activate-option">
 	<strong class="small-heading"><?php esc_html_e( 'Connected via Jetpack' , 'akismet'); ?></strong>
-	<h3 class="alert-text" s><?php printf( esc_html__( 'Your subscription for %s is suspended' , 'akismet'), $akismet_user->user_email ); ?></h3>
+	<h3 class="alert-text"><?php printf( esc_html__( 'Your subscription for %s is suspended' , 'akismet'), $akismet_user->user_email ); ?></h3>
 	<p><?php esc_html_e('No worries! Get in touch and we&#8217;ll help sort this out.', 'akismet'); ?></p>
 	<a href="https://akismet.com/contact" class="button button-primary"><?php esc_html_e( 'Contact Akismet support' , 'akismet'); ?></a>
 
