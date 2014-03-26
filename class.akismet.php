@@ -534,46 +534,24 @@ class Akismet {
 			$http_host = $ip;
 		}
 
-		// use the WP HTTP class if it is available
-		if ( function_exists( 'wp_remote_post' ) ) {
-			$http_args = array(
-				'body'			=> $request,
-				'headers'		=> array(
-					'Content-Type'	=> 'application/x-www-form-urlencoded; charset=' . get_option( 'blog_charset' ),
-					'Host'			=> $host,
-					'User-Agent'	=> $akismet_ua
-				),
-				'httpversion'	=> '1.0',
-				'timeout'		=> 15
-			);
-			$akismet_url = "http://{$http_host}/1.1/{$path}";
-			$response = wp_remote_post( $akismet_url, $http_args );
-			Akismet::log( compact( 'akismet_url', 'http_args', 'response' ) );
-			if ( is_wp_error( $response ) )
-				return '';
+		$http_args = array(
+			'body' => $request,
+			'headers' => array(
+				'Content-Type' => 'application/x-www-form-urlencoded; charset=' . get_option( 'blog_charset' ),
+				'Host' => $host,
+				'User-Agent' => $akismet_ua,
+			),
+			'httpversion' => '1.0',
+			'timeout' => 15
+		);
 
-			return array( $response['headers'], $response['body'] );
-		} else {
-			$http_request  = "POST /1.1/{$path} HTTP/1.0\r\n";
-			$http_request .= "Host: {$host}\r\n";
-			$http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . get_option('blog_charset') . "\r\n";
-			$http_request .= "Content-Length: {$content_length}\r\n";
-			$http_request .= "User-Agent: {$akismet_ua}\r\n";
-			$http_request .= "\r\n";
-			$http_request .= $request;
+		$akismet_url = "http://{$http_host}/1.1/{$path}";
+		$response = wp_remote_post( $akismet_url, $http_args );
+		Akismet::log( compact( 'akismet_url', 'http_args', 'response' ) );
+		if ( is_wp_error( $response ) )
+			return '';
 
-			$response = '';
-			if( false != ( $fs = @fsockopen( $http_host, self::API_PORT, $errno, $errstr, 10 ) ) ) {
-				fwrite( $fs, $http_request );
-
-				while ( !feof( $fs ) )
-					$response .= fgets( $fs, 1160 ); // One TCP-IP packet
-				fclose( $fs );
-				$response = explode( "\r\n\r\n", $response, 2 );
-			}
-			Akismet::log( compact( 'http_request', 'response' ) );
-			return $response;
-		}
+		return array( $response['headers'], $response['body'] );
 	}
 
 	// given a response from an API call like check_key_status(), update the alert code options if an alert is present.
