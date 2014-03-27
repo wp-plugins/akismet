@@ -92,10 +92,10 @@ class Akismet_Admin {
 				'comment_author_url_nonce' => wp_create_nonce( 'comment_author_url_nonce' ),
 				'strings' => array(
 					'Remove this URL' => __( 'Remove this URL' , 'akismet'),
-					'Removing...' => __( 'Removing...' , 'akismet'),
-					'URL removed' => __( 'URL removed' , 'akismet'),
-					'(undo)' => __( '(undo)' , 'akismet'),
-					'Re-adding...' => __( 'Re-adding...' , 'akismet'),
+					'Removing...'     => __( 'Removing...' , 'akismet'),
+					'URL removed'     => __( 'URL removed' , 'akismet'),
+					'(undo)'          => __( '(undo)' , 'akismet'),
+					'Re-adding...'    => __( 'Re-adding...' , 'akismet'),
 				)
 			) );
 		}
@@ -242,11 +242,22 @@ class Akismet_Admin {
 		$key_status = Akismet::verify_key( $api_key );
 
 		if ( $key_status == 'valid' ) {
-			update_option( 'wordpress_api_key', $api_key );
-			self::$notices[] = 'new-key-valid';
+			$akismet_user = self::get_akismet_user( $api_key );
+			
+			if ( $akismet_user ) {
+				if ( $akismet_user->status != 'missing' )
+					update_option( 'wordpress_api_key', $api_key );
+				
+				if ( $akismet_user->status == 'active' )
+					self::$notices['status'] = 'new-key-valid';
+				else
+					self::$notices['status'] = $akismet_user->status;
+			}
+			else
+				self::$notices['status'] = 'new-key-invalid';
 		}
 		elseif ( in_array( $key_status, array( 'invalid', 'failed' ) ) )
-			self::$notices[] = 'new-key-'.$key_status;
+			self::$notices['status'] = 'new-key-'.$key_status;
 	}
 
 	public static function dashboard_stats() {
@@ -718,6 +729,17 @@ class Akismet_Admin {
 
 		return $url;
 	}
+	
+	public static function get_akismet_user( $api_key ) {
+		$akismet_user = Akismet::http_post( http_build_query( array( 'key' => $api_key ) ), 'get-subscription' );
+
+		if ( count( $akismet_user ) > 1 )
+			$akismet_user = json_decode( $akismet_user[1] );
+		else
+			$akismet_user = false;
+			
+		return $akismet_user;
+	}
 
 	public static function display_alert() {
 		Akismet::view( 'notice', array(
@@ -807,12 +829,7 @@ class Akismet_Admin {
 
 	public static function display_configuration_page() {
 		$api_key      = Akismet::get_api_key();
-		$akismet_user = Akismet::http_post( http_build_query( array( 'key' => $api_key ) ), 'get-subscription' );
-
-		if ( count( $akismet_user ) > 1 )
-			$akismet_user = json_decode( $akismet_user[1] );
-		else
-			$akismet_user = false;
+		$akismet_user = self::get_akismet_user( $api_key );
 
 		$blog = parse_url( get_option('home'), PHP_URL_HOST );
 
@@ -845,9 +862,10 @@ class Akismet_Admin {
 
 				Akismet::view( 'notice', array( 'type' => 'active-notice', 'time_saved' => $time_saved ) );
 			}
-			elseif ( in_array( $akismet_user->status, array( 'cancelled', 'suspended' ) ) )
-				Akismet::view( 'notice', array( 'type' => $akismet_user->status ) );
 		}
+		
+		if ( !isset( self::$notices['status'] ) && in_array( $akismet_user->status, array( 'cancelled', 'suspended', 'missing' ) ) )				
+			Akismet::view( 'notice', array( 'type' => $akismet_user->status ) );
 
 		Akismet::log( compact( 'stat_totals', 'akismet_user' ) );
 		Akismet::view( 'config', compact( 'api_key', 'blog', 'akismet_user', 'stat_totals' ) );

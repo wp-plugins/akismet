@@ -41,7 +41,7 @@
 	<h3 class="key-status failed"><?php esc_html_e("We can&#8217;t connect to your site.", 'akismet'); ?></h3>
 	<p class="description"><?php printf( __('Your firewall may be blocking us. Please contact your host and refer to <a href="%s" target="_blank">our guide about firewalls</a>.', 'akismet'), 'https://blog.akismet.com/akismet-hosting-faq/'); ?></p>
 </div>
-<?php elseif ( $type == 'overdue' ) :?>
+<?php elseif ( $type == 'active-dunning' ) :?>
 <div class="wrap alert critical">
 	<h3 class="key-status"><?php esc_html_e("Please update your payment details.", 'akismet'); ?></h3>
 	<p class="description"><?php printf( __('We cannot process your transaction. Please contact your bank for assistance, and <a href="%s" target="_blank">update your payment details</a>.', 'akismet'), 'https://akismet.com/account/'); ?></p>
@@ -60,6 +60,11 @@
 <div class="wrap alert active">
 	<h3 class="key-status"><?php echo esc_html( $time_saved ); ?></h3>
 	<p class="description"><?php printf( __('You can help us fight spam and upgrade your account by <a href="%s" target="_blank">contributing a token amount</a>.', 'akismet'), 'https://akismet.com/account/upgrade/'); ?></p>
+</div>
+<?php elseif ( $type == 'missing' ) :?>
+<div class="wrap alert critical">
+	<h3 class="key-status failed"><?php esc_html_e("Your subscription is missing.", 'akismet'); ?></h3>
+	<p class="description"><?php printf( __('Please contact <a href="%s" target="_blank">Akismet support</a> for assistance.', 'akismet'), 'https://akismet.com/contact/'); ?></p>
 </div>
 <?php elseif ( $type == 'new-key-valid' ) :?>
 <div class="wrap alert active">
