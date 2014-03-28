@@ -122,9 +122,9 @@ class Akismet {
 
 		if ( 'true' == $response[1] ) {
 			// akismet_spam_count will be incremented later by comment_is_spam()
-			add_filter('pre_comment_approved', array( 'Akismet',  'comment_is_spam' ) );
+			add_filter('pre_comment_approved', array( 'Akismet',  'comment_is_spam' ), 10, 2 );
 
-			$discard = ( isset( $commentdata['akismet_pro_tip'] ) && $commentdata['akismet_pro_tip'] === 'discard' && get_option( 'akismet_strictness' ) === '1' );
+			$discard = ( isset( $commentdata['akismet_pro_tip'] ) && $commentdata['akismet_pro_tip'] === 'discard' && self::allow_discard() );
 
 			do_action( 'akismet_spam_caught', $discard );
 
@@ -147,7 +147,7 @@ class Akismet {
 		// if the response is neither true nor false, hold the comment for moderation and schedule a recheck
 		if ( 'true' != $response[1] && 'false' != $response[1] ) {
 			if ( !current_user_can('moderate_comments') ) {
-				add_filter('pre_comment_approved', array( 'Akismet',  'comment_needs_moderation' ) );
+				add_filter('pre_comment_approved', array( 'Akismet',  'comment_needs_moderation' ), 10, 2 );
 			}
 			if ( function_exists('wp_next_scheduled') && function_exists('wp_schedule_single_event') ) {
 				if ( !wp_next_scheduled( 'akismet_schedule_cron_recheck' ) ) {
@@ -186,10 +186,7 @@ class Akismet {
 		// wp_insert_comment() might be called in other contexts, so make sure this is the same comment
 		// as was checked by auto_check_comment
 		if ( is_object( $comment ) && !empty( self::$last_comment ) && is_array( self::$last_comment ) ) {
-			if ( isset( self::$last_comment['comment_post_ID'] )
-				&& intval( self::$last_comment['comment_post_ID'] ) == intval( $comment->comment_post_ID )
-				&& self::$last_comment['comment_author'] == $comment->comment_author
-				&& self::$last_comment['comment_author_email'] == $comment->comment_author_email ) {
+			if ( self::matches_last_comment( $comment ) ) {
 					
 					load_plugin_textdomain( 'akismet' );
 					
@@ -442,9 +439,38 @@ class Akismet {
 	public static function is_test_mode() {
 		return defined('AKISMET_TEST_MODE') && AKISMET_TEST_MODE;
 	}
+	
+	public static function allow_discard() {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+			return false;
+		if ( is_user_logged_in() )
+			return false;
+	
+		return ( get_option( 'akismet_strictness' ) === '1'  );
+	}
 
 	public static function get_ip_address() {
 		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
+	}
+	
+	// Remember this comment for later
+	public static function set_last_comment( $commentdata ) {
+		self::$last_comment = $commentdata;
+	}
+	
+	// Does the supplied comment match the details of the one most recently stored with set_last_comment()?
+	public static function matches_last_comment( $comment ) {
+		if ( is_object( $comment ) )
+			$comment = (array) $comment;
+		
+		if ( is_array( $comment ) && !empty( self::$last_comment ) && is_array( self::$last_comment ) ) {
+			return ( isset( self::$last_comment['comment_post_ID'] ) 
+					&& intval( self::$last_comment['comment_post_ID'] ) == intval( $comment['comment_post_ID'] )
+					&& self::$last_comment['comment_author'] == $comment['comment_author']
+					&& self::$last_comment['comment_author_email'] == $comment['comment_author_email'] );
+		}
+		
+		return false;
 	}
 
 	private static function get_user_agent() {
@@ -481,28 +507,26 @@ class Akismet {
 	}
 
 	// filter handler used to return a spam result to pre_comment_approved
-	public static function comment_is_spam( $approved ) {
-		static $just_once = false;
-		if ( $just_once )
+	public static function comment_is_spam( $approved, $comment ) {	
+		// Only do this if it's the correct comment
+		if ( !self::matches_last_comment( $comment ) ) {
+			self::log( "comment_is_spam mismatched comment, returning unaltered $approved" );
 			return $approved;
+		}
 
 		// bump the counter here instead of when the filter is added to reduce the possibility of overcounting
 		if ( $incr = apply_filters('akismet_spam_count_incr', 1) )
 			update_option( 'akismet_spam_count', get_option('akismet_spam_count') + $incr );
 
-		// this is a one-shot deal
-		$just_once = true;
 		return 'spam';
 	}
 
-	public static function comment_needs_moderation( $approved ) {
-		static $just_once = false;
-		if ( $just_once )
+	public static function comment_needs_moderation( $approved, $comment ) {
+		// Only do this if it's the correct comment
+	    if ( !self::matches_last_comment( $comment ) ) {
 			return $approved;
-
-		// once only
-		$just_once = true;
-		return '0';
+		}    
+        return '0';
 	}
 
 	public static function _cmp_time( $a, $b ) {
