@@ -241,7 +241,7 @@ class Akismet {
 			clean_comment_cache( $comment_ids );
 		}
 
-		if ( apply_filters( 'akismet_optimize_table', ( mt_rand(1, 5000) == 11) ) ) // lucky number
+		if ( apply_filters( 'akismet_optimize_table', ( mt_rand(1, 5000) == 11), $wpdb->comments ) ) // lucky number
 			$wpdb->query("OPTIMIZE TABLE {$wpdb->comments}");
 	}
 
@@ -268,7 +268,7 @@ class Akismet {
 			}
 		}
 
-		if ( apply_filters( 'akismet_optimize_table', ( mt_rand(1, 5000) == 11) ) ) // lucky number
+		if ( apply_filters( 'akismet_optimize_table', ( mt_rand(1, 5000) == 11), $wpdb->commentmeta ) ) // lucky number
 			$wpdb->query("OPTIMIZE TABLE {$wpdb->commentmeta}");
 	}
 
