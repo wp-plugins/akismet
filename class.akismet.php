@@ -269,7 +269,7 @@ class Akismet {
 		}
 
 		if ( apply_filters( 'akismet_optimize_table', ( mt_rand(1, 5000) == 11) ) ) // lucky number
-			$wpdb->query("OPTIMIZE TABLE {$wpdb->comments}");
+			$wpdb->query("OPTIMIZE TABLE {$wpdb->commentmeta}");
 	}
 
 	// how many approved comments does this author have?
