@@ -453,24 +453,19 @@ class Akismet {
 		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
 	}
 	
-	// Remember this comment for later
-	public static function set_last_comment( $commentdata ) {
-		self::$last_comment = $commentdata;
-	}
-	
-	// Does the supplied comment match the details of the one most recently stored with set_last_comment()?
+	// Does the supplied comment match the details of the one most recently stored in self::$last_comment?
 	public static function matches_last_comment( $comment ) {
 		if ( is_object( $comment ) )
 			$comment = (array) $comment;
-		
-		if ( is_array( $comment ) && !empty( self::$last_comment ) && is_array( self::$last_comment ) ) {
-			return ( isset( self::$last_comment['comment_post_ID'] ) 
-					&& intval( self::$last_comment['comment_post_ID'] ) == intval( $comment['comment_post_ID'] )
-					&& self::$last_comment['comment_author'] == $comment['comment_author']
-					&& self::$last_comment['comment_author_email'] == $comment['comment_author_email'] );
-		}
-		
-		return false;
+
+		return (
+		          is_array( self::$last_comment )
+		       && isset( self::$last_comment['comment_as_submitted'], $comment['comment_as_submitted'] )
+		       && isset( self::$last_comment['comment_as_submitted']['comment_post_ID'] )
+		       && intval( self::$last_comment['comment_as_submitted']['comment_post_ID'] ) == intval( $comment['comment_as_submitted']['comment_post_ID'] )
+		       && self::$last_comment['comment_as_submitted']['comment_author'] == $comment['comment_as_submitted']['comment_author']
+		       && self::$last_comment['comment_as_submitted']['comment_author_email'] == $comment['comment_as_submitted']['comment_author_email']
+		);
 	}
 
 	private static function get_user_agent() {
