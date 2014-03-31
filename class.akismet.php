@@ -52,7 +52,7 @@ class Akismet {
 	public static function verify_key( $key, $ip = null ) {
 		$response = self::check_key_status( $key, $ip );
 
-		if ( !is_array( $response ) || !isset( $response[1] ) || $response[1] != 'valid' && $response[1] != 'invalid' )
+		if ( $response[1] != 'valid' && $response[1] != 'invalid' )
 			return 'failed';
 
 		self::update_alert( $response );
@@ -341,7 +341,7 @@ class Akismet {
 
 		$response = self::http_post( http_build_query( $c ), 'comment-check' );
 
-		return ( is_array( $response ) && isset( $response[1] ) ) ? $response[1] : false;
+		return ( is_array( $response ) && ! empty( $response[1] ) ) ? $response[1] : false;
 	}
 
 	public static function cron_recheck() {
@@ -533,6 +533,14 @@ class Akismet {
 		return $mtime[1] + $mtime[0];
 	}
 
+	/**
+	 * Make a POST request to the Akismet API.
+	 *
+	 * @param string $request The body of the request.
+	 * @param string $path The path for the request.
+	 * @param string $ip The specific IP address to hit.
+	 * @return array A two-member array consisting of the headers and the response body, both empty in the case of a failure.
+	 */
 	public static function http_post( $request, $path, $ip=null ) {
 
 		$akismet_ua = sprintf( 'WordPress/%s | Akismet/%s', $GLOBALS['wp_version'], constant( 'AKISMET_VERSION' ) );
@@ -568,7 +576,7 @@ class Akismet {
 		$response = wp_remote_post( $akismet_url, $http_args );
 		Akismet::log( compact( 'akismet_url', 'http_args', 'response' ) );
 		if ( is_wp_error( $response ) )
-			return '';
+			return array( '', '' );
 
 		return array( $response['headers'], $response['body'] );
 	}
@@ -576,7 +584,7 @@ class Akismet {
 	// given a response from an API call like check_key_status(), update the alert code options if an alert is present.
 	private static function update_alert( $response ) {
 		$code = $msg = null;
-		if ( is_array( $response ) && isset( $response[0]['x-akismet-alert-code'] ) ) {
+		if ( isset( $response[0]['x-akismet-alert-code'] ) ) {
 			$code = $response[0]['x-akismet-alert-code'];
 			$msg  = $response[0]['x-akismet-alert-msg'];
 		}

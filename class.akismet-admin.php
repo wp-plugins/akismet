@@ -733,7 +733,7 @@ class Akismet_Admin {
 	public static function get_akismet_user( $api_key ) {
 		$akismet_user = Akismet::http_post( http_build_query( array( 'key' => $api_key ) ), 'get-subscription' );
 
-		if ( count( $akismet_user ) > 1 )
+		if ( ! empty( $akismet_user[1] ) )
 			$akismet_user = json_decode( $akismet_user[1] );
 		else
 			$akismet_user = false;
@@ -797,7 +797,7 @@ class Akismet_Admin {
 					'get_account_type' => 'true'
 				) ), 'verify-wpcom-key' );
 
-				if ( count( $akismet_user ) > 1 )
+				if ( ! empty( $akismet_user[1] ) )
 					$akismet_user = json_decode( $akismet_user[1] );
 
 				Akismet::log( compact( 'akismet_user' ) );
@@ -836,8 +836,9 @@ class Akismet_Admin {
 		foreach( array( '6-months', 'all' ) as $interval ) {
 			$response = Akismet::http_post( http_build_query( array( 'blog' => urlencode( $blog ), 'key' => $api_key, 'from' => $interval ) ), 'get-stats' );
 
-			if ( count( $response ) > 1 )
+			if ( ! empty( $response[1] ) ) {
 				$stat_totals[$interval] = json_decode( $response[1] );
+			}
 		}
 
 		if ( empty( self::$notices ) ) {
