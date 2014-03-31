@@ -33,7 +33,7 @@
 		<input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php esc_attr_e('Use this key', 'akismet');?>">
 	</form>
 </div>
-<?php elseif ( $akismet_user->status == 'no-account' ) : //no akismet account, ask do they want to use jetpack wpcom account to create one, then redirect to plans page?>
+<?php elseif ( $akismet_user->status == 'missing' ) : //no akismet account, ask do they want to use jetpack wpcom account to create one, then redirect to plans page?>
 <p><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site. Register your email address below to get started.', 'akismet'); ?></p>
 <div class="activate-highlight activate-option">
 	<div class="option-description">
