@@ -3,9 +3,11 @@
 class Akismet {
 	const API_HOST = 'rest.akismet.com';
 	const API_PORT = 80;
+	const MAX_DELAY_BEFORE_MODERATION_EMAIL = 86400; // One day in seconds
 
 	private static $last_comment = '';
 	private static $initiated = false;
+	private static $prevent_moderation_email_for_these_comments = array();
 
 	public static function init() {
 		if ( ! self::$initiated ) {
@@ -33,6 +35,8 @@ class Akismet {
 		add_action( 'admin_footer-edit-comments.php', array( 'Akismet', 'load_form_js' ) );
 		add_action( 'comment_form', array( 'Akismet', 'load_form_js' ) );
 		add_action( 'comment_form', array( 'Akismet', 'inject_ak_js' ) );
+
+		add_filter( 'comment_moderation_recipients', array( 'Akismet', 'disable_moderation_emails_if_unreachable' ), 1000, 2 );
 
 		if ( '3.0.5' == $GLOBALS['wp_version'] ) {
 			remove_filter( 'comment_text', 'wp_kses_data' );
@@ -154,6 +158,8 @@ class Akismet {
 					wp_schedule_single_event( time() + 1200, 'akismet_schedule_cron_recheck' );
 				}
 			}
+
+			self::$prevent_moderation_email_for_these_comments[] = $commentdata;
 		}
 
 		if ( function_exists('wp_next_scheduled') && function_exists('wp_schedule_event') ) {
@@ -165,8 +171,10 @@ class Akismet {
 			// WP 2.0: run this one time in ten
 			self::delete_old_comments();
 		}
-
-		self::$last_comment = $commentdata;
+		
+		// We filter it here so that it matches the filtered comment data that we'll have to compare against later.
+		// wp_filter_comment expects comment_author_IP
+		self::$last_comment = wp_filter_comment( array_merge( array( 'comment_author_IP' => self::get_ip_address() ), $commentdata ) );
 		self::fix_scheduled_recheck();
 
 		return self::$last_comment;
@@ -367,6 +375,7 @@ class Akismet {
 			$comment = get_comment( $comment_id );
 			if ( !$comment || strtotime( $comment->comment_date_gmt ) < strtotime( "-15 days" ) ) {
 				delete_comment_meta( $comment_id, 'akismet_error' );
+				delete_comment_meta( $comment_id, 'akismet_delayed_moderation_email' );
 				continue;
 			}
 
@@ -397,9 +406,20 @@ class Akismet {
 						// we may need to change it to approved.
 						if ( check_comment($comment->comment_author, $comment->comment_author_email, $comment->comment_author_url, $comment->comment_content, $comment->comment_author_IP, $comment->comment_agent, $comment->comment_type) )
 							wp_set_comment_status( $comment_id, 1 );
+						else if ( get_comment_meta( $comment_id, 'akismet_delayed_moderation_email', true ) )
+							wp_notify_moderator( $comment_id );
 					}
 				}
+				
+				delete_comment_meta( $comment_id, 'akismet_delayed_moderation_email' );
 			} else {
+				// If this comment has been pending moderation for longer than MAX_DELAY_BEFORE_MODERATION_EMAIL,
+				// send a moderation email now.
+				if ( ( intval( gmdate( 'U' ) ) - strtotime( $comment->comment_date_gmt ) ) < self::MAX_DELAY_BEFORE_MODERATION_EMAIL ) {
+					delete_comment_meta( $comment_id, 'akismet_delayed_moderation_email' );
+					wp_notify_moderator( $comment_id );
+				}
+
 				delete_comment_meta( $comment_id, 'akismet_rechecking' );
 				wp_schedule_single_event( time() + 1200, 'akismet_schedule_cron_recheck' );
 				return;
@@ -453,19 +473,31 @@ class Akismet {
 		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
 	}
 	
+	/**
+	 * Do these two comments, without checking the comment_ID, "match"?
+	 *
+	 * @param mixed $comment1 A comment object or array.
+	 * @param mixed $comment2 A comment object or array.
+	 * @return bool Whether the two comments should be treated as the same comment.
+	 */
+	private static function comments_match( $comment1, $comment2 ) {
+		$comment1 = (array) $comment1;
+		$comment2 = (array) $comment2;
+		
+		return (
+			   isset( $comment1['comment_post_ID'], $comment2['comment_post_ID'] )
+			&& intval( $comment1['comment_post_ID'] ) == intval( $comment2['comment_post_ID'] )
+			&& $comment1['comment_author'] == $comment2['comment_author']
+			&& $comment1['comment_author_email'] == $comment2['comment_author_email']
+		);
+	}
+	
 	// Does the supplied comment match the details of the one most recently stored in self::$last_comment?
 	public static function matches_last_comment( $comment ) {
 		if ( is_object( $comment ) )
 			$comment = (array) $comment;
 
-		return (
-		          is_array( self::$last_comment )
-		       && isset( self::$last_comment['comment_as_submitted'], $comment['comment_as_submitted'] )
-		       && isset( self::$last_comment['comment_as_submitted']['comment_post_ID'] )
-		       && intval( self::$last_comment['comment_as_submitted']['comment_post_ID'] ) == intval( $comment['comment_as_submitted']['comment_post_ID'] )
-		       && self::$last_comment['comment_as_submitted']['comment_author'] == $comment['comment_as_submitted']['comment_author']
-		       && self::$last_comment['comment_as_submitted']['comment_author_email'] == $comment['comment_as_submitted']['comment_author_email']
-		);
+		return self::comments_match( self::$last_comment, $comment );
 	}
 
 	private static function get_user_agent() {
@@ -522,6 +554,33 @@ class Akismet {
 			return $approved;
 		}    
         return '0';
+	}
+	
+	/**
+	 * If Akismet is temporarily unreachable, we don't want to "spam" the blogger with
+	 * moderation emails for comments that will be automatically cleared or spammed on
+	 * the next retry.
+	 *
+	 * For comments that will be rechecked later, empty the list of email addresses that
+	 * the moderation email would be sent to.
+	 *
+	 * @param array $emails An array of email addresses that the moderation email will be sent to.
+	 * @param int $comment_id The ID of the relevant comment.
+	 * @return array An array of email addresses that the moderation email will be sent to.
+	 */
+	public static function disable_moderation_emails_if_unreachable( $emails, $comment_id ) {
+		if ( ! empty( self::$prevent_moderation_email_for_these_comments ) && ! empty( $emails ) ) {
+			$comment = get_comment( $comment_id );
+
+			foreach ( self::$prevent_moderation_email_for_these_comments as $possible_match ) {
+				if ( self::comments_match( $possible_match, $comment ) ) {
+					update_comment_meta( $comment_id, 'akismet_delayed_moderation_email', true );
+					return array();
+				}
+			}
+		}
+
+		return $emails;
 	}
 
 	public static function _cmp_time( $a, $b ) {

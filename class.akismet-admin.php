@@ -407,11 +407,13 @@ class Akismet_Admin {
 				wp_set_comment_status( $c['comment_ID'], 'spam' );
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'true' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_error' );
+				delete_comment_meta( $c['comment_ID'], 'akismet_delayed_moderation_email' );
 				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and caught this comment as spam', 'akismet'), 'check-spam' );
 
 			} elseif ( 'false' == $response[1] ) {
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'false' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_error' );
+				delete_comment_meta( $c['comment_ID'], 'akismet_delayed_moderation_email' );
 				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and cleared this comment', 'akismet'), 'check-ham' );
 			// abnormal result: error
 			} else {
