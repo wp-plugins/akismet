@@ -35,7 +35,7 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define( 'AKISMET_VERSION', '3.0' );
+define( 'AKISMET_VERSION', '3.0-beta' );
 define( 'AKISMET__MINIMUM_WP_VERSION', '3.0' );
 define( 'AKISMET__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AKISMET__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
