@@ -172,12 +172,26 @@ class Akismet {
 			self::delete_old_comments();
 		}
 		
-		// We filter it here so that it matches the filtered comment data that we'll have to compare against later.
-		// wp_filter_comment expects comment_author_IP
-		self::$last_comment = wp_filter_comment( array_merge( array( 'comment_author_IP' => self::get_ip_address() ), $commentdata ) );
+		self::set_last_comment( $commentdata );
 		self::fix_scheduled_recheck();
 
 		return self::$last_comment;
+	}
+	
+	public static function set_last_comment( $comment ) {
+		if ( is_null( $comment ) ) {
+			self::$last_comment = null;
+		}
+		else {
+			// We filter it here so that it matches the filtered comment data that we'll have to compare against later.
+			// wp_filter_comment expects comment_author_IP
+			self::$last_comment = wp_filter_comment(
+				array_merge(
+					array( 'comment_author_IP' => self::get_ip_address() ),
+					$comment
+				)
+			);
+		}
 	}
 
 	// this fires on wp_insert_comment.  we can't update comment_meta when auto_check_comment() runs
