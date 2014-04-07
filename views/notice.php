@@ -78,4 +78,14 @@
 <div class="wrap alert critical">
 	<h3 class="key-status"><?php esc_html_e( 'The key you entered could not be verified because a connection to akismet.com could not be established. Please check your server configuration.' , 'akismet'); ?></h3>
 </div>
+<?php elseif ( $type == 'limit-reached' && in_array( $level, array( 'yellow', 'red' ) ) ) :?>
+<div class="wrap alert critical">
+	<?php if ( $level == 'yellow' ): ?>
+	<h3 class="key-status failed"><?php esc_html_e("You're using your Akismet key on more sites than your Pro subscription allows.", 'akismet'); ?></h3>
+	<p class="description"><?php printf( __('If you would like to use Akismet on more than 10 sites, you will need to <a href="%s" target="_blank">upgrade to an Enterprise subscription</a>. If you have any questions, please <a href="%s" target="_blank">get in touch with our support team</a>', 'akismet'), 'https://akismet.com/account/', 'https://akismet.com/contact/'); ?></p>
+	<?php elseif ( $level == 'red' ): ?>
+	<h3 class="key-status failed"><?php esc_html_e("You're using Akismet on far too many sites for your Pro subscription.", 'akismet'); ?></h3>
+	<p class="description"><?php printf( __('To continue your service, <a href="%s" target="_blank">upgrade to an Enterprise subscription</a>, which covers an unlimited number of sites. Please <a href="%s" target="_blank">contact our support team</a> with any questions.', 'akismet'), 'https://akismet.com/account/', 'https://akismet.com/contact/'); ?></p>
+	<?php endif; ?>
+</div>
 <?php endif;?>

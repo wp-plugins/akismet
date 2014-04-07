@@ -182,7 +182,7 @@ class Akismet_Admin {
 						'content'	=>
 							'<p><strong>' . esc_html__( 'Akismet Configuration' , 'akismet') . '</strong></p>' .
 							'<p><strong>' . esc_html__( 'API Key' , 'akismet') . '</strong> - ' . esc_html__( 'Enter/remove an API key.' , 'akismet') . '</p>' .
-							'<p><strong>' . esc_html__( 'Delete spam on posts more than a month old' , 'akismet') . '</strong> - ' . esc_html__( 'Automatically delete spam comments on posts that are older than a month old.' , 'akismet') . '</p>' .
+							'<p><strong>' . esc_html__( 'Automatically delete spam from posts older than 30 days' , 'akismet') . '</strong> - ' . esc_html__( 'Automatically delete spam comments on posts that are older than 30 days old.' , 'akismet') . '</p>' .
 							'<p><strong>' . esc_html__( 'Show the number of approved comments beside each comment author' , 'akismet') . '</strong> - ' . esc_html__( 'Show the number of approved comments beside each comment author in the comments list page.' , 'akismet') . '</p>',
 					)
 				);
@@ -742,6 +742,22 @@ class Akismet_Admin {
 			
 		return $akismet_user;
 	}
+	
+	public static function verify_wpcom_key( $api_key, $user_id, $token = '' ) {
+		$akismet_account = Akismet::http_post( http_build_query( array(
+			'user_id'          => $user_id,
+			'api_key'          => $api_key,
+			'token'            => $token,
+			'get_account_type' => 'true'
+		) ), 'verify-wpcom-key' );
+
+		if ( ! empty( $akismet_account[1] ) )
+			$akismet_account = json_decode( $akismet_account[1] );
+
+		Akismet::log( compact( 'akismet_account' ) );
+		
+		return $akismet_account;
+	}
 
 	public static function display_alert() {
 		Akismet::view( 'notice', array(
@@ -787,33 +803,25 @@ class Akismet_Admin {
 			self::display_configuration_page();
 			return;
 		}
-
+		
+		//the user can choose to auto connect their API key by clicking a button on the akismet done page
+		//if jetpack, get verified api key by using connected wpcom user id
+		//if no jetpack, get verified api key by using an akismet token	
+		
 		$akismet_user = false;
-
-		if ( class_exists( 'Jetpack' ) ) {
-			if ( $jetpack_user = self::get_jetpack_user() ) {
-
-				$akismet_user = Akismet::http_post( http_build_query( array(
-					'user_id'          => $jetpack_user['user_id'],
-					'api_key'          => $jetpack_user['api_key'],
-					'get_account_type' => 'true'
-				) ), 'verify-wpcom-key' );
-
-				if ( ! empty( $akismet_user[1] ) )
-					$akismet_user = json_decode( $akismet_user[1] );
-
-				Akismet::log( compact( 'akismet_user' ) );
-			}
-
-			if ( isset( $_GET['action'] ) ) {
-				if ( $_GET['action'] == 'save-key' ) {
-					//auto save jetpack user if the correct wp user id is passed back from akismet done page
-					if ( isset( $_GET['id'] ) && (int) $_GET['id'] == $akismet_user->ID ) {
-						self::save_key( $akismet_user->api_key );
-						self::display_notice();
-						self::display_configuration_page();
-						return;
-					}
+		
+		if ( isset( $_GET['token'] ) && preg_match('/^(\d+)-[0-9a-f]{20}$/', $_GET['token'] ) )
+			$akismet_user = self::verify_wpcom_key( '', '', $_GET['token'] );
+		elseif ( $jetpack_user = self::get_jetpack_user() )
+			$akismet_user = self::verify_wpcom_key( $jetpack_user['api_key'], $jetpack_user['user_id'] );
+			
+		if ( isset( $_GET['action'] ) ) {
+			if ( $_GET['action'] == 'save-key' ) {
+				if ( is_object( $akismet_user ) ) {
+					self::save_key( $akismet_user->api_key );
+					self::display_notice();
+					self::display_configuration_page();
+					return;				
 				}
 			}
 		}
@@ -865,9 +873,13 @@ class Akismet_Admin {
 
 				Akismet::view( 'notice', array( 'type' => 'active-notice', 'time_saved' => $time_saved ) );
 			}
+			
+			if ( !empty( $akismet_user->limit_reached ) && in_array( $akismet_user->limit_reached, array( 'yellow', 'red' ) ) ) {
+				Akismet::view( 'notice', array( 'type' => 'limit-reached', 'level' => $akismet_user->limit_reached ) );
+			}
 		}
 		
-		if ( !isset( self::$notices['status'] ) && in_array( $akismet_user->status, array( 'cancelled', 'suspended', 'missing' ) ) )				
+		if ( !isset( self::$notices['status'] ) && in_array( $akismet_user->status, array( 'cancelled', 'suspended', 'missing' ) ) )	
 			Akismet::view( 'notice', array( 'type' => $akismet_user->status ) );
 
 		Akismet::log( compact( 'stat_totals', 'akismet_user' ) );
