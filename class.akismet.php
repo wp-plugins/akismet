@@ -664,8 +664,14 @@ class Akismet {
 
 		// only call update_option() if the value has changed
 		if ( $code != get_option( 'akismet_alert_code' ) ) {
-			update_option( 'akismet_alert_code', $code );
-			update_option( 'akismet_alert_msg', $msg );
+			if ( ! $code ) {
+				delete_option( 'akismet_alert_code' );
+				delete_option( 'akismet_alert_msg' );
+			}
+			else {
+				update_option( 'akismet_alert_code', $code );
+				update_option( 'akismet_alert_msg', $msg );
+			}
 		}
 	}
 
