@@ -8,7 +8,8 @@ class Akismet {
 	private static $last_comment = '';
 	private static $initiated = false;
 	private static $prevent_moderation_email_for_these_comments = array();
-
+	private static $last_comment_is_spam = false;
+	
 	public static function init() {
 		if ( ! self::$initiated ) {
 			self::init_hooks();
@@ -37,6 +38,7 @@ class Akismet {
 		add_action( 'comment_form', array( 'Akismet', 'inject_ak_js' ) );
 
 		add_filter( 'comment_moderation_recipients', array( 'Akismet', 'disable_moderation_emails_if_unreachable' ), 1000, 2 );
+		add_filter( 'pre_comment_approved', array( 'Akismet', 'comment_is_spam' ), 10, 2 );
 
 		if ( '3.0.5' == $GLOBALS['wp_version'] ) {
 			remove_filter( 'comment_text', 'wp_kses_data' );
@@ -65,6 +67,7 @@ class Akismet {
 	}
 
 	public static function auto_check_comment( $commentdata ) {
+		self::$last_comment_is_spam = false;
 
 		$comment = $commentdata;
 
@@ -126,7 +129,7 @@ class Akismet {
 
 		if ( 'true' == $response[1] ) {
 			// akismet_spam_count will be incremented later by comment_is_spam()
-			add_filter('pre_comment_approved', array( 'Akismet',  'comment_is_spam' ), 10, 2 );
+			self::$last_comment_is_spam = true;
 
 			$discard = ( isset( $commentdata['akismet_pro_tip'] ) && $commentdata['akismet_pro_tip'] === 'discard' && self::allow_discard() );
 
@@ -147,7 +150,7 @@ class Akismet {
 				die();
 			}
 		}
-
+		
 		// if the response is neither true nor false, hold the comment for moderation and schedule a recheck
 		if ( 'true' != $response[1] && 'false' != $response[1] ) {
 			if ( !current_user_can('moderate_comments') ) {
@@ -550,7 +553,7 @@ class Akismet {
 	// filter handler used to return a spam result to pre_comment_approved
 	public static function comment_is_spam( $approved, $comment ) {	
 		// Only do this if it's the correct comment
-		if ( !self::matches_last_comment( $comment ) ) {
+		if ( ! self::$last_comment_is_spam || ! self::matches_last_comment( $comment ) ) {
 			self::log( "comment_is_spam mismatched comment, returning unaltered $approved" );
 			return $approved;
 		}
