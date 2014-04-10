@@ -53,7 +53,7 @@
 						postboxes.add_postbox_toggles( 'plugins_page_akismet-key-config' );
 				});
 				</script>
-				<div class="postbox-container" style="width:59%;">
+				<div class="postbox-container" style="width: 55%;margin-right: 10px;">
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 						<div id="referrers" class="postbox ">
 							<div class="handlediv" title="Click to toggle"><br></div>
@@ -64,23 +64,31 @@
 										<tbody>
 											<?php if ( !defined( 'WPCOM_API_KEY' ) ):?>
 											<tr>
-												<th scope="row" align="left" width="10%"><?php esc_html_e('API Key', 'akismet');?></th>
+												<th width="10%" align="left" scope="row"><?php esc_html_e('API Key', 'akismet');?></th>
 												<td width="5%"/>
 												<td align="left">
-													<span><input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo esc_attr( get_option('wordpress_api_key') ); ?>" class="regular-text code <?php echo $akismet_user->status;?>"></span>
+													<span class="api-key"><input id="key" name="key" type="text" size="15" maxlength="12" value="<?php echo esc_attr( get_option('wordpress_api_key') ); ?>" class="regular-text code <?php echo $akismet_user->status;?>"></span>
 												</td>
 											</tr>
 											<?php endif; ?>
 											<tr>
-												<th width="10%"></th>
+												<th align="left" scope="row"><?php esc_html_e('Comments', 'akismet');?></th>
 												<td></td>
-												<td>
+												<td align="left">
 													<p>
-														<label for="akismet_show_user_comments_approved" title="<?php esc_attr_e( 'Show approved comments' , 'akismet'); ?>"><input name="akismet_show_user_comments_approved" id="akismet_show_user_comments_approved" value="true" type="checkbox" <?php echo get_option('akismet_show_user_comments_approved') == 'true' ? 'checked="checked"':''; ?>> <?php esc_html_e('Show the number of approved comments beside each comment author', 'akismet'); ?></label>
+														<label for="akismet_show_user_comments_approved" title="<?php esc_attr_e( 'Show approved comments' , 'akismet'); ?>"><input name="akismet_show_user_comments_approved" id="akismet_show_user_comments_approved" value="1" type="checkbox" <?php checked('1', get_option('akismet_show_user_comments_approved')); ?>> <?php esc_html_e('Show the number of approved comments beside each comment author', 'akismet'); ?></label>
 													</p>
-													<p>
-														<label for="akismet_discard_month" title="<?php esc_attr_e( 'Auto-detete spam from old posts' , 'akismet'); ?>"><input name="akismet_discard_month" id="akismet_discard_month" value="true" type="checkbox" <?php echo get_option('akismet_discard_month') == 'true' ? 'checked="checked"':''; ?>> <?php esc_html_e('Automatically delete spam from posts older than 30 days', 'akismet'); ?></label><span class="note"><strong><?php esc_html_e('Note:', 'akismet');?></strong> <?php printf( __( 'Spam in the <a href="%s">spam folder</a> older than 15 days is deleted automatically.' , 'akismet'), admin_url( 'edit-comments.php?type=spam' ) );?></span><div class="clear"></div>
-													</p>
+												</td>
+											</tr>
+											<tr>
+												<th class="strictness" align="left" scope="row"><?php esc_html_e('Strictness', 'akismet'); ?></th>
+												<td></td>
+												<td align="left">
+													<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Akismet anti-spam strictness', 'akismet'); ?></span></legend>
+													<p><label for="akismet_strictness_1"><input type="radio" name="akismet_strictness" id="akismet_strictness_1" value="1" <?php checked('1', get_option('akismet_strictness')); ?> /> <?php esc_html_e('Silently discard the worst and most pervasive spam so I never see it.', 'akismet'); ?></label></p>
+													<p><label for="akismet_strictness_0"><input type="radio" name="akismet_strictness" id="akismet_strictness_0" value="0" <?php checked('0', get_option('akismet_strictness')); ?> /> <?php esc_html_e('Always put spam in the Spam folder for review.', 'akismet'); ?></label></p>
+													</fieldset>
+													<span class="note"><strong><?php esc_html_e('Note:', 'akismet');?></strong> <?php printf( __( 'Spam in the <a href="%s">spam folder</a> older than 15 days is deleted automatically.' , 'akismet'), admin_url( 'edit-comments.php?type=spam' ) );?></span>
 												</td>
 											</tr>
 										</tbody>
@@ -104,7 +112,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="postbox-container" style="width:39%;float: right;">
+				<div class="postbox-container" style="width:44%;">
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 						<div id="referrers" class="postbox ">
 							<div class="handlediv" title="Click to toggle"><br></div>

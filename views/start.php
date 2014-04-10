@@ -1,7 +1,7 @@
 <div class="no-key config-wrap"><?php
 	if ( $akismet_user ) :
 		if ( $akismet_user->status == 'active' ) : // ask do they want to use akismet account found using jetpack wpcom connection ?>
-<p><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site. To setup Akismet, select one of the options below.', 'akismet'); ?></p>
+<p style="margin-right:10px"><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site. To setup Akismet, select one of the options below.', 'akismet'); ?></p>
 <div class="activate-highlight activate-option">
 	<div class="option-description">
 		<strong class="small-heading"><?php esc_html_e('Connected via Jetpack', 'akismet'); ?></strong>

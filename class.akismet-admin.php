@@ -182,8 +182,8 @@ class Akismet_Admin {
 						'content'	=>
 							'<p><strong>' . esc_html__( 'Akismet Configuration' , 'akismet') . '</strong></p>' .
 							'<p><strong>' . esc_html__( 'API Key' , 'akismet') . '</strong> - ' . esc_html__( 'Enter/remove an API key.' , 'akismet') . '</p>' .
-							'<p><strong>' . esc_html__( 'Automatically delete spam from posts older than 30 days' , 'akismet') . '</strong> - ' . esc_html__( 'Automatically delete spam comments on posts that are older than 30 days old.' , 'akismet') . '</p>' .
-							'<p><strong>' . esc_html__( 'Show the number of approved comments beside each comment author' , 'akismet') . '</strong> - ' . esc_html__( 'Show the number of approved comments beside each comment author in the comments list page.' , 'akismet') . '</p>',
+							'<p><strong>' . esc_html__( 'Comments' , 'akismet') . '</strong> - ' . esc_html__( 'Show the number of approved comments beside each comment author in the comments list page.' , 'akismet') . '</p>' .
+							'<p><strong>' . esc_html__( 'Strictness' , 'akismet') . '</strong> - ' . esc_html__( 'Choose to either discard the worst spam automatically or to always put all spam in spam folder.' , 'akismet') . '</p>',
 					)
 				);
 
@@ -215,8 +215,8 @@ class Akismet_Admin {
 		if ( !wp_verify_nonce( $_POST['_wpnonce'], self::NONCE ) )
 			return false;
 
-		foreach( array( 'akismet_discard_month', 'akismet_show_user_comments_approved' ) as $option ) {
-			update_option( $option, isset( $_POST[$option] ) ? 'true' : 'false' );
+		foreach( array( 'akismet_strictness', 'akismet_show_user_comments_approved' ) as $option ) {
+			update_option( $option, isset( $_POST[$option] ) && (int) $_POST[$option] == 1 ? '1' : '0' );
 		}
 
 		if ( defined( 'WPCOM_API_KEY' ) )
@@ -506,7 +506,7 @@ class Akismet_Admin {
 		if ( $desc )
 			echo '<span class="akismet-status" commentid="'.$comment->comment_ID.'"><a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="' . esc_attr__( 'View comment history' , 'akismet') . '">'.esc_html( $desc ).'</a></span>';
 
-		if ( apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') ) == 'true' ) {
+		if ( apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') ) ) {
 			$comment_count = Akismet::get_user_comments_approved( $comment->user_id, $comment->comment_author_email, $comment->comment_author, $comment->comment_author_url );
 			$comment_count = intval( $comment_count );
 			echo '<span class="akismet-user-comment-count" commentid="'.$comment->comment_ID.'" style="display:none;"><br><span class="akismet-user-comment-counts">'. sprintf( esc_html( _n( '%s approved', '%s approved', $comment_count , 'akismet') ), number_format_i18n( $comment_count ) ) . '</span></span>';
@@ -840,6 +840,10 @@ class Akismet_Admin {
 	public static function display_configuration_page() {
 		$api_key      = Akismet::get_api_key();
 		$akismet_user = self::get_akismet_user( $api_key );
+		
+		// If unset, create the new strictness option using the old discard option to determine its default
+       	if ( get_option( 'akismet_strictness' ) === false )
+        	add_option( 'akismet_strictness', (get_option('akismet_discard_month') === 'true' ? '1' : '0') );
 
 		$blog = parse_url( get_option('home'), PHP_URL_HOST );
 

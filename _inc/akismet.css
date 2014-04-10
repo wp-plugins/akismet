@@ -67,9 +67,9 @@ h2.ak-header {
     padding: 30px;
     background: #7c9936 url('img/logo-full-2x.png') no-repeat 20px center;
     background-size: 185px 33px;
-    margin: -10px -20px 14px -22px;
     height: 33px;
     text-indent: -9999em;
+    margin-right: 10px;
 }
 .checkforspam {
     display: inline-block !important;
@@ -111,6 +111,7 @@ h2.ak-header {
 .activate-highlight {
 	background: #fff;
 	padding: 30px;
+	margin-right: 10px;
 }
 
 .activate-highlight.secondary {
@@ -125,7 +126,6 @@ h2.ak-header {
 	color: #777;
 }
 .activate-highlight .button-primary {
-	padding: 0 20px;
 	margin-top: 15px;
 }
 
@@ -253,6 +253,7 @@ h2.ak-header {
 
 .new-snapspot ul {
 	font-size: 12px;
+	width: 100%;
 }
 
 .new-snapshot ul li {
@@ -262,7 +263,6 @@ h2.ak-header {
 	padding: 0 20px;
     text-transform: uppercase;
 	width: 33%;
-	white-space: nowrap;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -281,7 +281,7 @@ h2.ak-header {
 .new-snapshot ul li span {
     color: #52accc;
 	display: block;
-	font-size: 40px;
+	font-size: 32px;
 	font-weight: lighter;
 	line-height: 1.5em;
 }
@@ -340,10 +340,20 @@ h2.ak-header {
 	text-align: center;
 }
 
+.akismet-settings th.strictness {
+	vertical-align: top;
+	padding-top: 15px;
+}
+
+.akismet-settings input[type=text] {
+	width: 75%;
+}
+
 .akismet-settings span.note{
 	float: left;
 	padding-left: 23px;
 	font-size: 75%;
+	margin-top: -10px;
 }
 
 .clearfix {
