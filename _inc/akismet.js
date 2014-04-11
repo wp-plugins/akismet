@@ -12,7 +12,7 @@ jQuery( function ( $ ) {
 	});
 	$('.akismet-status').each(function () {
 		var thisId = $(this).attr('commentid');
-		$(this).prependTo('#comment-' + thisId + ' .column-comment div:first-child');
+		$(this).prependTo('#comment-' + thisId + ' .column-comment');
 	});
 	$('.akismet-user-comment-count').each(function () {
 		var thisId = $(this).attr('commentid');
