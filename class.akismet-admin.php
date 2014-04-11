@@ -275,7 +275,7 @@ class Akismet_Admin {
 				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comment</a>.',
 				'<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comments</a>.',
 				$count
-			, 'akismet'), 'http://akismet.com/?return=true', esc_url( add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php' ) ) ), number_format_i18n($count) ).'</p>';
+			, 'akismet'), 'https://akismet.com/wordpress/', esc_url( add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( isset( $submenu['edit-comments.php'] ) ? 'edit-comments.php' : 'edit.php' ) ) ), number_format_i18n($count) ).'</p>';
 	}
 
 	// WP 2.5+
@@ -294,9 +294,9 @@ class Akismet_Admin {
 				'<a href="%1$s">Akismet</a> has protected your site from %2$s spam comment already. ',
 				'<a href="%1$s">Akismet</a> has protected your site from %2$s spam comments already. ',
 				$count
-			, 'akismet'), 'http://akismet.com/?return=true', number_format_i18n( $count ) );
+			, 'akismet'), 'https://akismet.com/wordpress/', number_format_i18n( $count ) );
 		} else {
-			$intro = sprintf( __('<a href="%s">Akismet</a> blocks spam from getting to your blog. ', 'akismet'), 'http://akismet.com/?return=true' );
+			$intro = sprintf( __('<a href="%s">Akismet</a> blocks spam from getting to your blog. ', 'akismet'), 'https://akismet.com/wordpress/' );
 		}
 
 		$link = function_exists( 'esc_url' ) ? esc_url( $link ) : clean_url( $link );
