@@ -12,7 +12,7 @@
 					<a href="<?php echo esc_url( Akismet_Admin::get_page_url( 'stats' ) ); ?>" class=""><?php esc_html_e( 'Summaries' , 'akismet');?></a>
 				</span>
 
-				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( '%s://akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', is_ssl()?'https':'http', $blog, $api_key );?>"></iframe>
+				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( '//akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', urlencode( get_bloginfo('url') ), $api_key );?>"></iframe>
 				<ul>
 					<li>
 						<h3><?php esc_html_e( 'Past six months' , 'akismet');?></h3>
@@ -131,7 +131,20 @@
 											<th scope="row" align="left"><?php esc_html_e( 'Status' , 'akismet');?></th>
 											<td width="5%"/>
 											<td align="left">
-												<span><?php echo ucwords( $akismet_user->status ); ?></span>
+												<span><?php 
+													if ( 'active-dunning' == $akismet_user->status ) :
+														esc_html_e( 'Active (Dunning)', 'akismet' ); 
+													elseif ( 'cancelled' == $akismet_user->status ) :
+														esc_html_e( 'Cancelled', 'akismet' ); 
+													elseif ( 'suspended' == $akismet_user->status ) :
+														esc_html_e( 'Suspended', 'akismet' );
+													elseif ( 'missing' == $akismet_user->status ) :
+														esc_html_e( 'Missing', 'akismet' ); 
+													elseif ( 'no-sub' == $akismet_user->status ) :
+														esc_html_e( 'No Subscription Found', 'akismet' );
+													else :
+														esc_html_e( 'Active', 'akismet' );  
+													endif; ?></span>
 											</td>
 										</tr>
 										<?php if ( $akismet_user->next_billing_date ) : ?>
@@ -148,7 +161,7 @@
 							</div>
 							<div id="major-publishing-actions">
 								<div id="publishing-action">
-									<?php Akismet::view( 'get', array( 'text' => ( $akismet_user->account_type == 'free-api-key' ? __( 'Upgrade' , 'akismet') : __( 'Change' , 'akismet') ), 'redirect' => 'upgrade' ) ); ?>
+									<?php Akismet::view( 'get', array( 'text' => ( $akismet_user->account_type == 'free-api-key' && $akismet_user->status == 'active' ? __( 'Upgrade' , 'akismet') : __( 'Change' , 'akismet') ), 'redirect' => 'upgrade' ) ); ?>
 								</div>
 								<div class="clear"></div>
 							</div>
