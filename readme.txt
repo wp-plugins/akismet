@@ -42,6 +42,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 * Fix Akismet settings page to be responsive
 * Drop legacy code
 * Tidy up CSS an Javascript
+* Replace the old discard setting with a new "discard pervasive spam" feature.
 
 = 2.6.0 =
 * Add ajax paging to the check for spam button to handle large volumes of comments
