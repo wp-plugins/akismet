@@ -12,7 +12,7 @@
 					<a href="<?php echo esc_url( Akismet_Admin::get_page_url( 'stats' ) ); ?>" class=""><?php esc_html_e( 'Summaries' , 'akismet');?></a>
 				</span>
 
-				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( 'http://akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', $blog, $api_key );?>"></iframe>
+				<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 215px; overflow: hidden;" src="<?php printf( '%s://akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=180', is_ssl()?'https':'http', $blog, $api_key );?>"></iframe>
 				<ul>
 					<li>
 						<h3><?php esc_html_e( 'Past six months' , 'akismet');?></h3>
