@@ -24,7 +24,7 @@
 <div class="activate-highlight secondary activate-option">
 	<div class="option-description">
 		<strong><?php esc_html_e('Manually enter an API key', 'akismet'); ?></strong>
-		<p><?php esc_html_e('If you have another API key you want to use.', 'akismet'); ?></p>
+		<p><?php esc_html_e('If you already know your API key.', 'akismet'); ?></p>
 	</div>
 	<form action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="post" id="akismet-enter-api-key" class="right">
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
@@ -57,7 +57,7 @@
 <div class="activate-highlight secondary activate-option">
 	<div class="option-description">
 		<strong><?php esc_html_e('Manually enter an API key', 'akismet'); ?></strong>
-		<p><?php esc_html_e('If you have another API key you want to use.', 'akismet'); ?></p>
+		<p><?php esc_html_e('If you already know your API key.', 'akismet'); ?></p>
 	</div>
 	<form action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="post" id="akismet-enter-api-key" class="right">
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
@@ -89,7 +89,7 @@
 <div class="activate-highlight secondary activate-option">
 	<div class="option-description">
 		<strong><?php esc_html_e('Manually enter an API key', 'akismet'); ?></strong>
-		<p><?php esc_html_e('If you have another API key you want to use.', 'akismet'); ?></p>
+		<p><?php esc_html_e('If you already know your API key.', 'akismet'); ?></p>
 	</div>
 	<form action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="post" id="akismet-enter-api-key" class="right">
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
@@ -112,15 +112,15 @@
 <p><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site. To setup Akismet, select one of the options below.', 'akismet'); ?></p>
 <div class="activate-highlight activate-option">
 	<div class="option-description">
-		<strong><?php esc_html_e( 'New to Akismet?' , 'akismet');?></strong>
-		<p><?php esc_html_e('Get started now to squash the comment and trackback spam you get.', 'akismet'); ?></p>
+		<strong><?php esc_html_e( 'Activate Akismet' , 'akismet');?></strong>
+		<p><?php esc_html_e('Log in or create an account to get your API key.', 'akismet'); ?></p>
 	</div>
-	<?php Akismet::view( 'get', array( 'text' => __( 'Get an Akismet account' , 'akismet'), 'classes' => array( 'right', 'button', 'button-primary' ) ) ); ?>
+	<?php Akismet::view( 'get', array( 'text' => __( 'Get your API key' , 'akismet'), 'classes' => array( 'right', 'button', 'button-primary' ) ) ); ?>
 </div>
 <div class="activate-highlight secondary activate-option">
 	<div class="option-description">
 		<strong><?php esc_html_e('Manually enter an API key', 'akismet'); ?></strong>
-		<p><?php esc_html_e('If you have another API key you want to use.', 'akismet'); ?></p>
+		<p><?php esc_html_e('If you already know your API key.', 'akismet'); ?></p>
 	</div>
 	<form action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="post" id="akismet-enter-api-key" class="right">
 		<input id="key" name="key" type="text" size="15" maxlength="12" value="" class="regular-text code">
