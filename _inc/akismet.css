@@ -65,7 +65,7 @@ span.comment-link:after {
 }
 h2.ak-header {
     padding: 30px;
-    background: #7c9936 url('img/logo-full-2x.png') no-repeat 20px center;
+    background: #649316 url('img/logo-full-2x.png') no-repeat 20px center;
     background-size: 185px 33px;
     height: 33px;
     text-indent: -9999em;
@@ -92,7 +92,7 @@ h2.ak-header {
     padding: 20px;
 }
 .activate-option.clicked {
-	background: #7c9936;
+	background: #649316;
 	color: #fff;
 }
 .activate-option.clicked:hover {
@@ -142,7 +142,7 @@ h2.ak-header {
 	color: #dd3d36;
 }
 .success {
-	color: #7c9936;
+	color: #649316;
 }
 .option-description {
     float: left;
@@ -211,7 +211,7 @@ h2.ak-header {
 }
 
 .alert.active {
-	background-color: #7c9936;
+	background-color: #649316;
 }
 
 .alert p.key-status {
