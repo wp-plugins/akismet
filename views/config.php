@@ -132,9 +132,7 @@
 											<td width="5%"/>
 											<td align="left">
 												<span><?php 
-													if ( 'active-dunning' == $akismet_user->status ) :
-														esc_html_e( 'Active (Dunning)', 'akismet' ); 
-													elseif ( 'cancelled' == $akismet_user->status ) :
+													if ( 'cancelled' == $akismet_user->status ) :
 														esc_html_e( 'Cancelled', 'akismet' ); 
 													elseif ( 'suspended' == $akismet_user->status ) :
 														esc_html_e( 'Suspended', 'akismet' );
