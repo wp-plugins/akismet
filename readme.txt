@@ -2,8 +2,8 @@
 Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, cfinke, automattic
 Tags: akismet, comments, spam
 Requires at least: 3.0
-Tested up to: 3.8.1
-Stable tag: 2.6.0
+Tested up to: 3.9
+Stable tag: 3.0.0
 License: GPLv2 or later
 
 Akismet checks your comments against the Akismet web service to see if they look like spam or not.
@@ -31,7 +31,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
-= 3.0-beta =
+= 3.0.0 =
 * Move Akismet to Settings menu
 * Drop Akismet Stats menu
 * Add stats snapshot to Akismet settings
@@ -41,7 +41,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 * Fix Update Check for Spam to use ajax to avoid page timing out
 * Fix Akismet settings page to be responsive
 * Drop legacy code
-* Tidy up CSS an Javascript
+* Tidy up CSS and Javascript
 * Replace the old discard setting with a new "discard pervasive spam" feature.
 
 = 2.6.0 =
