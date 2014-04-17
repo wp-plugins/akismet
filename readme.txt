@@ -13,7 +13,7 @@ Akismet checks your comments against the Akismet web service to see if they look
 Akismet checks your comments against the Akismet web service to see if they look like spam or not and lets you
 review the spam it catches under your blog's "Comments" admin screen.
 
-Major new features in Akismet 2.5 include:
+Major new features in Akismet include:
 
 * A comment status history, so you can easily see which comments were caught or cleared by Akismet, and which were spammed or unspammed by a moderator
 * Links are highlighted in the comment body, to reveal hidden or misleading links
@@ -30,6 +30,9 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 1, 2, 3: You're done!
 
 == Changelog ==
+
+= 3.0.1-alpha =
+* Removed dependency on PHP's fsockopen function
 
 = 3.0.0 =
 * Move Akismet to Settings menu

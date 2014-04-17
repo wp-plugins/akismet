@@ -684,8 +684,8 @@ class Akismet_Admin {
 	public static function check_server_connectivity() {
 		$test_host = 'rest.akismet.com';
 
-		// Some web hosts may disable one or both functions
-		if ( !function_exists('fsockopen') || !function_exists('gethostbynamel') )
+		// Some web hosts may disable this function
+		if ( !function_exists('gethostbynamel') )
 			return array();
 
 		$ips = gethostbynamel( $test_host );
@@ -927,7 +927,7 @@ class Akismet_Admin {
 		if ( empty( $servers ) || $fail_count > 0 )
 			$type = 'servers-be-down';
 
-		if ( !function_exists('fsockopen') || !function_exists('gethostbynamel') )
+		if ( !function_exists('gethostbynamel') )
 			$type = 'missing-functions';
 
 		if ( !empty( $type ) )
