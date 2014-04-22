@@ -52,7 +52,7 @@ class Akismet {
 	}
 
 	public static function check_key_status( $key, $ip = null ) {
-		return self::http_post( http_build_query( array( 'key' => $key, 'blog' => get_option('home') ) ), 'verify-key', $ip );
+		return self::http_post( build_query( array( 'key' => $key, 'blog' => get_option('home') ) ), 'verify-key', $ip );
 	}
 
 	public static function verify_key( $key, $ip = null ) {
@@ -115,7 +115,7 @@ class Akismet {
 		$post = get_post( $comment['comment_post_ID'] );
 		$comment[ 'comment_post_modified_gmt' ] = $post->post_modified_gmt;
 
-		$response = self::http_post( http_build_query( $comment ), 'comment-check' );
+		$response = self::http_post( build_query( $comment ), 'comment-check' );
 
 		do_action( 'akismet_comment_check_response', $response );
 
@@ -363,7 +363,7 @@ class Akismet {
 		if ( self::is_test_mode() )
 			$c['is_test'] = 'true';
 
-		$response = self::http_post( http_build_query( $c ), 'comment-check' );
+		$response = self::http_post( build_query( $c ), 'comment-check' );
 
 		return ( is_array( $response ) && ! empty( $response[1] ) ) ? $response[1] : false;
 	}
