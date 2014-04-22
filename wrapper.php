@@ -15,7 +15,7 @@ function akismet_test_mode() {
 function akismet_http_post( $request, $host, $path, $port = 80, $ip = null ) {
 	_deprecated_function( __FUNCTION__, '3.0', 'Akismet::http_post()' );
 
-	$path = str_ireplace( '/1.1/', '', $path );
+	$path = str_replace( '/1.1/', '', $path );
 
 	return Akismet::http_post( $request, $path, $ip ); 
 }
