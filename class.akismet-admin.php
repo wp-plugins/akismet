@@ -872,7 +872,7 @@ class Akismet_Admin {
 
 		if ( empty( self::$notices ) ) {
 			//show status
-			if ( $akismet_user->status == 'active' && $akismet_user->account_type == 'free-api-key' ) {
+			if ( ! empty( $stat_totals['all'] ) && isset( $stat_totals['all']->time_saved ) && $akismet_user->status == 'active' && $akismet_user->account_type == 'free-api-key' ) {
 
 				$time_saved = false;
 
