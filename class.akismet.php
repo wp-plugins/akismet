@@ -671,7 +671,6 @@ class Akismet {
 
 	public static function load_form_js() {
 		wp_enqueue_script( 'akismet-form', AKISMET__PLUGIN_URL . '_inc/form.js', array( 'jquery' ), AKISMET_VERSION );
-		wp_print_scripts( 'akismet-form' );
 	}
 
 	public static function inject_ak_js( $fields ) {
