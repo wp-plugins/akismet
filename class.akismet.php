@@ -48,7 +48,7 @@ class Akismet {
 	}
 
 	public static function get_api_key() {
-		return defined('WPCOM_API_KEY') ? constant('WPCOM_API_KEY') : get_option('wordpress_api_key');
+		return apply_filters( 'akismet_get_api_key', defined('WPCOM_API_KEY') ? constant('WPCOM_API_KEY') : get_option('wordpress_api_key') );
 	}
 
 	public static function check_key_status( $key, $ip = null ) {
