@@ -127,7 +127,12 @@ class Akismet {
 		if ( isset( $response[0]['x-akismet-pro-tip'] ) )
 	        $commentdata['akismet_pro_tip'] = $response[0]['x-akismet-pro-tip'];
 
-		if ( 'true' == $response[1] ) {
+		if ( isset( $response[0]['x-akismet-error'] ) ) {
+			// An error occurred that we anticipated (like a suspended key) and want the user to act on.
+			// Send to moderation.
+			self::$last_comment_result = '0';
+		}
+		else if ( 'true' == $response[1] ) {
 			// akismet_spam_count will be incremented later by comment_is_spam()
 			self::$last_comment_result = 'spam';
 
