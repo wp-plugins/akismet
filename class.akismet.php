@@ -33,7 +33,7 @@ class Akismet {
 		if ( $akismet_comment_nonce_option == 'true' || $akismet_comment_nonce_option == '' )
 			add_action( 'comment_form',  array( 'Akismet',  'add_comment_nonce' ), 1 );
 
-		add_action( 'admin_footer-edit-comments.php', array( 'Akismet', 'load_form_js' ) );
+		add_action( 'admin_head-edit-comments.php', array( 'Akismet', 'load_form_js' ) );
 		add_action( 'comment_form', array( 'Akismet', 'load_form_js' ) );
 		add_action( 'comment_form', array( 'Akismet', 'inject_ak_js' ) );
 
