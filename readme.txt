@@ -2,7 +2,7 @@
 Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, cfinke, automattic
 Tags: akismet, comments, spam
 Requires at least: 3.0
-Tested up to: 3.9
+Tested up to: 3.9.1
 Stable tag: 3.0.0
 License: GPLv2 or later
 
@@ -32,6 +32,8 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 = 3.0.1-alpha =
 * Removed dependency on PHP's fsockopen function
+* Fix spam/ham reports to work outside of dashboard, i.e. Notifications
+* Remove jQuery dependancy for comment form
 
 = 3.0.0 =
 * Move Akismet to Settings menu

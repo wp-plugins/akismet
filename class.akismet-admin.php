@@ -33,7 +33,6 @@ class Akismet_Admin {
 		add_action( 'activity_box_end', array( 'Akismet_Admin', 'dashboard_stats' ) );
 		add_action( 'rightnow_end', array( 'Akismet_Admin', 'rightnow_stats' ) );
 		add_action( 'manage_comments_nav', array( 'Akismet_Admin', 'check_for_spam_button' ) );
-		add_action( 'transition_comment_status', array( 'Akismet_Admin', 'transition_comment_status' ), 10, 3 );
 		add_action( 'admin_action_akismet_recheck_queue', array( 'Akismet_Admin', 'recheck_queue' ) );
 		add_action( 'wp_ajax_akismet_recheck_queue', array( 'Akismet_Admin', 'recheck_queue' ) );
 		add_action( 'wp_ajax_comment_author_deurl', array( 'Akismet_Admin', 'remove_comment_author_url' ) );
@@ -64,7 +63,7 @@ class Akismet_Admin {
 	}
 	
 	public static function admin_plugin_settings_link( $links ) { 
-  		$settings_link = '<a href="'.self::get_page_url().'">'.__('Settings', 'akismet').'</a>';
+  		$settings_link = '<a href="'.esc_url( self::get_page_url() ).'">'.__('Settings', 'akismet').'</a>';
   		array_unshift( $links, $settings_link ); 
   		return $links; 
 	}
@@ -331,51 +330,7 @@ class Akismet_Admin {
 		else
 			$link = add_query_arg( array( 'page' => 'akismet-admin', 'recheckqueue' => 'true', 'noheader' => 'true' ), admin_url( 'edit-comments.php' ) );
 
-		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . esc_url( $link ) . '">' . esc_html__('Check for Spam', 'akismet') . '</a>';
-		echo '<img src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" class="checkforspam-spinner" />';
-	}
-
-	public static function transition_comment_status( $new_status, $old_status, $comment ) {
-		if ( $new_status == $old_status )
-			return;
-
-		# we don't need to record a history item for deleted comments
-		if ( $new_status == 'delete' )
-			return;
-
-		if ( !is_admin() )
-			return;
-
-		if ( !current_user_can( 'edit_post', $comment->comment_post_ID ) && !current_user_can( 'moderate_comments' ) )
-			return;
-
-		if ( defined('WP_IMPORTING') && WP_IMPORTING == true )
-			return;
-
-		// if this is present, it means the status has been changed by a re-check, not an explicit user action
-		if ( get_comment_meta( $comment->comment_ID, 'akismet_rechecking' ) )
-			return;
-
-		global $current_user;
-		$reporter = '';
-		if ( is_object( $current_user ) )
-			$reporter = $current_user->user_login;
-
-		// Assumption alert:
-		// We want to submit comments to Akismet only when a moderator explicitly spams or approves it - not if the status
-		// is changed automatically by another plugin.  Unfortunately WordPress doesn't provide an unambiguous way to
-		// determine why the transition_comment_status action was triggered.  And there are several different ways by which
-		// to spam and unspam comments: bulk actions, ajax, links in moderation emails, the dashboard, and perhaps others.
-		// We'll assume that this is an explicit user action if POST or GET has an 'action' key.
-		if ( isset($_POST['action']) || isset($_GET['action']) ) {
-			if ( $new_status == 'spam' && ( $old_status == 'approved' || $old_status == 'unapproved' || !$old_status ) ) {
-				return self::submit_spam_comment( $comment->comment_ID );
-			} elseif ( $old_status == 'spam' && ( $new_status == 'approved' || $new_status == 'unapproved' ) ) {
-				return self::submit_nonspam_comment( $comment->comment_ID );
-			}
-		}
-
-		Akismet::update_comment_history( $comment->comment_ID, sprintf( __('%1$s changed the comment status to %2$s', 'akismet'), $reporter, $new_status ), 'status-' . $new_status );
+		echo '</div><div class="alignleft"><a class="button-secondary checkforspam" href="' . esc_url( $link ) . '">' . esc_html__('Check for Spam', 'akismet') . '</a><span class="checkforspam-spinner"></span>';
 	}
 
 	public static function recheck_queue() {
@@ -560,102 +515,6 @@ class Akismet_Admin {
 		return preg_replace_callback( '#<a ([^>]*)href="([^"]+)"([^>]*)>(.*?)</a>#i', array( 'Akismet_Admin', 'text_add_link_callback' ), $comment_text );
 	}
 
-	public static function submit_spam_comment( $comment_id ) {
-		global $wpdb, $current_user, $current_site;
-
-		$comment_id = (int) $comment_id;
-
-		$comment = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->comments} WHERE comment_ID = %d", $comment_id ) );
-
-		if ( !$comment ) // it was deleted
-			return;
-
-		if ( 'spam' != $comment->comment_approved )
-			return;
-
-		// use the original version stored in comment_meta if available
-		$as_submitted = get_comment_meta( $comment_id, 'akismet_as_submitted', true);
-
-		if ( $as_submitted && is_array( $as_submitted ) && isset( $as_submitted['comment_content'] ) )
-			$comment = (object) array_merge( (array)$comment, $as_submitted );
-
-		$comment->blog         = get_bloginfo('url');
-		$comment->blog_lang    = get_locale();
-		$comment->blog_charset = get_option('blog_charset');
-		$comment->permalink    = get_permalink($comment->comment_post_ID);
-
-		if ( is_object($current_user) )
-			$comment->reporter = $current_user->user_login;
-
-		if ( is_object($current_site) )
-			$comment->site_domain = $current_site->domain;
-
-		$comment->user_role = '';
-		if ( isset( $comment->user_ID ) )
-			$comment->user_role = Akismet::get_user_roles( $comment->user_ID );
-
-		if ( Akismet::is_test_mode() )
-			$comment->is_test = 'true';
-
-		$post = get_post( $comment->comment_post_ID );
-		$comment->comment_post_modified_gmt = $post->post_modified_gmt;
-
-		$response = Akismet::http_post( build_query( $comment ), 'submit-spam' );
-		if ( $comment->reporter ) {
-			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as spam', 'akismet'), $comment->reporter ), 'report-spam' );
-			update_comment_meta( $comment_id, 'akismet_user_result', 'true' );
-			update_comment_meta( $comment_id, 'akismet_user', $comment->reporter );
-		}
-
-		do_action('akismet_submit_spam_comment', $comment_id, $response[1]);
-	}
-
-	public static function submit_nonspam_comment( $comment_id ) {
-		global $wpdb, $current_user, $current_site;
-
-		$comment_id = (int) $comment_id;
-
-		$comment = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->comments} WHERE comment_ID = %d", $comment_id ) );
-		if ( !$comment ) // it was deleted
-			return;
-
-		// use the original version stored in comment_meta if available
-		$as_submitted = get_comment_meta( $comment_id, 'akismet_as_submitted', true);
-
-		if ( $as_submitted && is_array($as_submitted) && isset($as_submitted['comment_content']) )
-			$comment = (object) array_merge( (array)$comment, $as_submitted );
-
-		$comment->blog         = get_bloginfo('url');
-		$comment->blog_lang    = get_locale();
-		$comment->blog_charset = get_option('blog_charset');
-		$comment->permalink    = get_permalink( $comment->comment_post_ID );
-		$comment->user_role    = '';
-
-		if ( is_object($current_user) )
-			$comment->reporter = $current_user->user_login;
-
-		if ( is_object($current_site) )
-			$comment->site_domain = $current_site->domain;
-
-		if ( isset( $comment->user_ID ) )
-			$comment->user_role = Akismet::get_user_roles($comment->user_ID);
-
-		if ( Akismet::is_test_mode() )
-			$comment->is_test = 'true';
-
-		$post = get_post( $comment->comment_post_ID );
-		$comment->comment_post_modified_gmt = $post->post_modified_gmt;
-
-		$response = Akismet::http_post( build_query( $comment ), 'submit-ham' );
-		if ( $comment->reporter ) {
-			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as not spam', 'akismet'), $comment->reporter ), 'report-ham' );
-			update_comment_meta( $comment_id, 'akismet_user_result', 'false' );
-			update_comment_meta( $comment_id, 'akismet_user', $comment->reporter );
-		}
-
-		do_action('akismet_submit_nonspam_comment', $comment_id, $response[1]);
-	}
-
 	// Total spam in queue
 	// get_option( 'akismet_spam_count' ) is the total caught ever
 	public static function get_spam_count( $type = false ) {
@@ -791,9 +650,11 @@ class Akismet_Admin {
 
 	public static function display_spam_check_warning() {
 		Akismet::fix_scheduled_recheck();
+		
+		$link_text = apply_filters( 'akismet_spam_check_warning_link_text', sprintf( __( 'Please check your <a href="%s">Akismet configuration</a> and contact your web host if problems persist.', 'akismet'), esc_url( self::get_page_url() ) ) );
 
 		if ( self::get_number_spam_waiting() > 0 && wp_next_scheduled('akismet_schedule_cron_recheck') > time() )
-			Akismet::view( 'notice', array( 'type' => 'spam-check' ) );
+			Akismet::view( 'notice', array( 'type' => 'spam-check', 'link_text' => $link_text ) );
 	}
 
 	public static function display_invalid_version() {
