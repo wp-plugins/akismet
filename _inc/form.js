@@ -1,1 +1,30 @@
-if(typeof jQuery!=="undefined"){jQuery(function(e){var t=e("#ak_js");if(t.length==0){t=e('<input type="hidden" id="ak_js" name="ak_js" />')}else{t.remove()}t.val((new Date).getTime());e("#commentform, #replyrow td:first").append(t)})}else{document.addEventListener("DOMContentLoaded",function(){var e=document.getElementById("ak_js");if(!e){e=document.createElement("input");e.setAttribute("id","ak_js");e.setAttribute("type","hidden");e.setAttribute("name","ak_js")}else{e.parentNode.removeChild(e)}e.setAttribute("value",(new Date).getTime());var t=document.getElementById("commentform");if(t){t.appendChild(e)}else{var n=document.getElementById("replyrow");if(n){var r=n.getElementsByTagName("td");if(r.length>0){r[0].appendChild(aj_js)}}}},false)}
+var ak_js = document.getElementById( "ak_js" );
+
+if ( ! ak_js ) {
+	ak_js = document.createElement( 'input' );
+	ak_js.setAttribute( 'id', 'ak_js' );
+	ak_js.setAttribute( 'name', 'ak_js' );
+	ak_js.setAttribute( 'type', 'hidden' );
+}
+else {
+	ak_js.parentNode.removeChild( ak_js );
+}
+
+ak_js.setAttribute( 'value', ( new Date() ).getTime() );
+
+var commentForm = document.getElementById( 'commentform' );
+
+if ( commentForm ) {
+	commentForm.appendChild( ak_js );
+}
+else {
+	var replyRowContainer = document.getElementById( 'replyrow' );
+
+	if ( replyRowContainer ) {
+		var children = replyRowContainer.getElementsByTagName( 'td' );
+
+		if ( children.length > 0 ) {
+			children[0].appendChild( ak_js );
+		}
+	}
+}
