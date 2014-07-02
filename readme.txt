@@ -1,7 +1,7 @@
 === Akismet ===
 Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, cfinke, automattic
 Tags: akismet, comments, spam
-Requires at least: 3.0
+Requires at least: 3.1
 Tested up to: 3.9.1
 Stable tag: 3.0.0
 License: GPLv2 or later
