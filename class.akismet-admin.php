@@ -675,11 +675,9 @@ class Akismet_Admin {
 			return $count;
 		} elseif ( 'comments' == $type || 'comment' == $type ) { // comments
 			$type = '';
-		} else { // pingback, trackback, ...
-			$type  = $wpdb->escape( $type );
 		}
 
-		return (int) $wpdb->get_var("SELECT COUNT(comment_ID) FROM {$wpdb->comments} WHERE comment_approved = 'spam' AND comment_type='$type'");
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(comment_ID) FROM {$wpdb->comments} WHERE comment_approved = 'spam' AND comment_type = %s", $type ) );
 	}
 
 	// Check connectivity between the WordPress blog and Akismet's servers.
