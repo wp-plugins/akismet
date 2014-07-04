@@ -123,7 +123,7 @@ class Akismet {
 
 		self::update_alert( $response );
 
-		$commentdata['comment_as_submitted'] = $comment;
+		$commentdata['comment_as_submitted'] = array_intersect_key( $comment, array( 'blog' => '', 'blog_charset' => '', 'blog_lang' => '', 'blog_ua' => '', 'comment_agent' => '', 'comment_author' => '', 'comment_author_IP' => '', 'comment_author_email' => '', 'comment_author_url' => '', 'comment_content' => '', 'comment_date_gmt' => '', 'comment_tags' => '', 'comment_type' => '', 'guid' => '', 'is_test' => '', 'permalink' => '', 'reporter' => '', 'site_domain' => '', 'submit_referer' => '', 'submit_uri' => '', 'user_ID' => '', 'user_agent' => '', 'user_id' => '', 'user_ip' => '' ) );
 		$commentdata['akismet_result']       = $response[1];
 
 		if ( isset( $response[0]['x-akismet-pro-tip'] ) )
