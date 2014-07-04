@@ -43,6 +43,8 @@ class Akismet_Admin {
 		add_filter( 'comment_text', array( 'Akismet_Admin', 'text_add_link_class' ) );
 		
 		add_filter( 'plugin_action_links_'.plugin_basename( plugin_dir_path( __FILE__ ) . 'akismet.php'), array( 'Akismet_Admin', 'admin_plugin_settings_link' ) );
+		
+		add_filter( 'wxr_export_skip_commentmeta', array( 'Akismet_Admin', 'exclude_commentmeta_from_export' ), 10, 3 );
 	}
 
 	public static function admin_init() {
@@ -822,5 +824,21 @@ class Akismet_Admin {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Some commentmeta isn't useful in an export file. Suppress it (when supported).
+	 *
+	 * @param bool $exclude
+	 * @param string $key The meta key
+	 * @param object $meta The meta object
+	 * @return bool Whether to exclude this meta entry from the export.
+	 */
+	public static function exclude_commentmeta_from_export( $exclude, $key, $meta ) {
+		if ( in_array( $key, array( 'akismet_as_submitted', 'akismet_rechecking', 'akismet_delayed_moderation_email' ) ) ) {
+			return true;
+		}
+		
+		return $exclude;
 	}
 }
