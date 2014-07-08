@@ -543,44 +543,66 @@ class Akismet_Admin {
 
 	// Check connectivity between the WordPress blog and Akismet's servers.
 	// Returns an associative array of server IP addresses, where the key is the IP address, and value is true (available) or false (unable to connect).
-	public static function check_server_connectivity() {
-		$test_host = 'rest.akismet.com';
+	public static function check_server_ip_connectivity() {
+		
+		$servers = $ips = array();
 
 		// Some web hosts may disable this function
-		if ( !function_exists('gethostbynamel') )
-			return array();
-
-		$ips = gethostbynamel( $test_host );
-		if ( !$ips || !is_array($ips) || !count($ips) )
-			return array();
-
-		$api_key = Akismet::get_api_key();
-
-		$servers = array();
-		foreach ( $ips as $ip ) {
-			$response = Akismet::verify_key( $api_key, $ip );
-			// even if the key is invalid, at least we know we have connectivity
-			if ( $response == 'valid' || $response == 'invalid' )
-				$servers[$ip] = true;
-			else
-				$servers[$ip] = false;
+		if ( function_exists('gethostbynamel') ) {	
+			
+			$ips = gethostbynamel( 'rest.akismet.com' );
+			if ( $ips && is_array($ips) && count($ips) ) {
+				$api_key = Akismet::get_api_key();
+				
+				foreach ( $ips as $ip ) {
+					$response = Akismet::verify_key( $api_key, $ip );
+					// even if the key is invalid, at least we know we have connectivity
+					if ( $response == 'valid' || $response == 'invalid' )
+						$servers[$ip] = 'connected';
+					else
+						$servers[$ip] = $response ? $response : 'unable to connect';
+				}
+			}
 		}
+		
 		return $servers;
 	}
-
-	// Check the server connectivity and store the results in an option.
-	// Cached results will be used if not older than the specified timeout in seconds; use $cache_timeout = 0 to force an update.
-	// Returns the same associative array as check_server_connectivity()
-	public static function get_server_connectivity( $cache_timeout = 86400 ) {
+	
+	// Simpler connectivity check
+	public static function check_server_connectivity($cache_timeout = 86400) {
+		
+		$debug = array();
+		$debug[ 'PHP_VERSION' ]         = PHP_VERSION;
+		$debug[ 'WORDPRESS_VERSION' ]   = $GLOBALS['wp_version'];
+		$debug[ 'AKISMET_VERSION' ]     = AKISMET_VERSION;
+		$debug[ 'AKISMET__PLUGIN_DIR' ] = AKISMET__PLUGIN_DIR;
+		$debug[ 'SITE_URL' ]            = site_url();
+		$debug[ 'HOME_URL' ]            = home_url();
+		
 		$servers = get_option('akismet_available_servers');
-		if ( (time() - get_option('akismet_connectivity_time') < $cache_timeout) && $servers !== false )
-			return $servers;
+		if ( (time() - get_option('akismet_connectivity_time') < $cache_timeout) && $servers !== false ) {
+			$servers = self::check_server_ip_connectivity();
+			update_option('akismet_available_servers', $servers);
+			update_option('akismet_connectivity_time', time());
+		}
+			
+		$response = wp_remote_get( 'http://rest.akismet.com/1.1/test' );
+		
+		$debug[ 'gethostbynamel' ]  = function_exists('gethostbynamel') ? 'exists' : 'not here';
+		$debug[ 'Servers' ]         = $servers;
+		$debug[ 'Test Connection' ] = $response;
+		
+		Akismet::log( $debug );
+		
+		if ( $response && 'connected' == wp_remote_retrieve_body( $response ) )
+			return true;
+		
+		return false;
+	}
 
-		// There's a race condition here but the effect is harmless.
-		$servers = self::check_server_connectivity();
-		update_option('akismet_available_servers', $servers);
-		update_option('akismet_connectivity_time', time());
-		return $servers;
+	// Check the server connectivity and store the available servers in an option. 
+	public static function get_server_connectivity($cache_timeout = 86400) {
+		return self::check_server_connectivity( $cache_timeout );
 	}
 
 	public static function get_number_spam_waiting() {
@@ -784,15 +806,10 @@ class Akismet_Admin {
 	}
 
 	public static function display_status() {
-		$servers    = self::get_server_connectivity();
-		$fail_count = count( $servers ) - count( array_filter( $servers ) );
-		$type       = '';
+		$type = '';
 
-		if ( empty( $servers ) || $fail_count > 0 )
+		if ( !self::get_server_connectivity() )
 			$type = 'servers-be-down';
-
-		if ( !function_exists('gethostbynamel') )
-			$type = 'missing-functions';
 
 		if ( !empty( $type ) )
 			Akismet::view( 'notice', compact( 'type' ) );
