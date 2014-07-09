@@ -30,10 +30,12 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
-= 3.0.1-alpha =
+= 3.0.1 =
 * Removed dependency on PHP's fsockopen function
-* Fix spam/ham reports to work outside of dashboard, i.e. Notifications
-* Remove jQuery dependancy for comment form
+* Fix spam/ham reports to work when reported outside of the WP dashboard, e.g., from Notifications or the WP app
+* Remove jQuery dependency for comment form JavaScript
+* Remove unnecessary data from some Akismet comment meta
+* Suspended keys will now result in all comments being put in moderation, not spam.
 
 = 3.0.0 =
 * Move Akismet to Settings menu
