@@ -916,8 +916,14 @@ p {
 		//tidy up
 	}
 	
+	/**
+	 * Essentially a copy of WP's build_query but one that doesn't expect pre-urlencoded values.
+	 *
+	 * @param array $args An array of key => value pairs
+	 * @return string A string ready for use as a URL query string.
+	 */
 	public static function build_query( $args ) {
-		return http_build_query( $args, '', '&' );
+		return _http_build_query( $args, '', '&' );
 	}
 
 	public static function log( $akismet_debug ) {
