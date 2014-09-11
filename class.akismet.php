@@ -926,8 +926,16 @@ p {
 		return _http_build_query( $args, '', '&' );
 	}
 
+	/**
+	 * Log debugging info to the error log.
+	 *
+	 * Enabled when WP_DEBUG_LOG is enabled, but can be disabled via the akismet_debug_log filter.
+	 *
+	 * @param mixed $akismet_debug The data to log.
+	 */
 	public static function log( $akismet_debug ) {
-		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG )
-			error_log( print_r( compact( 'akismet_debug' ), 1 ) ); //send message to debug.log when in debug mode
+		if ( apply_filters( 'akismet_debug_log', defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) ) {
+			error_log( print_r( compact( 'akismet_debug' ), true ) );
+		}
 	}
 }

@@ -30,6 +30,9 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 3.0.3 =
+
+* Added a filter to disable logging of Akismet debugging information.
 
 = 3.0.2 =
 *Release Date - 18th August, 2014*
