@@ -33,6 +33,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 = 3.0.3 =
 
 * Added a filter to disable logging of Akismet debugging information.
+* Removed the "Check for Spam" button from the Spam folder.
 
 = 3.0.2 =
 *Release Date - 18th August, 2014*
