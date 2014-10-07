@@ -256,7 +256,23 @@ class Akismet {
 	public static function delete_old_comments() {
 		global $wpdb;
 
-		while( $comment_ids = $wpdb->get_col( $wpdb->prepare( "SELECT comment_id FROM {$wpdb->comments} WHERE DATE_SUB(NOW(), INTERVAL 15 DAY) > comment_date_gmt AND comment_approved = 'spam' LIMIT %d", defined( 'AKISMET_DELETE_LIMIT' ) ? AKISMET_DELETE_LIMIT : 10000 ) ) ) {
+		/**
+		 * Determines how many comments will be deleted in each batch.
+		 *
+		 * @param int The default, as defined by AKISMET_DELETE_LIMIT.
+		 */
+		$delete_limit = apply_filters( 'akismet_delete_comment_limit', defined( 'AKISMET_DELETE_LIMIT' ) ? AKISMET_DELETE_LIMIT : 10000 );
+		$delete_limit = max( 1, intval( $delete_limit ) );
+
+		/**
+		 * Determines how many days a comment will be left in the Spam queue before being deleted.
+		 *
+		 * @param int The default number of days.
+		 */
+		$delete_interval = apply_filters( 'akismet_delete_comment_interval', 15 );
+		$delete_interval = max( 1, intval( $delete_interval ) );
+
+		while ( $comment_ids = $wpdb->get_col( $wpdb->prepare( "SELECT comment_id FROM {$wpdb->comments} WHERE DATE_SUB(NOW(), INTERVAL %d DAY) > comment_date_gmt AND comment_approved = 'spam' LIMIT %d", $delete_interval, $delete_limit ) ) ) {
 			if ( empty( $comment_ids ) )
 				return;
 
