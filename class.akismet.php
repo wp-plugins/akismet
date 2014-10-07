@@ -262,7 +262,9 @@ class Akismet {
 
 			$wpdb->queries = array();
 
-			do_action( 'delete_comment', $comment_ids );
+			foreach ( $comment_ids as $comment_id ) {
+				do_action( 'delete_comment', $comment_id );
+			}
 
 			$comma_comment_ids = implode( ', ', array_map('intval', $comment_ids) );
 
