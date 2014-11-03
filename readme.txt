@@ -32,7 +32,10 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 = 3.0.3 =
 
+* Fix for sending the wrong data to delete_comment action that could have prevented old spam comments from being deleted.
 * Added a filter to disable logging of Akismet debugging information.
+* Added a filter for the maximum comment age when deleting old spam comments.
+* Added a filter for the number per batch when deleting old spam comments.
 * Removed the "Check for Spam" button from the Spam folder.
 
 = 3.0.2 =
