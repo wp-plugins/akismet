@@ -324,10 +324,10 @@ class Akismet_Admin {
 	}
 
 	public static function check_for_spam_button( $comment_status ) {
-		if ( 'approved' == $comment_status )
-			return;
-
-		if ( 'spam' == $comment_status ) {
+		// The "Check for Spam" button should only appear when the page might be showing
+		// a comment with comment_approved=0, which means an un-trashed, un-spammed,
+		// not-yet-moderated comment.
+		if ( 'all' != $comment_status && 'moderated' != $comment_status ) {
 			return;
 		}
 
