@@ -30,6 +30,10 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 3.0.4 =
+
+* Removed the "Check for Spam" button from the "Trash" and "Approved" queues, where it would have no effect.
+
 = 3.0.3 =
 *Release Date - 3rd November, 2014*
 
