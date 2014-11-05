@@ -37,6 +37,7 @@ class Akismet_Admin {
 		add_action( 'wp_ajax_akismet_recheck_queue', array( 'Akismet_Admin', 'recheck_queue' ) );
 		add_action( 'wp_ajax_comment_author_deurl', array( 'Akismet_Admin', 'remove_comment_author_url' ) );
 		add_action( 'wp_ajax_comment_author_reurl', array( 'Akismet_Admin', 'add_comment_author_url' ) );
+		add_action( 'jetpack_auto_activate_akismet', array( 'Akismet_Admin', 'connect_jetpack_user' ) );
 
 		add_filter( 'plugin_action_links', array( 'Akismet_Admin', 'plugin_action_links' ), 10, 2 );
 		add_filter( 'comment_row_actions', array( 'Akismet_Admin', 'comment_row_action' ), 10, 2 );
@@ -653,13 +654,12 @@ class Akismet_Admin {
 		return $stat_totals;
 	}
 	
-	public static function verify_wpcom_key( $api_key, $user_id, $token = '' ) {
-		$akismet_account = Akismet::http_post( Akismet::build_query( array(
+	public static function verify_wpcom_key( $api_key, $user_id, $extra = array() ) {
+		$akismet_account = Akismet::http_post( Akismet::build_query( array_merge( array(
 			'user_id'          => $user_id,
 			'api_key'          => $api_key,
-			'token'            => $token,
 			'get_account_type' => 'true'
-		) ), 'verify-wpcom-key' );
+		), $extra ) ), 'verify-wpcom-key' );
 
 		if ( ! empty( $akismet_account[1] ) )
 			$akismet_account = json_decode( $akismet_account[1] );
@@ -667,6 +667,22 @@ class Akismet_Admin {
 		Akismet::log( compact( 'akismet_account' ) );
 		
 		return $akismet_account;
+	}
+	
+	public static function connect_jetpack_user() {
+	
+		if ( $jetpack_user = self::get_jetpack_user() ) {
+			if ( isset( $jetpack_user['user_id'] ) && isset(  $jetpack_user['api_key'] ) ) {
+				$akismet_user = self::verify_wpcom_key( $jetpack_user['api_key'], $jetpack_user['user_id'], array( 'action' => 'connect_jetpack_user' ) );
+							
+				if ( is_object( $akismet_user ) ) {
+					self::save_key( $akismet_user->api_key );
+					return in_array( $akismet_user->status, array( 'active', 'active-dunning', 'no-sub' ) );
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	public static function display_alert() {
@@ -723,7 +739,7 @@ class Akismet_Admin {
 		$akismet_user = false;
 		
 		if ( isset( $_GET['token'] ) && preg_match('/^(\d+)-[0-9a-f]{20}$/', $_GET['token'] ) )
-			$akismet_user = self::verify_wpcom_key( '', '', $_GET['token'] );
+			$akismet_user = self::verify_wpcom_key( '', '', array( 'token' => $_GET['token'] ) );
 		elseif ( $jetpack_user = self::get_jetpack_user() )
 			$akismet_user = self::verify_wpcom_key( $jetpack_user['api_key'], $jetpack_user['user_id'] );
 			
