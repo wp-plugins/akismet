@@ -32,6 +32,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 = 3.0.4 =
 
+* Fix to make .htaccess compatible with Apache 2.4.
 * Fix to allow removal of https author URLs.
 * Fix to avoid stripping part of the author URL when removing and re-adding.
 * Removed the "Check for Spam" button from the "Trash" and "Approved" queues, where it would have no effect.
