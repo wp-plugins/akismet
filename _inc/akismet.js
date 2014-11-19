@@ -72,7 +72,7 @@ jQuery( function ( $ ) {
 	});
 	$('.akismet_undo_link_removal').live('click', function () {
 		var thisId = $(this).attr('cid');
-		var thisUrl = $(this).attr('href').replace("http://www.", "").replace("http://", "");
+		var thisUrl = $(this).attr('href');
 		var data = {
 			action: 'comment_author_reurl',
 			_wpnonce: WPAkismet.comment_author_url_nonce,
@@ -91,8 +91,8 @@ jQuery( function ( $ ) {
 				if (response) {
 					// Add "x" link
 					$("a[commentid='"+ thisId +"']").show();
-					// Show link
-					$("#author_comment_url_"+ thisId).removeClass('akismet_undo_link_removal').html(thisUrl);
+					// Show link. Core strips leading http://, so let's do that too.
+					$("#author_comment_url_"+ thisId).removeClass('akismet_undo_link_removal').html( thisUrl.replace( /^http:\/\/(www\.)?/ig, '' ) );
 				}
 			}
 		});
