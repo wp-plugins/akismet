@@ -813,7 +813,10 @@ class Akismet_Admin {
 		global $hook_suffix;
 
 		if ( in_array( $hook_suffix, array( 'jetpack_page_akismet-key-config', 'settings_page_akismet-key-config', 'edit-comments.php' ) ) && (int) get_option( 'akismet_alert_code' ) > 0 ) {
-			self::display_alert();
+			Akismet::verify_key( Akismet::get_api_key() ); //verify that the key is still in alert state
+			
+			if ( get_option( 'akismet_alert_code' ) > 0 )
+				self::display_alert();
 		}
 		elseif ( $hook_suffix == 'plugins.php' && !Akismet::get_api_key() ) {
 			self::display_api_key_warning();
