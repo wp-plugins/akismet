@@ -2,8 +2,8 @@
 Contributors: matt, ryan, andy, mdawaffe, tellyworth, josephscott, lessbloat, eoigal, cfinke, automattic, jgs
 Tags: akismet, comments, spam
 Requires at least: 3.1
-Tested up to: 4.0.1
-Stable tag: 3.0.3
+Tested up to: 4.1
+Stable tag: 3.0.4
 License: GPLv2 or later
 
 Akismet checks your comments against the Akismet Web service to see if they look like spam or not.
@@ -31,6 +31,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 == Changelog ==
 
 = 3.0.4 =
+*Release Date - 11th December, 2014*
 
 * Fix to make .htaccess compatible with Apache 2.4.
 * Fix to allow removal of https author URLs.
