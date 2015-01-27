@@ -30,6 +30,10 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 3.0.5 =
+
+* Fix for a situation where Akismet might strip HTML from a comment.
+
 = 3.0.4 =
 *Release Date - 11th December, 2014*
 

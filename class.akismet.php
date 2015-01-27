@@ -23,7 +23,7 @@ class Akismet {
 		self::$initiated = true;
 
 		add_action( 'wp_insert_comment', array( 'Akismet', 'auto_check_update_meta' ), 10, 2 );
-		add_action( 'preprocess_comment', array( 'Akismet', 'auto_check_comment' ), 1 );
+		add_filter( 'preprocess_comment', array( 'Akismet', 'auto_check_comment' ), 1 );
 		add_action( 'akismet_scheduled_delete', array( 'Akismet', 'delete_old_comments' ) );
 		add_action( 'akismet_scheduled_delete', array( 'Akismet', 'delete_old_comments_meta' ) );
 		add_action( 'akismet_schedule_cron_recheck', array( 'Akismet', 'cron_recheck' ) );
@@ -180,7 +180,7 @@ class Akismet {
 		self::set_last_comment( $commentdata );
 		self::fix_scheduled_recheck();
 
-		return self::$last_comment;
+		return $commentdata;
 	}
 	
 	public static function get_last_comment() {
