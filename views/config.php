@@ -95,7 +95,7 @@
 													
 													printf(
 														_n(
-															'Spam in the <a href="%s">spam folder</a> older than 1 day is deleted automatically.',
+															'Spam in the <a href="%1$s">spam folder</a> older than 1 day is deleted automatically.',
 															'Spam in the <a href="%1$s">spam folder</a> older than %2$d days is deleted automatically.',
 															$delete_interval,
 															'akismet'
