@@ -809,11 +809,71 @@ class Akismet {
 			'timeout' => 15
 		);
 
-		$akismet_url = "http://{$http_host}/1.1/{$path}";
+		$akismet_url = $http_akismet_url = "http://{$http_host}/1.1/{$path}";
+
+		/**
+		 * Try SSL first; if that fails, try without it and don't try it again for a while.
+		 */
+
+		$ssl = $ssl_failed = false;
+
+		// Check if SSL requests were disabled fewer than X hours ago.
+		$ssl_disabled = get_option( 'akismet_ssl_disabled' );
+
+		if ( $ssl_disabled && $ssl_disabled < ( time() - 60 * 60 * 24 ) ) { // 24 hours
+			$ssl_disabled = false;
+			delete_option( 'akismet_ssl_disabled' );
+		}
+		else if ( $ssl_disabled ) {
+			do_action( 'akismet_ssl_disabled' );
+		}
+
+		if ( ! $ssl_disabled && function_exists( 'wp_http_supports') && ( $ssl = wp_http_supports( array( 'ssl' ) ) ) ) {
+			$akismet_url = set_url_scheme( $akismet_url, 'https' );
+
+			do_action( 'akismet_https_request_pre' );
+		}
+
 		$response = wp_remote_post( $akismet_url, $http_args );
+
 		Akismet::log( compact( 'akismet_url', 'http_args', 'response' ) );
-		if ( is_wp_error( $response ) )
+
+		if ( $ssl && is_wp_error( $response ) ) {
+			do_action( 'akismet_https_request_failure', $response );
+
+			// Intermittent connection problems may cause the first HTTPS
+			// request to fail and subsequent HTTP requests to succeed randomly.
+			// Retry the HTTPS request once before disabling SSL for a time.
+			$response = wp_remote_post( $akismet_url, $http_args );
+			
+			Akismet::log( compact( 'akismet_url', 'http_args', 'response' ) );
+
+			if ( is_wp_error( $response ) ) {
+				$ssl_failed = true;
+
+				do_action( 'akismet_https_request_failure', $response );
+
+				do_action( 'akismet_http_request_pre' );
+
+				// Try the request again without SSL.
+				$response = wp_remote_post( $http_akismet_url, $http_args );
+
+				Akismet::log( compact( 'http_akismet_url', 'http_args', 'response' ) );
+			}
+		}
+
+		if ( is_wp_error( $response ) ) {
+			do_action( 'akismet_request_failure', $response );
+
 			return array( '', '' );
+		}
+
+		if ( $ssl_failed ) {
+			// The request failed when using SSL but succeeded without it. Disable SSL for future requests.
+			update_option( 'akismet_ssl_disabled', time() );
+			
+			do_action( 'akismet_https_disabled' );
+		}
 
 		return array( $response['headers'], $response['body'] );
 	}

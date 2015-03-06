@@ -30,8 +30,9 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
-= 3.0.5 =
+= 3.1 =
 
+* Use HTTPS by default for all requests to Akismet.
 * Fix for a situation where Akismet might strip HTML from a comment.
 
 = 3.0.4 =
