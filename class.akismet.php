@@ -161,6 +161,7 @@ class Akismet {
 			if ( function_exists('wp_next_scheduled') && function_exists('wp_schedule_single_event') ) {
 				if ( !wp_next_scheduled( 'akismet_schedule_cron_recheck' ) ) {
 					wp_schedule_single_event( time() + 1200, 'akismet_schedule_cron_recheck' );
+					do_action( 'akismet_scheduled_recheck', 'invalid-response-' . $response[1] );
 				}
 			}
 
@@ -547,6 +548,7 @@ class Akismet {
 		if ( get_option( 'akismet_alert_code' ) || $status == 'invalid' ) {
 			// since there is currently a problem with the key, reschedule a check for 6 hours hence
 			wp_schedule_single_event( time() + 21600, 'akismet_schedule_cron_recheck' );
+			do_action( 'akismet_scheduled_recheck', 'key-problem-' . get_option( 'akismet_alert_code' ) . '-' . $status );
 			return false;
 		}
 
@@ -608,6 +610,7 @@ class Akismet {
 
 				delete_comment_meta( $comment_id, 'akismet_rechecking' );
 				wp_schedule_single_event( time() + 1200, 'akismet_schedule_cron_recheck' );
+				do_action( 'akismet_scheduled_recheck', 'check-db-comment-' . $status );
 				return;
 			}
 			delete_comment_meta( $comment_id, 'akismet_rechecking' );
@@ -616,6 +619,7 @@ class Akismet {
 		$remaining = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->commentmeta} WHERE meta_key = 'akismet_error'" );
 		if ( $remaining && !wp_next_scheduled('akismet_schedule_cron_recheck') ) {
 			wp_schedule_single_event( time() + 1200, 'akismet_schedule_cron_recheck' );
+			do_action( 'akismet_scheduled_recheck', 'remaining' );
 		}
 	}
 
@@ -633,6 +637,7 @@ class Akismet {
 		if ( $future_check > $check_range ) {
 			wp_clear_scheduled_hook( 'akismet_schedule_cron_recheck' );
 			wp_schedule_single_event( time() + 300, 'akismet_schedule_cron_recheck' );
+			do_action( 'akismet_scheduled_recheck', 'fix-scheduled-recheck' );
 		}
 	}
 
