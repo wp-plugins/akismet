@@ -30,6 +30,8 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 3.1.1 =
+
 = 3.1 =
 *Release Date - 11th March, 2015*
 
