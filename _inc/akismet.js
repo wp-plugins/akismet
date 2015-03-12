@@ -20,7 +20,7 @@ jQuery( function ( $ ) {
 	});
 	$('#the-comment-list').find('tr.comment, tr[id ^= "comment-"]').find('.column-author a[title ^= "http://"], .column-author a[title ^= "https://"]').each(function () {
 		var thisTitle = $(this).attr('title');
-			thisCommentId = $(this).parents('tr:first').attr('id').split("-");
+		var thisCommentId = $(this).parents('tr:first').attr('id').split("-");
 
 		$(this).attr("id", "author_comment_url_"+ thisCommentId[1]);
 
