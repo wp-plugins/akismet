@@ -33,6 +33,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 = 3.1.1 =
 
 * Improvements to the "Remove comment author URL" JavaScript
+* Include the pingback pre-check from the 2.6 branch.
 
 = 3.1 =
 *Release Date - 11th March, 2015*
