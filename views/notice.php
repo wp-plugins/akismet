@@ -88,7 +88,7 @@
 <?php elseif ( $type == 'new-key-failed' ) :?>
 <div class="wrap alert critical">
 	<h3 class="key-status"><?php esc_html_e( 'The key you entered could not be verified.' , 'akismet'); ?></h3>
-	<p class="description"><?php printf( __('Please refer to <a href="%s" target="_blank">our guide about firewalls</a> and check your server configuration.', 'akismet'), 'http://blog.akismet.com/akismet-hosting-faq/'); ?></p>
+	<p class="description"><?php printf( __('The connection to akismet.com cannot be established. Please refer to <a href="%s" target="_blank">our guide about firewalls</a> and check your server configuration.', 'akismet'), 'http://blog.akismet.com/akismet-hosting-faq/'); ?></p>
 </div>
 <?php elseif ( $type == 'limit-reached' && in_array( $level, array( 'yellow', 'red' ) ) ) :?>
 <div class="wrap alert critical">
