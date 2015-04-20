@@ -290,15 +290,6 @@ class Akismet_Admin {
 
 	// WP 2.5+
 	public static function rightnow_stats() {
-		global $submenu, $wp_db_version;
-
-		if ( 8645 < $wp_db_version  ) // 2.7
-			$link = add_query_arg( array( 'comment_status' => 'spam' ), admin_url( 'edit-comments.php' ) );
-		elseif ( isset( $submenu['edit-comments.php'] ) )
-			$link = add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( 'edit-comments.php' ) );
-		else
-			$link = add_query_arg( array( 'page' => 'akismet-admin' ), admin_url( 'edit.php' ) );
-
 		if ( $count = get_option('akismet_spam_count') ) {
 			$intro = sprintf( _n(
 				'<a href="%1$s">Akismet</a> has protected your site from %2$s spam comment already. ',
@@ -308,6 +299,8 @@ class Akismet_Admin {
 		} else {
 			$intro = sprintf( __('<a href="%s">Akismet</a> blocks spam from getting to your blog. ', 'akismet'), 'https://akismet.com/wordpress/' );
 		}
+
+		$link = add_query_arg( array( 'comment_status' => 'spam' ), admin_url( 'edit-comments.php' ) );
 
 		if ( $queue_count = self::get_spam_count() ) {
 			$queue_text = sprintf( _n(
