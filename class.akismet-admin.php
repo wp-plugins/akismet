@@ -309,15 +309,14 @@ class Akismet_Admin {
 			$intro = sprintf( __('<a href="%s">Akismet</a> blocks spam from getting to your blog. ', 'akismet'), 'https://akismet.com/wordpress/' );
 		}
 
-		$link = function_exists( 'esc_url' ) ? esc_url( $link ) : clean_url( $link );
 		if ( $queue_count = self::get_spam_count() ) {
 			$queue_text = sprintf( _n(
 				'There&#8217;s <a href="%2$s">%1$s comment</a> in your spam queue right now.',
 				'There are <a href="%2$s">%1$s comments</a> in your spam queue right now.',
 				$queue_count
-			, 'akismet'), number_format_i18n( $queue_count ), $link );
+			, 'akismet'), number_format_i18n( $queue_count ), esc_url( $link ) );
 		} else {
-			$queue_text = sprintf( __( "There&#8217;s nothing in your <a href='%s'>spam queue</a> at the moment." , 'akismet'), $link );
+			$queue_text = sprintf( __( "There&#8217;s nothing in your <a href='%s'>spam queue</a> at the moment." , 'akismet'), esc_url( $link ) );
 		}
 
 		$text = $intro . '<br />' . $queue_text;
