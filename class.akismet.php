@@ -230,7 +230,7 @@ class Akismet {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'true' );
 						self::update_comment_history( $comment->comment_ID, __('Akismet caught this comment as spam', 'akismet'), 'check-spam' );
 						if ( $comment->comment_approved != 'spam' )
-							self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s', 'akismet'), $comment->comment_approved), 'status-changed'.$comment->comment_approved );
+							self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s', 'akismet'), $comment->comment_approved), 'status-changed-'.$comment->comment_approved );
 					}
 					elseif ( self::$last_comment['akismet_result'] == 'false' ) {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'false' );
