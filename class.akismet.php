@@ -574,10 +574,13 @@ class Akismet {
 			$status = self::check_db_comment( $comment_id, 'retry' );
 
 			$msg = '';
+			$event = '';
 			if ( $status == 'true' ) {
 				$msg = __( 'Akismet caught this comment as spam during an automatic retry.' , 'akismet');
+				$event = 'cron-retry-spam';
 			} elseif ( $status == 'false' ) {
 				$msg = __( 'Akismet cleared this comment during an automatic retry.' , 'akismet');
+				$event = 'cron-retry-ham';
 			}
 
 			// If we got back a legit response then update the comment history
@@ -585,7 +588,7 @@ class Akismet {
 			// re-trying all the comments once we hit one failure.
 			if ( !empty( $msg ) ) {
 				delete_comment_meta( $comment_id, 'akismet_error' );
-				self::update_comment_history( $comment_id, $msg, 'cron-retry' );
+				self::update_comment_history( $comment_id, $msg, $event );
 				update_comment_meta( $comment_id, 'akismet_result', $status );
 				// make sure the comment status is still pending.  if it isn't, that means the user has already moved it elsewhere.
 				$comment = get_comment( $comment_id );

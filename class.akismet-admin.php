@@ -371,17 +371,17 @@ class Akismet_Admin {
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'true' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_error' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_delayed_moderation_email' );
-				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and caught this comment as spam', 'akismet'), 'check-spam' );
+				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and caught this comment as spam', 'akismet'), 'recheck-spam' );
 
 			} elseif ( 'false' == $response[1] ) {
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'false' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_error' );
 				delete_comment_meta( $c['comment_ID'], 'akismet_delayed_moderation_email' );
-				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and cleared this comment', 'akismet'), 'check-ham' );
+				Akismet::update_comment_history( $c['comment_ID'], __('Akismet re-checked and cleared this comment', 'akismet'), 'recheck-ham' );
 			// abnormal result: error
 			} else {
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'error' );
-				Akismet::update_comment_history( $c['comment_ID'], sprintf( __('Akismet was unable to re-check this comment (response: %s)', 'akismet'), substr($response[1], 0, 50)), 'check-error' );
+				Akismet::update_comment_history( $c['comment_ID'], sprintf( __('Akismet was unable to re-check this comment (response: %s)', 'akismet'), substr($response[1], 0, 50)), 'recheck-error' );
 			}
 
 			delete_comment_meta( $c['comment_ID'], 'akismet_rechecking' );
