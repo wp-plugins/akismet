@@ -228,23 +228,32 @@ class Akismet {
 					// normal result: true or false
 					if ( self::$last_comment['akismet_result'] == 'true' ) {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'true' );
-						self::update_comment_history( $comment->comment_ID, __('Akismet caught this comment as spam', 'akismet'), 'check-spam' );
+						self::update_comment_history( $comment->comment_ID, '', 'check-spam' );
 						if ( $comment->comment_approved != 'spam' )
-							self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s', 'akismet'), $comment->comment_approved), 'status-changed-'.$comment->comment_approved );
+							self::update_comment_history(
+								$comment->comment_ID,
+								'',
+								'status-changed-'.$comment->comment_approved
+							);
 					}
 					elseif ( self::$last_comment['akismet_result'] == 'false' ) {
 						update_comment_meta( $comment->comment_ID, 'akismet_result', 'false' );
-						self::update_comment_history( $comment->comment_ID, __('Akismet cleared this comment', 'akismet'), 'check-ham' );
+						self::update_comment_history( $comment->comment_ID, '', 'check-ham' );
 						if ( $comment->comment_approved == 'spam' ) {
 							if ( wp_blacklist_check($comment->comment_author, $comment->comment_author_email, $comment->comment_author_url, $comment->comment_content, $comment->comment_author_IP, $comment->comment_agent) )
-								self::update_comment_history( $comment->comment_ID, __('Comment was caught by wp_blacklist_check', 'akismet'), 'wp-blacklisted' );
+								self::update_comment_history( $comment->comment_ID, '', 'wp-blacklisted' );
 							else
-								self::update_comment_history( $comment->comment_ID, sprintf( __('Comment status was changed to %s', 'akismet'), $comment->comment_approved), 'status-changed-'.$comment->comment_approved );
+								self::update_comment_history( $comment->comment_ID, '', 'status-changed-'.$comment->comment_approved );
 						}
 					} // abnormal result: error
 					else {
 						update_comment_meta( $comment->comment_ID, 'akismet_error', time() );
-						self::update_comment_history( $comment->comment_ID, sprintf( __('Akismet was unable to check this comment (response: %s), will automatically retry again later.', 'akismet'), substr(self::$last_comment['akismet_result'], 0, 50)), 'check-error' );
+						self::update_comment_history(
+							$comment->comment_ID,
+							'',
+							'check-error',
+							array( 'response' => substr( self::$last_comment['akismet_result'], 0, 50 ) )
+						);
 					}
 
 					// record the complete original data as submitted for checking
@@ -350,8 +359,15 @@ class Akismet {
 		return $history;
 	}
 
-	// log an event for a given comment, storing it in comment_meta
-	public static function update_comment_history( $comment_id, $message, $event=null ) {
+	/**
+	 * Log an event for a given comment, storing it in comment_meta.
+	 *
+	 * @param int $comment_id The ID of the relevant comment.
+	 * @param string $message The string description of the event. No longer used.
+	 * @param string $event The event code.
+	 * @param array $meta Metadata about the history entry. e.g., the user that reported or changed the status of a given comment.
+	 */
+	public static function update_comment_history( $comment_id, $message, $event=null, $meta=null ) {
 		global $current_user;
 
 		// failsafe for old WP versions
@@ -359,15 +375,19 @@ class Akismet {
 			return false;
 
 		$user = '';
-		if ( is_object( $current_user ) && isset( $current_user->user_login ) )
-			$user = $current_user->user_login;
 
 		$event = array(
 			'time'    => self::_get_microtime(),
-			'message' => $message,
 			'event'   => $event,
-			'user'    => $user,
 		);
+		
+		if ( is_object( $current_user ) && isset( $current_user->user_login ) ) {
+			$event['user'] = $current_user->user_login;
+		}
+		
+		if ( ! empty( $meta ) ) {
+			$event['meta'] = $meta;
+		}
 
 		// $unique = false so as to allow multiple values per comment
 		$r = add_comment_meta( $comment_id, 'akismet_history', $event, false );
@@ -443,7 +463,7 @@ class Akismet {
 			}
 		}
 
-		self::update_comment_history( $comment->comment_ID, sprintf( __('%1$s changed the comment status to %2$s', 'akismet'), $reporter, $new_status ), 'status-' . $new_status );
+		self::update_comment_history( $comment->comment_ID, '', 'status-' . $new_status );
 	}
 	
 	public static function submit_spam_comment( $comment_id ) {
@@ -488,7 +508,7 @@ class Akismet {
 
 		$response = Akismet::http_post( Akismet::build_query( $comment ), 'submit-spam' );
 		if ( $comment->reporter ) {
-			self::update_comment_history( $comment_id, sprintf( __('%s reported this comment as spam', 'akismet'), $comment->reporter ), 'report-spam' );
+			self::update_comment_history( $comment_id, '', 'report-spam' );
 			update_comment_meta( $comment_id, 'akismet_user_result', 'true' );
 			update_comment_meta( $comment_id, 'akismet_user', $comment->reporter );
 		}
@@ -534,7 +554,7 @@ class Akismet {
 
 		$response = self::http_post( Akismet::build_query( $comment ), 'submit-ham' );
 		if ( $comment->reporter ) {
-			self::update_comment_history( $comment_id, sprintf( __('%s reported this comment as not spam', 'akismet'), $comment->reporter ), 'report-ham' );
+			self::update_comment_history( $comment_id, '', 'report-ham' );
 			update_comment_meta( $comment_id, 'akismet_user_result', 'false' );
 			update_comment_meta( $comment_id, 'akismet_user', $comment->reporter );
 		}
@@ -573,22 +593,19 @@ class Akismet {
 			add_comment_meta( $comment_id, 'akismet_rechecking', true );
 			$status = self::check_db_comment( $comment_id, 'retry' );
 
-			$msg = '';
 			$event = '';
 			if ( $status == 'true' ) {
-				$msg = __( 'Akismet caught this comment as spam during an automatic retry.' , 'akismet');
 				$event = 'cron-retry-spam';
 			} elseif ( $status == 'false' ) {
-				$msg = __( 'Akismet cleared this comment during an automatic retry.' , 'akismet');
 				$event = 'cron-retry-ham';
 			}
 
 			// If we got back a legit response then update the comment history
 			// other wise just bail now and try again later.  No point in
 			// re-trying all the comments once we hit one failure.
-			if ( !empty( $msg ) ) {
+			if ( !empty( $event ) ) {
 				delete_comment_meta( $comment_id, 'akismet_error' );
-				self::update_comment_history( $comment_id, $msg, $event );
+				self::update_comment_history( $comment_id, '', $event );
 				update_comment_meta( $comment_id, 'akismet_result', $status );
 				// make sure the comment status is still pending.  if it isn't, that means the user has already moved it elsewhere.
 				$comment = get_comment( $comment_id );
