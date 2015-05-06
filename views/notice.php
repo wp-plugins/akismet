@@ -97,14 +97,14 @@
 <?php elseif ( $type == 'limit-reached' && in_array( $level, array( 'yellow', 'red' ) ) ) :?>
 <div class="wrap alert critical">
 	<?php if ( $level == 'yellow' ): ?>
-	<h3 class="key-status failed"><?php esc_html_e("You're using your Akismet key on more sites than your Pro subscription allows.", 'akismet'); ?></h3>
+	<h3 class="key-status failed"><?php esc_html_e( 'You&#8217;re using your Akismet key on more sites than your Pro subscription allows.', 'akismet' ); ?></h3>
 	<p class="description">
 		<?php printf( __( 'Your Pro subscription allows the use of Akismet on only one site. Please <a href="%s" target="_blank">purchase additional Pro subscriptions</a> or upgrade to an Enterprise subscription that allows the use of Akismet on unlimited sites.', 'akismet' ), 'http://docs.akismet.com/billing/add-more-sites/' ); ?>
 		<br /><br />
 		<?php printf( __( 'Please <a href="%s" target="_blank">contact our support team</a> with any questions.', 'akismet' ), 'https://akismet.com/contact/'); ?>
 	</p>
 	<?php elseif ( $level == 'red' ): ?>
-	<h3 class="key-status failed"><?php esc_html_e("You're using Akismet on far too many sites for your Pro subscription.", 'akismet'); ?></h3>
+	<h3 class="key-status failed"><?php esc_html_e( 'You&#8217;re using Akismet on far too many sites for your Pro subscription.', 'akismet' ); ?></h3>
 	<p class="description">
 		<?php printf( __( 'To continue your service, <a href="%s" target="_blank">upgrade to an Enterprise subscription</a>, which covers an unlimited number of sites.', 'akismet'), 'https://akismet.com/account/upgrade/' ); ?></p>
 		<br /><br />
