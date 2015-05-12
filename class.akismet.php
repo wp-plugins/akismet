@@ -204,10 +204,6 @@ class Akismet {
 					$comment
 				)
 			);
-			
-			// The comment has slashes from wp_magic_quotes(), but any comment we compare
-			// it to later won't have slashes.
-			self::$last_comment = wp_unslash( self::$last_comment );
 		}
 	}
 
