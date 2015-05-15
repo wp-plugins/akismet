@@ -701,8 +701,16 @@ class Akismet {
 		return (
 			   isset( $comment1['comment_post_ID'], $comment2['comment_post_ID'] )
 			&& intval( $comment1['comment_post_ID'] ) == intval( $comment2['comment_post_ID'] )
-			&& $comment1['comment_author'] == $comment2['comment_author']
-			&& $comment1['comment_author_email'] == $comment2['comment_author_email']
+			&& (
+				$comment1['comment_author'] == $comment2['comment_author']
+				|| stripslashes( $comment1['comment_author'] ) == $comment2['comment_author']
+				|| $comment1['comment_author'] == stripslashes( $comment2['comment_author'] )
+				)
+			&& (
+				$comment1['comment_author_email'] == $comment2['comment_author_email']
+				|| stripslashes( $comment1['comment_author_email'] ) == $comment2['comment_author_email']
+				|| $comment1['comment_author_email'] == stripslashes( $comment2['comment_author_email'] )
+			)
 		);
 	}
 	
