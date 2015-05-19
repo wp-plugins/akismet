@@ -481,7 +481,7 @@ class Akismet {
 			return;
 
 		// use the original version stored in comment_meta if available
-		$as_submitted = get_comment_meta( $comment_id, 'akismet_as_submitted', true);
+		$as_submitted = self::sanitize_comment_as_submitted( get_comment_meta( $comment_id, 'akismet_as_submitted', true ) );
 
 		if ( $as_submitted && is_array( $as_submitted ) && isset( $as_submitted['comment_content'] ) )
 			$comment = (object) array_merge( (array)$comment, $as_submitted );
@@ -527,7 +527,7 @@ class Akismet {
 			return;
 
 		// use the original version stored in comment_meta if available
-		$as_submitted = get_comment_meta( $comment_id, 'akismet_as_submitted', true);
+		$as_submitted = self::sanitize_comment_as_submitted( get_comment_meta( $comment_id, 'akismet_as_submitted', true ) );
 
 		if ( $as_submitted && is_array($as_submitted) && isset($as_submitted['comment_content']) )
 			$comment = (object) array_merge( (array)$comment, $as_submitted );
@@ -1113,5 +1113,27 @@ p {
 		}
 
 		return $r;
+	}
+	
+	/**
+	 * Ensure that we are loading expected scalar values from akismet_as_submitted commentmeta.
+	 *
+	 * @param mixed $meta_value
+	 * @return mixed
+	 */
+	private static function sanitize_comment_as_submitted( $meta_value ) {
+		if ( empty( $meta_value ) ) {
+			return $meta_value;
+		}
+
+		$meta_value = (array) $meta_value;
+
+		foreach ( $meta_value as $key => $value ) {
+			if ( ! isset( self::$comment_as_submitted_allowed_keys[$key] ) || ! is_scalar( $value ) ) {
+				unset( $meta_value[$key] );
+			}
+		}
+
+		return $meta_value;
 	}
 }
