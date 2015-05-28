@@ -232,7 +232,7 @@ class Akismet_Admin {
 		if ( defined( 'WPCOM_API_KEY' ) )
 			return false; //shouldn't have option to save key if already defined
 
-		$new_key = preg_replace( '/[^a-h0-9]/i', '', $_POST['key'] );
+		$new_key = preg_replace( '/[^a-f0-9]/i', '', $_POST['key'] );
 		$old_key = Akismet::get_api_key();
 
 		if ( empty( $new_key ) ) {
