@@ -712,7 +712,7 @@ class Akismet_Admin {
 	}
 	
 	public static function get_akismet_user( $api_key ) {
-		$akismet_user = Akismet::http_post( Akismet::build_query( array( 'key' => $api_key ) ), 'get-subscription' );
+		$akismet_user = Akismet::http_post( Akismet::build_query( array( 'key' => $api_key, 'blog' => get_bloginfo( 'url' ) ) ), 'get-subscription' );
 
 		if ( ! empty( $akismet_user[1] ) )
 			$akismet_user = json_decode( $akismet_user[1] );
