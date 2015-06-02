@@ -72,6 +72,15 @@ class Akismet {
 		return $response[1];
 	}
 
+	public static function deactivate_key( $key ) {
+		$response = self::http_post( Akismet::build_query( array( 'key' => $key, 'blog' => get_option('home') ) ), 'deactivate' );
+
+		if ( $response[1] != 'deactivated' )
+			return 'failed';
+
+		return $response[1];
+	}
+
 	public static function auto_check_comment( $commentdata ) {
 		self::$last_comment_result = null;
 
@@ -1028,7 +1037,7 @@ p {
 	 * @static
 	 */
 	public static function plugin_deactivation( ) {
-		//tidy up
+		return self::deactivate_key( self::get_api_key() );
 	}
 	
 	/**
