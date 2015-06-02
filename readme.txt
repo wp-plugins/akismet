@@ -32,6 +32,8 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 = 3.1.2 =
 
+* Added a deactivate API call when plugin is deactivated.
+
 = 3.1.1 =
 *Release Date - 17th March, 2015*
 
