@@ -67,8 +67,6 @@ class Akismet {
 		if ( $response[1] != 'valid' && $response[1] != 'invalid' )
 			return 'failed';
 
-		self::update_alert( $response );
-
 		return $response[1];
 	}
 
@@ -133,8 +131,6 @@ class Akismet {
 		$response = self::http_post( Akismet::build_query( $comment ), 'comment-check' );
 
 		do_action( 'akismet_comment_check_response', $response );
-
-		self::update_alert( $response );
 
 		$commentdata['comment_as_submitted'] = array_intersect_key( $comment, self::$comment_as_submitted_allowed_keys );
 		$commentdata['akismet_result']       = $response[1];
@@ -920,8 +916,12 @@ class Akismet {
 			
 			do_action( 'akismet_https_disabled' );
 		}
+		
+		$simplified_response = array( $response['headers'], $response['body'] );
+		
+		self::update_alert( $simplified_response );
 
-		return array( $response['headers'], $response['body'] );
+		return $simplified_response;
 	}
 
 	// given a response from an API call like check_key_status(), update the alert code options if an alert is present.
