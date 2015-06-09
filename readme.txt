@@ -30,6 +30,10 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 3.1.3 =
+
+* Notify users when their account status changes after previously being successfully set up.
+
 = 3.1.2 =
 *Release Date - 7 June 2015*
 
