@@ -1,6 +1,6 @@
 <div class="no-key config-wrap"><?php
 	if ( $akismet_user && in_array( $akismet_user->status, array( 'active', 'active-dunning', 'no-sub', 'missing', 'cancelled', 'suspended' ) ) ) :
-		if ( $akismet_user->status == 'missing' ) :?>
+		if ( in_array( $akismet_user->status, array( 'no-sub', 'missing' ) ) ) :?>
 <p><?php esc_html_e('Akismet eliminates the comment and trackback spam you get on your site. Register your email address below to get started.', 'akismet'); ?></p>
 <div class="activate-highlight activate-option">
 	<div class="option-description">
