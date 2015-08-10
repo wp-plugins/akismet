@@ -5,7 +5,7 @@
 <div class="activate-highlight activate-option">
 	<div class="option-description">
 		<strong class="small-heading"><?php esc_html_e('Connected via Jetpack', 'akismet'); ?></strong>
-		<?php echo esc_attr( $akismet_user->user_email ); ?>
+		<?php echo esc_html( $akismet_user->user_email ); ?>
 	</div>
 	<form name="akismet_activate" id="akismet_activate" action="https://akismet.com/get/" method="post" class="right" target="_blank">
 		<input type="hidden" name="passback_url" value="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>"/>
@@ -41,7 +41,7 @@
 <div class="activate-highlight activate-option">
 	<div class="option-description">
 		<strong class="small-heading"><?php esc_html_e('Connected via Jetpack', 'akismet'); ?></strong>
-		<?php echo esc_attr( $akismet_user->user_email ); ?>
+		<?php echo esc_html( $akismet_user->user_email ); ?>
 	</div>
 	<form name="akismet_use_wpcom_key" action="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>" method="post" id="akismet-activate" class="right">
 		<input type="hidden" name="key" value="<?php echo esc_attr( $akismet_user->api_key );?>"/>
