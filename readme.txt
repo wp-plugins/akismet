@@ -30,6 +30,12 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 3.1.4 =
+
+* Fixed a bug that was preventing some users from automatically connecting using Jetpack if they didn't have a current Akismet subscription.
+* Error messages and instructions have been simplified to be more understandable.
+* Link previews are enabled for all links inside comments, not just the author's website link.
+
 = 3.1.3 =
 *Release Date - 6 July 2015*
 
