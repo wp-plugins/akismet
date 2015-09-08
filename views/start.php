@@ -9,6 +9,7 @@
 	</div>
 	<form name="akismet_activate" id="akismet_activate" action="https://akismet.com/get/" method="post" class="right" target="_blank">
 		<input type="hidden" name="passback_url" value="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>"/>
+		<input type="hidden" name="blog" value="<?php echo esc_url( get_bloginfo('url') ); ?>"/>
 		<input type="hidden" name="auto-connect" value="<?php echo $akismet_user->ID;?>"/>
 		<input type="hidden" name="redirect" value="plugin-signup"/>
 		<input type="submit" class="button button-primary" value="<?php esc_attr_e( 'Register for Akismet' , 'akismet'); ?>"/>
@@ -23,6 +24,7 @@
 	</div>
 	<form name="akismet_activate" id="akismet_activate" action="https://akismet.com/get/" method="post" class="right" target="_blank">
 		<input type="hidden" name="passback_url" value="<?php echo esc_url( Akismet_Admin::get_page_url() ); ?>"/>
+		<input type="hidden" name="blog" value="<?php echo esc_url( get_bloginfo('url') ); ?>"/>
 		<input type="hidden" name="user_id" value="<?php echo $akismet_user->ID;?>"/>
 		<input type="hidden" name="redirect" value="upgrade"/>
 		<input type="submit" class="button button-primary" value="<?php esc_attr_e( 'Reactivate Akismet' , 'akismet'); ?>"/>
