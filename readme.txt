@@ -33,6 +33,7 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 = 3.1.4 =
 
 * Fixed a bug that was preventing some users from automatically connecting using Jetpack if they didn't have a current Akismet subscription.
+* Fixed a bug that could cause comments caught as spam to be placed in the Pending queue.
 * Error messages and instructions have been simplified to be more understandable.
 * Link previews are enabled for all links inside comments, not just the author's website link.
 
