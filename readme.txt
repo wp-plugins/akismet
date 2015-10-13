@@ -30,6 +30,11 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 3.0.5 =
+*Release Date - 13 October 2015*
+
+* Closes a potential XSS vulnerability.
+
 = 3.0.4 =
 *Release Date - 11th December, 2014*
 
