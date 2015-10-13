@@ -31,6 +31,9 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 2.5.10 =
+* Closes a potential XSS vulnerability.
+
 = 2.5.9 =
 * Update 'Already have a key' link to redirect page rather than depend on javascript
 * Fix some non-translatable strings to be translatable
