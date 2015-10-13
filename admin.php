@@ -528,22 +528,6 @@ function akismet_comment_column_row( $column, $comment_id ) {
 
 // END FIXME
 
-// call out URLS in comments
-function akismet_text_add_link_callback( $m ) {	
-	// bare link?
-	if ( $m[4] == $m[2] )
-		return '<a '.$m[1].' href="'.$m[2].'" '.$m[3].' class="comment-link">'.$m[4].'</a>';
-	else
-	    return '<span title="'.$m[2].'" class="comment-link"><a '.$m[1].' href="'.$m[2].'" '.$m[3].' class="comment-link">'.$m[4].'</a></span>';
-}
-
-function akismet_text_add_link_class( $comment_text ) {
-	return preg_replace_callback( '#<a ([^>]*)href="([^"]+)"([^>]*)>(.*?)</a>#i', 'akismet_text_add_link_callback', $comment_text );
-}
-
-add_filter('comment_text', 'akismet_text_add_link_class');
-
-
 // WP 2.5+
 function akismet_rightnow() {
 	global $submenu, $wp_db_version;

@@ -31,6 +31,9 @@ Upload the Akismet plugin to your blog, Activate it, then enter your [Akismet.co
 
 == Changelog ==
 
+= 2.6.1 =
+* Closes a potential XSS vulnerability.
+
 = 2.6.0 =
 * Add ajax paging to the check for spam button to handle large volumes of comments
 * Optimize javascript and add localization support 
